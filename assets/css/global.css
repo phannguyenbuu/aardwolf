@@ -1,0 +1,23 @@
+.justify-content-between{
+    justify-content: space-between;
+}
+.d-flex{
+    display: flex;
+    flex-direction: row;
+}
+#d-colum{
+    display: flex;
+    flex-direction: column;
+}
+.text-center h3{
+    text-align: center;
+}
+.justify-content-center{
+    justify-content: center;
+}
+.justify-content-last{
+    justify-content: flex-end;
+}
+#text-center{
+    text-align: center;
+}

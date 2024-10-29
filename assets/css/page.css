@@ -60,6 +60,10 @@ body{
     cursor: pointer;
 }
 
+.content__left-list-answer--item label {
+    cursor: pointer;
+}
+
 .content__left-list-answer {
     background: #fff;
     padding: 2px;
@@ -76,7 +80,7 @@ body{
 .content__action--requote{
     border: none;
     outline: none;
-    padding: 4px 23px;
+    padding: 9px 23px;
     background: #dfd1d1;
     border-radius: 4px;
     color: #333!important;
@@ -88,7 +92,7 @@ body{
     background: #F01D26;
     border: none;
     color: #fff!important;
-    padding: 4px 32px;
+    padding: 9px 32px;
     border-radius: 5px;
     text-decoration: none!important;
 }
@@ -260,9 +264,10 @@ body{
     padding: 5px 12px;
     border-radius: 25px;
     display: block;
-    width: 74px;
+    width: 100px;
     font-weight: bold;
     margin: 10px;
+    text-align: center;
 }
 
 .image-3d .icon-3d img{

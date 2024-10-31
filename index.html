@@ -58,7 +58,7 @@
             </select>
         </div>
         <div class="row content py-2">
-            <div class="col-lg-6 col-md-6 col-12 content__left">
+            <div class="col-lg-6 col-md-12 col-12 content__left">
                 <div class="content__left-list">
                     <div class="content__left-list--item">
                         <p>1. What crane type do you require?</p>
@@ -155,7 +155,7 @@
                 </div>
             </div>
             
-            <div class="col-lg-6 col-md-6 col-12 content__right">
+            <div class="col-lg-6 col-md-12 col-12 content__right">
                 <img class="img-fluid h-100" src="assets/images/image-1.png" alt="">
             </div>
         </div>
@@ -215,6 +215,24 @@
         $('.closes').on('click', function() {
             $('.menu-mobile').removeClass('active');
         });
+
+        $("input[type=radio]").each(function() {
+        const id = $(this).attr("id");
+        if (localStorage.getItem(id) === "checked") {
+            $(this).prop("checked", true);
+        }
+    });
+
+    // Lưu giá trị khi người dùng click vào radio button
+    $("input[type=radio]").click(function() {
+        const name = $(this).attr("name");
+        // Xóa tất cả các lựa chọn trước đó trong cùng nhóm
+        $(`input[name=${name}]`).each(function() {
+            localStorage.removeItem($(this).attr("id"));
+        });
+        // Lưu lựa chọn hiện tại
+        localStorage.setItem($(this).attr("id"), "checked");
+    });
 
         const $craneTypeRadios = $('input[name="craneType"]');
 const $jibOptions = $('.content__left-list--item:nth-child(2) .content__left-list-answer--item');

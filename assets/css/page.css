@@ -49,6 +49,7 @@ body{
 }
 
 .content__left-list-answer--item {
+    display: flex;
     align-items: center;
     font-size: 16px;
     padding: 5px 10px;
@@ -58,15 +59,19 @@ body{
 .content__left-list-answer--item input {
     font-size: 16px;
     cursor: pointer;
+    padding-right: 10px!important;
+    display: block;
 }
 
 .content__left-list-answer--item label {
     cursor: pointer;
+    margin-bottom: 0;
+    padding-left: 3px!important;
 }
 
 .content__left-list-answer {
     background: #fff;
-    padding: 2px;
+    padding: 15px 2px;
     border-radius: 10px;
     margin: 17px 1px !important;
 }
@@ -74,7 +79,7 @@ body{
 .content__action{
     text-align: center;
     padding: 10px 0px;
-    margin-right: 58px;
+    margin-right: 23%;
 }
 
 .content__action--requote{
@@ -95,6 +100,10 @@ body{
     padding: 9px 32px;
     border-radius: 5px;
     text-decoration: none!important;
+}
+
+.content__left {
+    height: 100%;
 }
 
 .content__left .back{
@@ -151,7 +160,7 @@ body{
     text-decoration: none!important;
     font-weight: bold;
     color: #CC2200!important;
-    padding: 0px 10px;
+    padding: 0px 5px;
 }
 
 .content__left--title-page3 p {

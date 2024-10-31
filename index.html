@@ -52,26 +52,27 @@
     <div class="container">
         <div class="py-4">
             <span class="content__left-unit--text pr-2">Unit:</span>
-            <select class="content__left-unit--option" name="" id="">
-                <option value="">Metric</option>
+            <select class="content__left-unit--option" name="" id="unitSelect">
+                <option value="m">m</option>
+                <option value="Inch">Inch</option>
             </select>
         </div>
         <div class="row content py-2">
-            <div class="col-lg-7 col-md-6 col-12 content__left">
+            <div class="col-lg-6 col-md-6 col-12 content__left">
                 <div class="content__left-list">
                     <div class="content__left-list--item">
-                        <p>1. What crane  type do you require?</p>
+                        <p>1. What crane type do you require?</p>
                         <div class="row content__left-list-answer">
                             <div class="col-lg-6 col-md-6 col-12 content__left-list-answer--item">
-                                <input type="checkbox" name="" id="floor-mounted-crane">
+                                <input type="radio" name="craneType" id="floor-mounted-crane">
                                 <label for="floor-mounted-crane">Floor-Mounted Crane</label>
                             </div>
                             <div class="col-lg-6 col-md-6 col-12 content__left-list-answer--item">
-                                <input type="checkbox" name="" id="mobile-crane">
+                                <input type="radio" name="craneType" id="mobile-crane">
                                 <label for="mobile-crane">Mobile Crane</label>
                             </div>
                             <div class="col-lg-6 col-md-6 col-12 content__left-list-answer--item">
-                                <input type="checkbox" name="" id="wall-mounted-crane">
+                                <input type="radio" name="craneType" id="wall-mounted-crane">
                                 <label for="wall-mounted-crane">Wall-Mounted Crane</label>
                             </div>
                         </div>
@@ -80,20 +81,20 @@
                         <p>2. What jib length do you require?</p>
                         <div class="row content__left-list-answer">
                             <div class="col-lg-6 col-md-6 col-12 content__left-list-answer--item">
-                                <input type="checkbox" name="" id="2.5m">
-                                <label for="2.5m">2.5m (articulated jib crane)</label>
+                                <input type="radio" name="jibLength" id="2.5m">
+                                <label for="2.5m" class="jib-label">2.5 <span class="unit-label">m</span> (articulated jib crane)</label>
                             </div>
                             <div class="col-lg-6 col-md-6 col-12 content__left-list-answer--item">
-                                <input type="checkbox" name="3m" id="3m">
-                                <label for="3m">3m</label>
+                                <input type="radio" name="jibLength" id="3m">
+                                <label for="3m" class="jib-label">3 <span class="unit-label">m</span></label>
                             </div>
                             <div class="col-lg-6 col-md-6 col-12 content__left-list-answer--item">
-                                <input type="checkbox" name="" id="4m">
-                                <label for="4m">4m</label>
+                                <input type="radio" name="jibLength" id="4m">
+                                <label for="4m" class="jib-label">4 <span class="unit-label">m</span></label>
                             </div>
                             <div class="col-lg-6 col-md-6 col-12 content__left-list-answer--item">
-                                <input type="checkbox" name="" id="5m">
-                                <label for="5m">5m</label>
+                                <input type="radio" name="jibLength" id="5m">
+                                <label for="5m" class="jib-label">5 <span class="unit-label">m</span></label>
                             </div>
                         </div>
                     </div>
@@ -101,24 +102,24 @@
                         <p>3. What work load limit do you require?</p>
                         <div class="row content__left-list-answer">
                             <div class="col-lg-6 col-md-6 col-12 content__left-list-answer--item">
-                                <input type="checkbox" name="" id="45kg">
+                                <input type="radio" name="workLoadLimit" id="45kg">
                                 <label for="45kg">WLL 45 kgs</label>
                             </div>
                             <div class="col-lg-6 col-md-6 col-12 content__left-list-answer--item">
-                                <input type="checkbox" name="" id="70kg">
+                                <input type="radio" name="workLoadLimit" id="70kg">
                                 <label for="70kg">WLL 70 kgs</label>
                             </div>
                             <div class="col-lg-6 col-md-6 col-12 content__left-list-answer--item">
-                                <input type="checkbox" name="" id="80kg">
+                                <input type="radio" name="workLoadLimit" id="80kg">
                                 <label for="80kg">WLL 80 kgs</label>
                             </div>
                             <div class="col-lg-6 col-md-6 col-12 content__left-list-answer--item">
-                                <input type="checkbox" name="" id="120kg">
+                                <input type="radio" name="workLoadLimit" id="120kg">
                                 <label for="120kg">WLL 120 kgs</label>
                             </div>
                             <div class="col-lg-6 col-md-6 col-12 content__left-list-answer--item">
-                                <input type="checkbox" name="" id="160kg">
-                                <label for="160kg">WLL 160 kgs</label>
+                                <input type="radio" name="workLoadLimit" id="150kg">
+                                <label for="150kg">WLL 150 kgs</label>
                             </div>
                         </div>
                     </div>
@@ -126,34 +127,35 @@
                         <p>4. What type of load are you lifting?</p>
                         <div class="row content__left-list-answer">
                             <div class="col-lg-6 col-md-6 col-12 content__left-list-answer--item">
-                                <input type="checkbox" name="" id="300max">
+                                <input type="radio" name="loadType" id="300max">
                                 <label for="300max">small cartons (300x300 max)</label>
                             </div>
                             <div class="col-lg-6 col-md-6 col-12 content__left-list-answer--item">
-                                <input type="checkbox" name="" id="300-400medium">
+                                <input type="radio" name="loadType" id="300-400medium">
                                 <label for="300-400medium">medium cartons (300 to 400)</label>
                             </div>
                             <div class="col-lg-6 col-md-6 col-12 content__left-list-answer--item">
-                                <input type="checkbox" name="" id="400large">
+                                <input type="radio" name="loadType" id="400large">
                                 <label for="400large">Large cartons (above 400)</label>
                             </div>
                             <div class="col-lg-6 col-md-6 col-12 content__left-list-answer--item">
-                                <input type="checkbox" name="" id="highstack">
+                                <input type="radio" name="loadType" id="highstack">
                                 <label for="highstack">High stack</label>
                             </div>
                             <div class="col-lg-6 col-md-6 col-12 content__left-list-answer--item">
-                                <input type="checkbox" name="" id="bags">
+                                <input type="radio" name="loadType" id="bags">
                                 <label for="bags">Bags</label>
                             </div>
                             <div class="col-lg-6 col-md-6 col-12 content__left-list-answer--item">
-                                <input type="checkbox" name="" id="sheetmaterial">
+                                <input type="radio" name="loadType" id="sheetmaterial">
                                 <label for="sheetmaterial">Sheet material</label>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-5 col-md-6 col-12 content__right">
+            
+            <div class="col-lg-6 col-md-6 col-12 content__right">
                 <img class="img-fluid h-100" src="assets/images/image-1.png" alt="">
             </div>
         </div>
@@ -171,6 +173,7 @@
         <div class="d-flex">
             <img style="width: 85%;" class="h-100" src="assets/images/image-1.png" alt="">
             <div class="d-flex flex-column icon-3d">
+                <img style="width: 48px;" src="assets/images/Icon (7).png" alt="">
                 <img style="width: 48px;" src="assets/images/Icon (1).png" alt="">
                 <img style="width: 48px;" src="assets/images/Icon (2).png" alt="">
                 <img style="width: 48px;" src="assets/images/Icon (3).png" alt="">
@@ -213,37 +216,47 @@
             $('.menu-mobile').removeClass('active');
         });
 
-        const $craneTypeCheckboxes = $('.content__left-list--item:first-child input[type="checkbox"]');
-        const $jibOptions = $('.content__left-list--item:nth-child(2) .content__left-list-answer--item');
-        const $wllOptions = $('.content__left-list--item:nth-child(3) .content__left-list-answer--item');
+        const $craneTypeRadios = $('input[name="craneType"]');
+const $jibOptions = $('.content__left-list--item:nth-child(2) .content__left-list-answer--item');
+const $wllOptions = $('.content__left-list--item:nth-child(3) .content__left-list-answer--item');
 
-        function toggleOptions() {
-            const isMobileCrane = $craneTypeCheckboxes.eq(1).is(':checked');
-            const isFloorMountedCrane = $craneTypeCheckboxes.eq(0).is(':checked');
-            const isWallMountedCrane = $craneTypeCheckboxes.eq(2).is(':checked');
-            const isFiveMeterSelected = $jibOptions.eq(3).find('input[type="checkbox"]').is(':checked'); // checkbox 5m
+function toggleOptions() {
+    const isMobileCrane = $craneTypeRadios.eq(1).is(':checked');
+    const isFloorMountedCrane = $craneTypeRadios.eq(0).is(':checked');
+    const isWallMountedCrane = $craneTypeRadios.eq(2).is(':checked');
+    const isFiveMeterSelected = $('input[name="jibLength"]:checked').attr('id') === '5m';
 
-            // Reset hiển thị ban đầu
-            $jibOptions.show();
-            $wllOptions.show();
+    $jibOptions.show();
+    $wllOptions.show();
 
-            if (isMobileCrane) {
-                // Mobile Crane: ẩn 4m, 5m, và WLL 160 kgs
-                $jibOptions.eq(2).hide();
-                $jibOptions.eq(3).hide();
-                $wllOptions.eq(4).hide();
-            } else if (isFloorMountedCrane || isWallMountedCrane) {
-                // Floor-Mounted hoặc Wall-Mounted
-                if (isFiveMeterSelected) {
-                    // Nếu chọn 5m: ẩn WLL 160 kgs
-                    $wllOptions.eq(4).hide();
-                }
-            }
+    if (isMobileCrane) {
+        $jibOptions.eq(2).hide();
+        $jibOptions.eq(3).hide();
+    } else if (isFloorMountedCrane || isWallMountedCrane) {
+        if (isWallMountedCrane) {
+            $jibOptions.eq(0).hide();
         }
+        if (isFiveMeterSelected) {
+            $wllOptions.eq(4).hide();
+        }
+    }
+}
 
-        $craneTypeCheckboxes.add($jibOptions.find('input[type="checkbox"]')).on('change', toggleOptions);
+$craneTypeRadios.add($jibOptions.find('input[type="radio"]')).on('change', toggleOptions);
 
-        toggleOptions();
+toggleOptions();
+
+$('.content__action--requote').click(function(event) {
+    event.preventDefault();
+    $('input[type="radio"]').prop('checked', false);
+    toggleOptions();
+});
+
+
+        $('#unitSelect').change(function() {
+            const selectedUnit = $(this).val();
+            $('.unit-label').text(selectedUnit);
+        });
     });
 </script>
 </html>

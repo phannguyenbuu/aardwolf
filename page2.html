@@ -204,273 +204,240 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
-
-
-
-
-<script src="assets/js/data.js"></script>
+    <script src="assets/js/data.js"></script>
     <script src="assets/js/sceneloader.js"></script>
 
     <script type="module">
-            import * as THREE from 'three'
-            import { OrbitControls } from '/jsm/controls/OrbitControls.js'
-            import { FBXLoader } from '/jsm/loaders/FBXLoader.js'
-            import Stats from '/jsm/libs/stats.module.js'
+        import * as THREE from 'three'
+        import { OrbitControls } from '/jsm/controls/OrbitControls.js'
+        import { FBXLoader } from '/jsm/loaders/FBXLoader.js'
+        import Stats from '/jsm/libs/stats.module.js'
 
-            const scene = new THREE.Scene();
-            var controls;
-            var renderer;
-            var camera;
+        const scene = new THREE.Scene();
+        var controls;
+        var renderer;
+        var camera;
 
-            function _loadFBX(filename, x, y, z, rot, clr, metal, rough ) {
-                const material = new THREE.MeshStandardMaterial({
-                    color: clr, // Màu xám kim loại
-                    metalness: metal,  // Độ bóng
-                    roughness: rough    // Độ nhám
-                })
+        function _loadFBX(filename, x, y, z, rot, clr, metal, rough ) {
+            const material = new THREE.MeshStandardMaterial({
+                color: clr, // Màu xám kim loại
+                metalness: metal,  // Độ bóng
+                roughness: rough    // Độ nhám
+            })
 
-                const fbxLoader = new FBXLoader()
-                fbxLoader.load(
-                    filename,
-                    (object) => {
-                        object.traverse(function (child) {
-                            if (child.isMesh) {
-                                child.material = material
-                                if (child.material) {
-                                    child.material.transparent = false
-                                }
+            const fbxLoader = new FBXLoader()
+            fbxLoader.load(
+                filename,
+                (object) => {
+                    object.traverse(function (child) {
+                        if (child.isMesh) {
+                            child.material = material
+                            if (child.material) {
+                                child.material.transparent = false
                             }
-                        })
-                        // object.scale.set(1, 1, 1)
-                        object.position.set(x, y, z)
-                        object.rotation.y = Math.PI / 180 * rot;
-                        scene.add(object)
-                        progressBar.style.display = 'none'
-                    },
-                    (xhr) => {
-                        if (xhr.lengthComputable) {
-                            var percentComplete = (xhr.loaded / xhr.total) * 100
-                            progressBar.value = percentComplete
-                            progressBar.style.display = 'block'
                         }
-                    },
-                    (error) => {
-                        console.log(error)
+                    })
+                    // object.scale.set(1, 1, 1)
+                    object.position.set(x, y, z)
+                    object.rotation.y = Math.PI / 180 * rot;
+                    scene.add(object)
+                    progressBar.style.display = 'none'
+                },
+                (xhr) => {
+                    if (xhr.lengthComputable) {
+                        var percentComplete = (xhr.loaded / xhr.total) * 100
+                        progressBar.value = percentComplete
+                        progressBar.style.display = 'block'
                     }
-                )
-            }
-
-
-            function init() {
-                scene.add(new THREE.AxesHelper(5))
-                
-                // ------------------ LIGHTING --------------------------
-                const light = new THREE.PointLight(0xffffff, 5)
-                light.position.set(2000,2000,2000)
-                scene.add(light)
-                
-                const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-                directionalLight.position.set(-500, 500, 500).normalize(); // Vị trí của ánh sáng
-                scene.add(directionalLight);
-
-                const ambientLight = new THREE.AmbientLight(0x404040); // Ánh sáng mềm
-                scene.add(ambientLight);
-                // ------------------ LIGHTING --------------------------
-
-                // ------------------ CAMERA --------------------------
-                const w = window.innerWidth;
-                const h = window.innerHeight;
-
-                camera = new THREE.PerspectiveCamera(75, w/h , 0.1, 10000)
-                camera.position.set(1200, 1000, 7000)
-
-                renderer = new THREE.WebGLRenderer()
-                renderer.setSize(w, h)
-                renderer.setClearColor(0xd1d2d3); // Thiết lập màu nền xám
-
-                const container = document.getElementById('threejs-container');
-                container.appendChild(renderer.domElement);
-                // document.body.appendChild(renderer.domElement)
-
-                controls = new OrbitControls(camera, renderer.domElement)
-                controls.enableDamping = true
-                controls.target.set(1200, 1000, 0)
-                // ------------------ CAMERA ------------------------
-
-            };
-
-            function _fullname(s) {
-                return 'models/aardwolf_all_part_' + s + '.fbx';
-            }
-
-            function _loadScene(tube=100)
-            {
-                const sceneloader = new SceneLoader ('MOBILE', 2.5);
-                const scenename = sceneloader.load_Crane();
-                
-                console.log('fbx:', scenename);
-
-                if(scenename)
-                {
-                    const obj = ALL_SCENES.find(item => item.name.toUpperCase() === scenename.toUpperCase());
-                    console.log(obj);
-
-                    if(obj)
-                    {
-                        
-
-                        //--------------LOAD CRANE--------------------------
-                        _loadFBX(_fullname(obj.name), 0, 0, 0, 0, 0x555555, 1, 0.5);
-
-                        obj.objects.forEach( o => {
-                            
-                            if(o.filename == '#tube')
-                            {
-                                _loadFBX(_fullname('TUBE LIFT ID ' + tube.toString()), o.x, o.y, o.z, o.rot, o.clr, o.metal, o.rough);
-
-                            }else{
-                                _loadFBX(_fullname(o.filename), o.x, o.y, o.z, o.rot, o.clr, o.metal, o.rough);
-                            }
-                            
-                        });
-                    }
+                },
+                (error) => {
+                    console.log(error)
                 }
-                
+            )
+        }
+        function init() {
+            scene.add(new THREE.AxesHelper(5))
+            const light = new THREE.PointLight(0xffffff, 5)
+            light.position.set(2000,2000,2000)
+            scene.add(light)
+            
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+            directionalLight.position.set(-500, 500, 500).normalize(); // Vị trí của ánh sáng
+            scene.add(directionalLight);
+
+            const ambientLight = new THREE.AmbientLight(0x404040); // Ánh sáng mềm
+            scene.add(ambientLight);
+
+            const w = window.innerWidth;
+            const h = window.innerHeight;
+
+            camera = new THREE.PerspectiveCamera(75, w/h , 0.1, 10000)
+            camera.position.set(1200, 1000, 7000)
+
+            renderer = new THREE.WebGLRenderer()
+            renderer.setSize(w, h)
+            renderer.setClearColor(0xd1d2d3); // Thiết lập màu nền xám
+
+            const container = document.getElementById('threejs-container');
+            container.appendChild(renderer.domElement);
+            controls = new OrbitControls(camera, renderer.domElement)
+            controls.enableDamping = true
+            controls.target.set(1200, 1000, 0)
+        };
+
+        function _fullname(s) {
+            return 'models/aardwolf_all_part_' + s + '.fbx';
+        }
+
+        function _loadScene(tube=100)
+        {
+            const sceneloader = new SceneLoader ('MOBILE', 2.5);
+            const scenename = sceneloader.load_Crane();
+            
+            console.log('fbx:', scenename);
+
+            if(scenename)
+            {
+                const obj = ALL_SCENES.find(item => item.name.toUpperCase() === scenename.toUpperCase());
+                console.log(obj);
+
+                if(obj)
+                {
+                    _loadFBX(_fullname(obj.name), 0, 0, 0, 0, 0x555555, 1, 0.5);
+
+                    obj.objects.forEach( o => {
+                        
+                        if(o.filename == '#tube')
+                        {
+                            _loadFBX(_fullname('TUBE LIFT ID ' + tube.toString()), o.x, o.y, o.z, o.rot, o.clr, o.metal, o.rough);
+
+                        }else{
+                            _loadFBX(_fullname(o.filename), o.x, o.y, o.z, o.rot, o.clr, o.metal, o.rough);
+                        }
+                        
+                    });
+                }
             }
             
-            init();
-            _loadScene(180);
+        }
+        
+        init();
+        _loadScene(180);
 
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight
+            camera.updateProjectionMatrix()
+            renderer.setSize(window.innerWidth, window.innerHeight)
+            render()
+        }
+        window.addEventListener('resize', onWindowResize, false)
+        
+        const stats = new Stats()
+        
+        window.addEventListener('click', () => {
+            const cameraPosition = camera.position;
+            const cameraInfoDiv = document.getElementById('cameraInfo');
+            cameraInfoDiv.innerHTML = `Camera Position: x: ${cameraPosition.x.toFixed(2)}, y: ${cameraPosition.y.toFixed(2)}, z: ${cameraPosition.z.toFixed(2)}`;
+            cameraInfoDiv.style.display = 'block'; // Hiển thị thông tin camera
+        });
 
+        function animate() {
+            requestAnimationFrame(animate)
 
+            if(controls)
+                controls.update()
 
+            render()
 
+            stats.update()
+        }
 
+        function render() {
+            if(renderer)
+                renderer.render(scene, camera)
+        }
 
-
-
-
-
-
-            function onWindowResize() {
-                camera.aspect = window.innerWidth / window.innerHeight
-                camera.updateProjectionMatrix()
-                renderer.setSize(window.innerWidth, window.innerHeight)
-                render()
-            }
-            window.addEventListener('resize', onWindowResize, false)
-            
-            const stats = new Stats()
-            
-            window.addEventListener('click', () => {
-                const cameraPosition = camera.position;
-                const cameraInfoDiv = document.getElementById('cameraInfo');
-                cameraInfoDiv.innerHTML = `Camera Position: x: ${cameraPosition.x.toFixed(2)}, y: ${cameraPosition.y.toFixed(2)}, z: ${cameraPosition.z.toFixed(2)}`;
-                cameraInfoDiv.style.display = 'block'; // Hiển thị thông tin camera
+        animate()
+        $(document).ready(function() {
+            $('.action-mobile').on('click', function() {
+                $('.menu-mobile').addClass('active');
             });
 
-            function animate() {
-                requestAnimationFrame(animate)
+            $('.requote').click(function(e) {
+                e.preventDefault();
+                localStorage.clear();
+                window.location.href = 'index.html';
+            });
 
-                if(controls)
-                    controls.update()
+            $('.image-3d .back').on('click', function(event) {
+                event.preventDefault();
+                $('.image-3d').fadeOut();
+                $('#threejs-container').fadeOut();
+            });
 
-                render()
-
-                stats.update()
-            }
-
-            function render() {
-                if(renderer)
-                    renderer.render(scene, camera)
-            }
-
-            animate()
-        
-
-    $(document).ready(function() {
-        $('.action-mobile').on('click', function() {
-            $('.menu-mobile').addClass('active');
-        });
-
-        $('.requote').click(function(e) {
-            e.preventDefault();
-            localStorage.clear();
-            window.location.href = 'index.html';
-        });
-
-        $('.image-3d .back').on('click', function(event) {
-            event.preventDefault();
-            $('.image-3d').fadeOut();
-            $('#threejs-container').fadeOut();
-        });
-
-        $('.footer a').on('click', function(event) {
-            event.preventDefault();
+            $('.footer a').on('click', function(event) {
+                event.preventDefault();
+                
+                $('html, body').animate({ scrollTop: 0 }, 'slow');
+                
+                $('.image-3d').fadeIn();
+                $('#threejs-container').fadeIn();
+            });
             
-            $('html, body').animate({ scrollTop: 0 }, 'slow');
-            
-            $('.image-3d').fadeIn();
-            $('#threejs-container').fadeIn();
-        });
-        
-        $('.closes').on('click', function() {
-            $('.menu-mobile').removeClass('active');
+            $('.closes').on('click', function() {
+                $('.menu-mobile').removeClass('active');
+            });
+
+            $("input[type=radio]").each(function() {
+            const id = $(this).attr("id");
+            if (localStorage.getItem(id) === "checked") {
+                $(this).prop("checked", true);
+            }
         });
 
-        $("input[type=radio]").each(function() {
-        const id = $(this).attr("id");
-        if (localStorage.getItem(id) === "checked") {
-            $(this).prop("checked", true);
-        }
-    });
-
-    // Lưu giá trị khi người dùng click vào radio button
-    $("input[type=radio]").click(function() {
-        const name = $(this).attr("name");
-        // Xóa tất cả các lựa chọn trước đó trong cùng nhóm
-        $(`input[name=${name}]`).each(function() {
-            localStorage.removeItem($(this).attr("id"));
+        $("input[type=radio]").click(function() {
+            const name = $(this).attr("name");
+            $(`input[name=${name}]`).each(function() {
+                localStorage.removeItem($(this).attr("id"));
+            });
+            localStorage.setItem($(this).attr("id"), "checked");
         });
-        // Lưu lựa chọn hiện tại
-        localStorage.setItem($(this).attr("id"), "checked");
-    });
 
         const $craneTypeRadios = $('input[name="craneType"]');
-const $jibOptions = $('.content__left-list--item:nth-child(2) .content__left-list-answer--item');
-const $wllOptions = $('.content__left-list--item:nth-child(3) .content__left-list-answer--item');
+        const $jibOptions = $('.content__left-list--item:nth-child(2) .content__left-list-answer--item');
+        const $wllOptions = $('.content__left-list--item:nth-child(3) .content__left-list-answer--item');
 
-function toggleOptions() {
-    const isMobileCrane = $craneTypeRadios.eq(1).is(':checked');
-    const isFloorMountedCrane = $craneTypeRadios.eq(0).is(':checked');
-    const isWallMountedCrane = $craneTypeRadios.eq(2).is(':checked');
-    const isFiveMeterSelected = $('input[name="jibLength"]:checked').attr('id') === '5m';
+        function toggleOptions() {
+            const isMobileCrane = $craneTypeRadios.eq(1).is(':checked');
+            const isFloorMountedCrane = $craneTypeRadios.eq(0).is(':checked');
+            const isWallMountedCrane = $craneTypeRadios.eq(2).is(':checked');
+            const isFiveMeterSelected = $('input[name="jibLength"]:checked').attr('id') === '5m';
 
-    $jibOptions.show();
-    $wllOptions.show();
+            $jibOptions.show();
+            $wllOptions.show();
 
-    if (isMobileCrane) {
-        $jibOptions.eq(2).hide();
-        $jibOptions.eq(3).hide();
-    } else if (isFloorMountedCrane || isWallMountedCrane) {
-        if (isWallMountedCrane) {
-            $jibOptions.eq(0).hide();
+            if (isMobileCrane) {
+                $jibOptions.eq(2).hide();
+                $jibOptions.eq(3).hide();
+            } else if (isFloorMountedCrane || isWallMountedCrane) {
+                if (isWallMountedCrane) {
+                    $jibOptions.eq(0).hide();
+                }
+                if (isFiveMeterSelected) {
+                    $wllOptions.eq(4).hide();
+                }
+            }
         }
-        if (isFiveMeterSelected) {
-            $wllOptions.eq(4).hide();
-        }
-    }
-}
 
-$craneTypeRadios.add($jibOptions.find('input[type="radio"]')).on('change', toggleOptions);
+        $craneTypeRadios.add($jibOptions.find('input[type="radio"]')).on('change', toggleOptions);
 
-toggleOptions();
+        toggleOptions();
 
-$('.content__action--requote').click(function(event) {
-    event.preventDefault();
-    $('input[type="radio"]').prop('checked', false);
-    toggleOptions();
-});
+        $('.content__action--requote').click(function(event) {
+            event.preventDefault();
+            $('input[type="radio"]').prop('checked', false);
+            toggleOptions();
+        });
 
 
         $('#unitSelect').change(function() {

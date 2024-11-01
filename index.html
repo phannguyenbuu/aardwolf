@@ -23,17 +23,17 @@
     </script>
 
     <style>
-        
+
 
         #threejs-container {
             position:absolute;
-            top: 15.2vh;
-            left: 50vw;
-            border-radius: 10px !important;
-            overflow: hidden !important;
+            top: 20.2vh;
+            left: 51vw;
+            border-radius: 10px;
+            overflow: hidden;
             z-index: 999;
-            width: 29vw; 
-            height: 110vh;
+            width: 35%;
+            height: 100vh;
             display: flex;               /* Bật Flexbox */
             justify-content: center;     /* Căn giữa theo chiều ngang */
             align-items: center;         /* Căn giữa theo chiều dọc */
@@ -43,14 +43,19 @@
         @media screen and (max-width:768px) {
             #threejs-container {
                 display: none;
-                width: 85vw;
-                left: 0vw;
+                width: 80vw;
+                top: 17.2vh;
+                left: -4vw;
                 height: 100%;
             }
 
             #viewport-buttons {
-                margin-left: 85vw;
+                margin-left: 83vw;
                 margin-top: -5vh;
+            }
+
+            .image-3d {
+                top: 5%;
             }
         }
     </style>
@@ -490,6 +495,7 @@ toggleOptions();
 
 $('.content__action--requote').click(function(event) {
     event.preventDefault();
+    localStorage.clear();
     $('input[type="radio"]').prop('checked', false);
     toggleOptions();
 });

@@ -24,7 +24,7 @@
     </script>
 
     <style>
-        
+
 
         #threejs-container {
             position:absolute;
@@ -51,7 +51,7 @@
             }
 
             #viewport-buttons {
-                margin-left: 90vw;
+                margin-left: 83vw;
                 margin-top: -5vh;
             }
 
@@ -160,7 +160,7 @@
 
                 <div class="content__left-price--action text-center">
                     <a class="requote" href="">Requote</a>
-                    <a class="back" href="">Back</a>
+                    <a class="back" href="index.html">Back</a>
                     <a href="page3.html">Download & Print quotation</a>
                 </div>
 
@@ -393,6 +393,12 @@
             $('.menu-mobile').addClass('active');
         });
 
+        $('.requote').click(function(e) {
+            e.preventDefault();
+            localStorage.clear();
+            window.location.href = 'index.html';
+        });
+
         $('.image-3d .back').on('click', function(event) {
             event.preventDefault();
             $('.image-3d').fadeOut();
@@ -471,6 +477,7 @@ $('.content__action--requote').click(function(event) {
             const selectedUnit = $(this).val();
             $('.unit-label').text(selectedUnit);
         });
+
     });
 </script>
 

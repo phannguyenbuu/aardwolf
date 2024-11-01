@@ -29,11 +29,11 @@
             position:absolute;
             top: 15.2vh;
             left: 50vw;
-            border-radius: 10px;
-            overflow: hidden;
+            border-radius: 10px !important;
+            overflow: hidden !important;
             z-index: 999;
-            width: 29vw;
-            height: 90vh;
+            width: 29vw; 
+            height: 105vh;
             display: flex;               /* Bật Flexbox */
             justify-content: center;     /* Căn giữa theo chiều ngang */
             align-items: center;         /* Căn giữa theo chiều dọc */
@@ -212,13 +212,13 @@
         <div id="viewport-buttons" class="d-flex">
             <!-- <img style="width: 85%;" class="h-100" src="assets/images/image-1.png" alt=""> -->
             <div  class="d-flex flex-column icon-3d">
-                <img style="width: 48px;" src="assets/images/Icon (7).png" alt="">
-                <img style="width: 48px;" src="assets/images/Icon (1).png" alt="">
-                <img style="width: 48px;" src="assets/images/Icon (2).png" alt="">
-                <img style="width: 48px;" src="assets/images/Icon (3).png" alt="">
-                <img style="width: 48px;" src="assets/images/Icon (4).png" alt="">
-                <img style="width: 48px;" src="assets/images/Icon (5).png" alt="">
-                <img style="width: 48px;" src="assets/images/Icon (6).png" alt="">
+                <img style="width: 40px;" src="assets/images/Icon (7).png" alt="">
+                <img style="width: 40px;" src="assets/images/Icon (1).png" alt="">
+                <img style="width: 40px;" src="assets/images/Icon (2).png" alt="">
+                <img style="width: 40px;" src="assets/images/Icon (3).png" alt="">
+                <img style="width: 40px;" src="assets/images/Icon (4).png" alt="">
+                <img style="width: 40px;" src="assets/images/Icon (5).png" alt="">
+                <img style="width: 40px;" src="assets/images/Icon (6).png" alt="">
             </div>
         </div>
     </div>
@@ -307,7 +307,7 @@
 
                 // ------------------ CAMERA --------------------------
                 const w = window.innerWidth;
-                const h = window.innerHeight;
+                const h = window.innerHeight * 1.5;
 
                 camera = new THREE.PerspectiveCamera(75, w/h , 0.1, 10000)
                 camera.position.set(1200, 1000,5000)

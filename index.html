@@ -43,13 +43,13 @@
         @media screen and (max-width:768px) {
             #threejs-container {
                 display: none;
-                width: 90vw;
+                width: 85vw;
                 left: 0vw;
                 height: 100%;
             }
 
             #viewport-buttons {
-                margin-left: 90vw;
+                margin-left: 85vw;
                 margin-top: -5vh;
             }
         }
@@ -310,7 +310,7 @@
                 const h = window.innerHeight;
 
                 camera = new THREE.PerspectiveCamera(75, w/h , 0.1, 10000)
-                camera.position.set(1200, 1000,4000)
+                camera.position.set(1200, 1000,5000)
 
                 renderer = new THREE.WebGLRenderer()
                 renderer.setSize(w, h)

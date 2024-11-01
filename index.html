@@ -33,7 +33,7 @@
             overflow: hidden !important;
             z-index: 999;
             width: 29vw; 
-            height: 105vh;
+            height: 110vh;
             display: flex;               /* Bật Flexbox */
             justify-content: center;     /* Căn giữa theo chiều ngang */
             align-items: center;         /* Căn giữa theo chiều dọc */
@@ -307,10 +307,10 @@
 
                 // ------------------ CAMERA --------------------------
                 const w = window.innerWidth;
-                const h = window.innerHeight * 1.5;
+                const h = window.innerHeight;
 
                 camera = new THREE.PerspectiveCamera(75, w/h , 0.1, 10000)
-                camera.position.set(1200, 1000,5000)
+                camera.position.set(1200, 1000, 7000)
 
                 renderer = new THREE.WebGLRenderer()
                 renderer.setSize(w, h)

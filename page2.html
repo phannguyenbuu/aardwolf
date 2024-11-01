@@ -45,13 +45,18 @@
             #threejs-container {
                 display: none;
                 width: 80vw;
-                left: 0vw;
+                top: 17.2vh;
+                left: -4vw;
                 height: 100%;
             }
 
             #viewport-buttons {
                 margin-left: 90vw;
                 margin-top: -5vh;
+            }
+
+            .image-3d {
+                top: 5%;
             }
         }
     </style>
@@ -169,7 +174,7 @@
 
     <div id="threejs-container"></div>
 
-    <div class="image-3d" style="top: 5%;">
+    <div class="image-3d">
         <a style="color: #333!important; text-decoration: none!important;" class="back" href="index.html">
             <!-- <img style="width: 8px;" src="assets/images/back.png" alt="back"> -->
             <span>Back</span>
@@ -203,8 +208,8 @@
 
 
 
-<script src="data.js"></script>
-    <script src="sceneloader.js"></script>
+<script src="assets/js/data.js"></script>
+    <script src="assets/js/sceneloader.js"></script>
 
     <script type="module">
             import * as THREE from 'three'
@@ -277,7 +282,7 @@
                 const h = window.innerHeight;
 
                 camera = new THREE.PerspectiveCamera(75, w/h , 0.1, 10000)
-                camera.position.set(1200, 1000, 5000)
+                camera.position.set(1200, 1000, 7000)
 
                 renderer = new THREE.WebGLRenderer()
                 renderer.setSize(w, h)

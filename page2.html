@@ -402,18 +402,20 @@
             const isWallMountedCrane = $craneTypeRadios.eq(2).is(':checked');
             const isFiveMeterSelected = $('input[name="jibLength"]:checked').attr('id') === '5m';
 
-            $jibOptions.show();
-            $wllOptions.show();
+            // Enable all options initially
+            $jibOptions.find('input[type="radio"]').prop('disabled', false);
+            $wllOptions.find('input[type="radio"]').prop('disabled', false);
 
+            // Apply specific disable rules
             if (isMobileCrane) {
-                $jibOptions.eq(2).hide();
-                $jibOptions.eq(3).hide();
+                $jibOptions.eq(2).find('input[type="radio"]').prop('disabled', true);
+                $jibOptions.eq(3).find('input[type="radio"]').prop('disabled', true);
             } else if (isFloorMountedCrane || isWallMountedCrane) {
                 if (isWallMountedCrane) {
-                    $jibOptions.eq(0).hide();
+                    $jibOptions.eq(0).find('input[type="radio"]').prop('disabled', true);
                 }
                 if (isFiveMeterSelected) {
-                    $wllOptions.eq(4).hide();
+                    $wllOptions.eq(4).find('input[type="radio"]').prop('disabled', true);
                 }
             }
         }

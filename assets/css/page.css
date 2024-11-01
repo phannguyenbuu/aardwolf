@@ -253,6 +253,12 @@ body{
     text-decoration: none!important;
 }
 
+input[type="radio"]:disabled + label {
+    color: #c4c4c4;
+    cursor: default;
+}
+
+
 .image-3d {
     position: absolute;
     top: 4%;

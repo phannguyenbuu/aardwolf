@@ -104,20 +104,20 @@
                     <div class="row content__left--content--item m-0">
                         <div class="col-lg-6 col-md-6 col-6 content__left--content--item-1">Maximum lifting capacity</div>
                         <div class="col-lg-6 col-md-6 col-6 content__left--content--item-2 d-flex align-items-center">
-                            <span>150kg</span>
+                            <span id="maxLiftingCapacity">150kg</span>
                         </div>
                     </div>
                     <div class="row content__left--content--item m-0">
                         <div class="col-lg-6 col-md-6 col-6 content__left--content--item-1">Lift tube size</div>
                         <div class="col-lg-6 col-md-6 col-6 content__left--content--item-2 d-flex align-items-center">
                             <img src="assets/images/icon-1.png" alt="">
-                            <span>100-200</span>
+                            <span id="liftTubeSize">100-200</span>
                         </div>
                     </div>
                     <div class="row content__left--content--item m-0">
                         <div class="col-lg-6 col-md-6 col-6 content__left--content--item-1">Electrical vacuum pump</div>
                         <div class="col-lg-6 col-md-6 col-6 content__left--content--item-2 d-flex align-items-center">
-                            <span>380-480V</span>
+                            <span id="vacuumPump">380-480V</span>
                         </div>
                     </div>
                     <div class="row content__left--content--item m-0">
@@ -438,5 +438,23 @@
 
     });
 </script>
+
+<script>
+    const maxLiftingCapacity = localStorage.getItem('maxLiftingCapacity');
+    const liftTubeSize = localStorage.getItem('liftTubeSize');
+    const liftTubePower = localStorage.getItem('liftTubePower');
+
+    if (maxLiftingCapacity && liftTubeSize && liftTubePower) {
+        document.querySelector('.content__left--content--item-2 span').textContent = maxLiftingCapacity;
+        const liftTubeSizeElements = document.querySelectorAll('.content__left--content--item-2 span')[1];
+        const liftTubePowerElements = document.querySelectorAll('.content__left--content--item-2 span')[2];
+
+        if (liftTubeSizeElements && liftTubePowerElements) {
+            liftTubeSizeElements.textContent = liftTubeSize;
+            liftTubePowerElements.textContent = liftTubePower;
+        }
+    }
+</script>
+
 
 </html>

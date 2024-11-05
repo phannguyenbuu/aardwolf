@@ -72,7 +72,7 @@
                 <div class="content__left-content-page3 py-4">
                     <p>Aardwolf Vacuum Tube Lifter</p>
                     <p>The above drawing is based on information provided by the buyer. The Aardwolf vacuum tube lifter is combined with a crane, vacuum generator, suction supply hose, lift tube, control unit and suction head.</p>
-                    <p>Lifting capacity: ?? Kgs. (As per customer’s request). The Aardwolf Vacuum Tube Lifter is a classic design typically suited for loads between??-??? kgs.</p>
+                    <p>Lifting capacity: <span id="MaximumLiftingCapacity">??</span>. (As per customer’s request). The Aardwolf Vacuum Tube Lifter is a classic design typically suited for loads between 10 - <span id="maxRangeCapacity">???</span>.</p>
                 </div>
 
                 <div class="content__left--description-page3">
@@ -152,6 +152,28 @@
             $('.menu-mobile').removeClass('active');
         });
     });
+</script>
+<script>
+    const maxLiftingCapacity = localStorage.getItem('maxLiftingCapacity');
+    const liftTubeSize = localStorage.getItem('liftTubeSize');
+    const liftTubePower = localStorage.getItem('liftTubePower');
+
+    if (maxLiftingCapacity) {
+        // Gán maxLiftingCapacity cho các vị trí cần thiết
+        document.getElementById('MaximumLiftingCapacity').textContent = maxLiftingCapacity;
+        document.getElementById('maxRangeCapacity').textContent = maxLiftingCapacity;
+    }
+
+    if (maxLiftingCapacity && liftTubeSize && liftTubePower) {
+        document.querySelector('.content__left--content--item-2 span').textContent = maxLiftingCapacity;
+        const liftTubeSizeElements = document.querySelectorAll('.content__left--content--item-2 span')[1];
+        const liftTubePowerElements = document.querySelectorAll('.content__left--content--item-2 span')[2];
+
+        if (liftTubeSizeElements && liftTubePowerElements) {
+            liftTubeSizeElements.textContent = liftTubeSize;
+            liftTubePowerElements.textContent = liftTubePower;
+        }
+    }
 </script>
 
 </html>

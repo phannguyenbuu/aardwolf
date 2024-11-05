@@ -465,5 +465,48 @@
         });
     });
     </script>
+
+<script>
+    document.querySelectorAll('input[name="workLoadLimit"]').forEach((radio) => {
+        radio.addEventListener('change', function () {
+            let maxLiftingCapacity;
+            let liftTubeSize;
+            let liftTubePower;
+
+            switch (this.id) {
+                case '45kg':
+                    maxLiftingCapacity = '45kg';
+                    liftTubeSize = '160';
+                    liftTubePower = '3.3/3.8kw';
+                    break;
+                case '70kg':
+                    maxLiftingCapacity = '70kg';
+                    liftTubeSize = '160';
+                    liftTubePower = '4.0/4.6kw';
+                    break;
+                case '80kg':
+                    maxLiftingCapacity = '80kg';
+                    liftTubeSize = '180';
+                    liftTubePower = '4.0/4.6kw';
+                    break;
+                case '120kg':
+                    maxLiftingCapacity = '120kg';
+                    liftTubeSize = '200';
+                    liftTubePower = '5.7/6.6kw';
+                    break;
+                case '150kg':
+                    maxLiftingCapacity = '150kg';
+                    liftTubeSize = '250';
+                    liftTubePower = '7.5/8.0kw';
+                    break;
+            }
+
+            localStorage.setItem('maxLiftingCapacity', maxLiftingCapacity);
+            localStorage.setItem('liftTubeSize', liftTubeSize);
+            localStorage.setItem('liftTubePower', liftTubePower);
+        });
+    });
+</script>
+
 </body>
 </html>

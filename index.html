@@ -498,38 +498,52 @@
             let maxLiftingCapacity;
             let liftTubeSize;
             let liftTubePower;
+            let priceLiftTubeSize;
+            let priceLiftTubePower;
 
             switch (this.id) {
                 case '45kg':
                     maxLiftingCapacity = '45kg';
                     liftTubeSize = '160';
                     liftTubePower = '3.3/3.8kw';
+                    priceLiftTubeSize = 356;
+                    priceLiftTubePower = 2.743;
                     break;
                 case '70kg':
                     maxLiftingCapacity = '70kg';
                     liftTubeSize = '160';
                     liftTubePower = '4.0/4.6kw';
+                    priceLiftTubeSize = 356;
+                    priceLiftTubePower = 3.424;
                     break;
                 case '80kg':
                     maxLiftingCapacity = '80kg';
                     liftTubeSize = '180';
                     liftTubePower = '4.0/4.6kw';
+                    priceLiftTubeSize = 469;
+                    priceLiftTubePower = 3.424;
                     break;
                 case '120kg':
                     maxLiftingCapacity = '120kg';
                     liftTubeSize = '200';
                     liftTubePower = '5.7/6.6kw';
+                    priceLiftTubeSize = 328;
+                    priceLiftTubePower = 3.857;
                     break;
                 case '150kg':
                     maxLiftingCapacity = '150kg';
                     liftTubeSize = '250';
                     liftTubePower = '7.5/8.0kw';
+                    priceLiftTubeSize = 376;
+                    priceLiftTubePower = 5.033;
                     break;
             }
 
             localStorage.setItem('maxLiftingCapacity', maxLiftingCapacity);
             localStorage.setItem('liftTubeSize', liftTubeSize);
             localStorage.setItem('liftTubePower', liftTubePower);
+            localStorage.setItem('priceLiftTubeSize', priceLiftTubeSize);
+            localStorage.setItem('priceLiftTubePower', priceLiftTubePower);
         });
     });
 </script>

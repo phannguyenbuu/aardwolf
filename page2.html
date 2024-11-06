@@ -148,7 +148,7 @@
 
                 <div class="content__left--price text-center py-4">
                     <span>Price:</span>
-                    <span>US$</span>
+                    <span id="totalPrice">0$</span>
                 </div>
 
                 <div class="content__left-price--action text-center">
@@ -443,6 +443,12 @@
     const maxLiftingCapacity = localStorage.getItem('maxLiftingCapacity');
     const liftTubeSize = localStorage.getItem('liftTubeSize');
     const liftTubePower = localStorage.getItem('liftTubePower');
+
+    const priceLiftTubeSize = localStorage.getItem('priceLiftTubeSize');
+    const priceLiftTubePower = localStorage.getItem('priceLiftTubePower');
+
+    const totalPrice = parseFloat(priceLiftTubeSize) + parseFloat(priceLiftTubePower);
+    document.getElementById('totalPrice').textContent = totalPrice.toFixed(2)+"US$";
 
     if (maxLiftingCapacity && liftTubeSize && liftTubePower) {
         document.querySelector('.content__left--content--item-2 span').textContent = maxLiftingCapacity;

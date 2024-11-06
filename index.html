@@ -197,7 +197,7 @@
         </div>
         <div class="content__action">
             <a href="" class="content__action--requote">Requote</a>
-            <a href="page2.html" class="content__action--quote">Quote</a>
+            <a href="javascript:void(0)" id="quoteButton" class="content__action--quote">Quote</a>
         </div>
     </div>
 
@@ -465,6 +465,32 @@
         });
     });
     </script>
+
+<script>
+    document.getElementById("quoteButton").addEventListener("click", function (e) {
+        // Kiểm tra tất cả các câu hỏi
+        const requiredFields = [
+            'craneType',
+            'jibLength',
+            'workLoadLimit',
+            'loadType'
+        ];
+
+        let allSelected = true;
+
+        requiredFields.forEach(name => {
+            if (!document.querySelector(`input[name="${name}"]:checked`)) {
+                allSelected = false;
+            }
+        });
+
+        if (allSelected) {
+            window.location.href = "page2.html";
+        } else {
+            alert("Vui lòng chọn đủ tất cả các mục trước khi tiếp tục.");
+        }
+    });
+</script>
 
 <script>
     document.querySelectorAll('input[name="workLoadLimit"]').forEach((radio) => {

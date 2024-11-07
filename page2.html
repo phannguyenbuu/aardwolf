@@ -185,7 +185,7 @@
         </div>
     </div>
 
-    <div id="content-page3" style="visibility: hidden; position: absolute; top: -100%;">
+    <div id="content-page3">
         <div class="header">
             <div class="container">
                 <div class="d-flex justify-content-between align-items-center">
@@ -577,6 +577,12 @@
     const totalPrice = parseFloat(priceLiftTubeSize) + parseFloat(priceLiftTubePower);
     document.getElementById('totalPrice').textContent = totalPrice.toFixed(2)+"US$";
     document.getElementById('totalPrice2').textContent = totalPrice.toFixed(2)+"US$";
+
+    
+    if (maxLiftingCapacity) {
+        document.getElementById('MaximumLiftingCapacity').textContent = maxLiftingCapacity;
+        document.getElementById('maxRangeCapacity').textContent = maxLiftingCapacity;
+    }
 
     if (maxLiftingCapacity && liftTubeSize && liftTubePower) {
         document.querySelector('.content__left--content--item-2 span').textContent = maxLiftingCapacity;

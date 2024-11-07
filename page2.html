@@ -154,7 +154,7 @@
                 <div class="content__left-price--action text-center">
                     <a class="requote" href="">Requote</a>
                     <a class="back" href="index.html">Back</a>
-                    <a href="page3.html">Download & Print quotation</a>
+                    <a href="javascript:void(0);" onclick="generatePDF()">Download & Print quotation</a>
                 </div>
 
                 <div class="content__left-price-des pt-4">
@@ -185,6 +185,131 @@
         </div>
     </div>
 
+    <div id="content-page3" style="visibility: hidden; position: absolute; top: -100%;">
+        <div class="header">
+            <div class="container">
+                <div class="d-flex justify-content-between align-items-center">
+                    <img src="assets/images/logo.png" alt="logo" class="logo">
+        
+                    <div class="action-desktop">
+                        <input type="text" placeholder="username">
+                        <input type="password" placeholder="password">
+                        <button class="action__password">login</button>
+                    </div>
+    
+                    <div class="action-mobile cursor-pointer">
+                        <img src="assets/images/menu.png" alt="">
+                    </div>
+    
+                    <div class="menu-mobile">
+                        <div class="closes"><img src="assets/images/close.png" alt=""></div>
+                        <form action="">
+                            <div class="pb-4 d-flex flex-column">
+                                <input type="text" placeholder="username">
+                                <a href="">Sign up</a>
+                            </div>
+                            <div class="pb-4 d-flex flex-column">
+                                <input type="text" placeholder="password">
+                                <a href="">Forgot password</a>
+                            </div>
+                            <button class="py-2">Login</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row content py-2">
+                <div class="col-lg-12 col-md-12 col-12 content__left">
+                    <a class="back" href="page2.html">
+                        <img src="assets/images/back.png" alt="back">
+                        <span>Back</span>
+                    </a>
+    
+                    <div class="content__left--title-page3"> 
+                        <p>QUOTATION</p>
+                    </div>
+    
+                    <div class="content__left--image-page3 text-center">
+                        <img src="assets/images/image-2.png" alt="">
+                    </div>
+    
+                    <div class="content__left--description-page3 pt-4">
+                        <span>1</span>
+                        <span>ITEM DESCRIPTION</span>
+                    </div>
+    
+                    <div class="content__left-content-page3 py-4">
+                        <p>Aardwolf Vacuum Tube Lifter</p>
+                        <p>The above drawing is based on information provided by the buyer. The Aardwolf vacuum tube lifter is combined with a crane, vacuum generator, suction supply hose, lift tube, control unit and suction head.</p>
+                        <p>Lifting capacity: <span id="MaximumLiftingCapacity">??</span>. (As per customer’s request). The Aardwolf Vacuum Tube Lifter is a classic design typically suited for loads between 10 - <span id="maxRangeCapacity">???</span>.</p>
+                    </div>
+    
+                    <div class="content__left--description-page3">
+                        <span>2</span>
+                        <span>TECHNICAL DATA</span>
+                    </div>
+    
+                    <div class="content__left--content mt-4">
+                        <div class="row content__left--content--item m-0">
+                            <div class="col-lg-6 col-md-6 col-6 content__left--content--item-1">Maximum lifting capacity</div>
+                            <div class="col-lg-6 col-md-6 col-6 content__left--content--item-2 d-flex align-items-center">
+                                <span id="maxLiftingCapacity2">150kg</span>
+                            </div>
+                        </div>
+                        <div class="row content__left--content--item m-0">
+                            <div class="col-lg-6 col-md-6 col-6 content__left--content--item-1">Lift tube size</div>
+                            <div class="col-lg-6 col-md-6 col-6 content__left--content--item-2 d-flex align-items-center">
+                                <img src="assets/images/icon-1.png" alt="">
+                                <span id="liftTubeSize2">100-200</span>
+                            </div>
+                        </div>
+                        <div class="row content__left--content--item m-0">
+                            <div class="col-lg-6 col-md-6 col-6 content__left--content--item-1">Electrical vacuum pump</div>
+                            <div class="col-lg-6 col-md-6 col-6 content__left--content--item-2 d-flex align-items-center">
+                                <span id="vacuumPump2">380-480V</span>
+                            </div>
+                        </div>
+                        <div class="row content__left--content--item m-0">
+                            <div class="col-lg-12 col-md-12 col-12 content__left--content--item-3">Vertical movement (Stroke)</div>
+                        </div>
+                        <div class="row content__left--content--item m-0">
+                            <div class="col-lg-6 col-md-6 col-6 content__left--content--item-1">2.5m lift tube (standard)</div>
+                            <div class="col-lg-6 col-md-6 col-6 content__left--content--item-2 d-flex align-items-center">
+                                <span>1.7m</span>
+                            </div>
+                        </div>
+                        <div class="row content__left--content--item m-0">
+                            <div class="col-lg-12 col-md-12 col-12 content__left--content--item-3">Installation height</div>
+                        </div>
+                        <div class="row content__left--content--item m-0">
+                            <div class="col-lg-6 col-md-6 col-6 content__left--content--item-1">2.5m lift tube</div>
+                            <div class="col-lg-6 col-md-6 col-6 content__left--content--item-2 d-flex align-items-center">
+                                <span>2.9m</span>
+                            </div>
+                        </div>
+                        <div class="row content__left--content--item m-0">
+                            <div class="col-lg-6 col-md-6 col-6 content__left--content--item-1">Safety factor (suction force vs lifting force)</div>
+                            <div class="col-lg-6 col-md-6 col-6 content__left--content--item-2 d-flex align-items-center">
+                                <span>2.5 minimum</span>
+                            </div>
+                        </div>
+                    </div>
+    
+                    <div class="content__left-note pt-4">
+                        <b>Note:</b>
+                        <span>It is recommended that the buyer purchase extra vacuum heads to cover all eventualities such as different carton sizes and the possibility of porous materials.</span>
+                    </div>
+    
+                    <div class="content__left--price text-center py-4">
+                        <span>Quotation:</span>
+                        <span id="totalPrice2">0$</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="footer">
         <a href="">
             <img src="assets/images/3d.png" alt="">
@@ -196,6 +321,8 @@
 </body>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
     <script src="assets/js/data.js"></script>
     <script src="assets/js/sceneloader.js"></script>
@@ -449,9 +576,13 @@
 
     const totalPrice = parseFloat(priceLiftTubeSize) + parseFloat(priceLiftTubePower);
     document.getElementById('totalPrice').textContent = totalPrice.toFixed(2)+"US$";
+    document.getElementById('totalPrice2').textContent = totalPrice.toFixed(2)+"US$";
 
     if (maxLiftingCapacity && liftTubeSize && liftTubePower) {
         document.querySelector('.content__left--content--item-2 span').textContent = maxLiftingCapacity;
+        document.querySelector('.content__left--content--item-2 span#maxLiftingCapacity2').textContent = maxLiftingCapacity;
+        document.querySelector('.content__left--content--item-2 span#liftTubeSize2').textContent = liftTubeSize;
+        document.querySelector('.content__left--content--item-2 span#vacuumPump2').textContent = liftTubePower;
         const liftTubeSizeElements = document.querySelectorAll('.content__left--content--item-2 span')[1];
         const liftTubePowerElements = document.querySelectorAll('.content__left--content--item-2 span')[2];
 
@@ -462,5 +593,41 @@
     }
 </script>
 
+<script>
+    async function generatePDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        const elementHTML = document.getElementById('content-page3');
+
+        elementHTML.style.visibility = 'visible';
+        elementHTML.style.position = 'static';
+
+        const canvas = await html2canvas(elementHTML);
+        const imgData = canvas.toDataURL('image/png');
+        
+        const imgWidth = 190;
+        const pageHeight = 500;
+        const imgHeight = canvas.height * imgWidth / canvas.width;
+        let heightLeft = imgHeight;
+        let position = 0;
+
+        doc.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+
+        while (heightLeft >= 0) {
+            position = heightLeft - imgHeight;
+            doc.addPage();
+            doc.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+        }
+
+        // Tải xuống PDF
+        doc.save('document.pdf');
+
+        // Restore the original styles after PDF is generated
+        elementHTML.style.visibility = 'hidden';
+        elementHTML.style.position = 'absolute';
+    }
+</script>
 
 </html>

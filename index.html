@@ -122,19 +122,19 @@
                         <div class="row content__left-list-answer">
                             <div class="col-lg-6 col-md-6 col-12 content__left-list-answer--item">
                                 <input type="radio" name="jibLength" id="2.5m">
-                                <label for="2.5m" class="jib-label">2.5 <span class="unit-label">m</span> (articulated jib crane)</label>
+                                <label for="2.5m" class="jib-label"><span id="jib-length-25">2.5</span> <span class="unit-label">m</span> (articulated jib crane)</label>
                             </div>
                             <div class="col-lg-6 col-md-6 col-12 content__left-list-answer--item">
                                 <input type="radio" name="jibLength" id="3m">
-                                <label for="3m" class="jib-label">3 <span class="unit-label">m</span></label>
+                                <label for="3m" class="jib-label"><span id="jib-length-3">3</span> <span class="unit-label">m</span></label>
                             </div>
                             <div class="col-lg-6 col-md-6 col-12 content__left-list-answer--item">
                                 <input type="radio" name="jibLength" id="4m">
-                                <label for="4m" class="jib-label">4 <span class="unit-label">m</span></label>
+                                <label for="4m" class="jib-label"><span id="jib-length-4">4</span> <span class="unit-label">m</span></label>
                             </div>
                             <div class="col-lg-6 col-md-6 col-12 content__left-list-answer--item">
                                 <input type="radio" name="jibLength" id="5m">
-                                <label for="5m" class="jib-label">5 <span class="unit-label">m</span></label>
+                                <label for="5m" class="jib-label"><span id="jib-length-5">5</span> <span class="unit-label">m</span></label>
                             </div>
                         </div>
                     </div>
@@ -450,8 +450,6 @@
 
         toggleOptions();
 
-        localStorage.clear();
-
         $('.content__action--requote').click(function(event) {
             event.preventDefault();
             localStorage.clear();
@@ -462,7 +460,28 @@
         $('#unitSelect').change(function() {
             const selectedUnit = $(this).val();
             $('.unit-label').text(selectedUnit);
+
+            if(selectedUnit === 'Inch') {
+                $('#jib-length-25').text('98.43');
+                $('#jib-length-3').text('118.11');
+                $('#jib-length-4').text('157.48');
+                $('#jib-length-5').text('196.85');
+            }else{
+                $('#jib-length-25').text('2.5');
+                $('#jib-length-3').text('3');
+                $('#jib-length-4').text('4');
+                $('#jib-length-5').text('5');
+            }
+
+            
+            localStorage.setItem('selectedUnit', selectedUnit);
         });
+
+    const storedUnit = localStorage.getItem('selectedUnit');
+    if (storedUnit) {
+        $('#unitSelect').val(storedUnit).change();  // Trigger change to update labels
+    }
+
     });
     </script>
 

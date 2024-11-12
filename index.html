@@ -62,9 +62,9 @@
                 <img src="assets/images/logo.png" alt="logo" class="logo">
     
                 <div class="action-desktop">
-                    <input type="text" placeholder="username">
-                    <input type="password" placeholder="password">
-                    <button class="action__password">login</button>
+                    <input type="text" id="username" placeholder="username">
+                    <input type="password" id="password" placeholder="password">
+                    <button id="loginButton" class="action__password">Login</button>
                 </div>
 
                 <div class="action-mobile cursor-pointer">
@@ -472,8 +472,6 @@
                 $('#jib-length-4').text('4');
                 $('#jib-length-5').text('5');
             }
-
-            
             localStorage.setItem('selectedUnit', selectedUnit);
         });
 
@@ -483,6 +481,27 @@
     }
 
     });
+
+    $('#loginButton').on('click', function() {
+                var username = $('#username').val();
+                var password = $('#password').val();
+
+                $.ajax({
+                    url: 'https://www.aardwolf.com.au/api/get_price.php',
+                    type: 'POST',
+                    data: {
+                        'txtUserName': username,
+                        'txtPassword': password,
+                        '_submit_login': 1
+                    },
+                    success: function(response) {
+                        console.log('Login Successful:', response);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Login Failed:', error);
+                    }
+                });
+            });
     </script>
 
 <script>

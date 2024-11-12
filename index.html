@@ -23,17 +23,18 @@
     <style>
         #threejs-container {
             position:absolute;
-            top: 20.2vh;
+            top: 15vh;
             left: 51vw;
             border-radius: 10px;
             overflow: hidden;
             z-index: 999;
             width: 35%;
-            height: 100vh;
+            height: 77vh;
             display: flex;               /* Bật Flexbox */
             justify-content: center;     /* Căn giữa theo chiều ngang */
             align-items: center;         /* Căn giữa theo chiều dọc */
         }
+
         @media screen and (max-width:768px) {
             #threejs-container {
                 display: none;
@@ -52,6 +53,26 @@
                 top: 5%;
             }
         }
+
+        
+        @media screen and (min-width: 1024px) and (max-width:1600px){
+            #threejs-container {
+                width: 35%;
+                top: 17.5vh;
+                left: 51vw;
+                height: 89vh;
+            }
+
+            #viewport-buttons {
+                margin-left: 83vw;
+                margin-top: -5vh;
+            }
+
+            .image-3d {
+                top: 5%;
+            }
+        }
+
     </style>
 </head>
 
@@ -311,6 +332,8 @@
             const container = document.getElementById('threejs-container');
             container.appendChild(renderer.domElement);
             controls = new OrbitControls(camera, renderer.domElement)
+            controls.minDistance = 0; // Giới hạn zoom gần nhất
+            controls.maxDistance = 10000; // Giới hạn zoom xa nhất
             controls.enableDamping = true
             controls.target.set(1200, 1000, 0)
 
@@ -387,31 +410,36 @@
 
         // ---------------------Kết thúc 3D---------------------------
 
-            // -----------Code của B : chọn radio type-------------------//
+        // -----------Code của B : chọn radio type-------------------//
+        localStorage.setItem('loadType','high');
+        localStorage.setItem('jibLength',2.5);
+        localStorage.setItem('craneType','mobile');
+        localStorage.setItem('liftTubeSize','250');
+        _load_a_Scene();
 
-            function handleRadioChange(name, getValueCallback) {
-                document.querySelectorAll(`input[name="${name}"]`).forEach((radio) => {
-                    radio.addEventListener('change', function () {
-                        const value = getValueCallback(this);
-                        localStorage.setItem(name, value);
-                        _load_a_Scene();
-                    });
+        function handleRadioChange(name, getValueCallback) {
+            document.querySelectorAll(`input[name="${name}"]`).forEach((radio) => {
+                radio.addEventListener('change', function () {
+                    const value = getValueCallback(this);
+                    localStorage.setItem(name, value);
+                    _load_a_Scene();
                 });
-            }
-
-            // Đảm bảo mọi radio sẽ được xử lý
-            handleRadioChange('craneType', (radio) => radio.id);
-            handleRadioChange('jibLength', (radio) => {
-                const numbers = radio.id.match(/\d+/g); // Tìm tất cả các số trong chuỗi
-                return numbers ? numbers.map(Number)[0] : null; // Chuyển các chuỗi số thành số và trả về mảng số
             });
-            handleRadioChange('loadType', (radio) => radio.id);
-            handleRadioChange('workLoadLimit', () => {
-                // Đối với workLoadLimit, bạn không cần phải lưu giá trị nào từ radio, chỉ cần load lại scene.
-                return null; 
-            });
+        }
 
-    // -----------Code của B-------------------//
+        // Đảm bảo mọi radio sẽ được xử lý
+        handleRadioChange('craneType', (radio) => radio.id);
+        handleRadioChange('jibLength', (radio) => {
+            const numbers = radio.id.match(/\d+/g); // Tìm tất cả các số trong chuỗi
+            return numbers ? numbers.map(Number)[0] : null; // Chuyển các chuỗi số thành số và trả về mảng số
+        });
+        handleRadioChange('loadType', (radio) => radio.id);
+        handleRadioChange('workLoadLimit', () => {
+            // Đối với workLoadLimit, bạn không cần phải lưu giá trị nào từ radio, chỉ cần load lại scene.
+            return null; 
+        });
+
+        // -----------Code của B-------------------//
 
 
 

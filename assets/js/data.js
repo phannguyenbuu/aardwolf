@@ -1,5 +1,5 @@
 const ALL_SCENES = ["Mobile Articulated Jib Crane-Two Arm@p1_-87_0_0@p2_2612_0_2405",
-"Mobile Over Braced Jib Crane-One Arm@p1_-113_-111_0@p2_3067_-111_3204",
+"Mobile Over Braced Jib Crane-One Arm@p1_-113_-111_0@p2_3067_-111_3223",
 "Over Braced Jib Crane - 3m-125kg@p1_-90_-141_0@p2_2956_-141_3105",
 "Over Braced Jib Crane - 4m - 250kg@p1_-100_-166_0@p2_3966_-166_3067",
 "Over Braced Jib Crane - 5m - 250kg@p1_-100_-166_0@p2_4966_-166_3067",
@@ -9,7 +9,10 @@ const ALL_SCENES = ["Mobile Articulated Jib Crane-Two Arm@p1_-87_0_0@p2_2612_0_2
 
 
 const head_stacks = ["Single control head","High stack","Extra Hand","Comfort control head"]
-const suction_packs = ["suction_01","suction_02","suction_03","suction_04"]
+const suction_packs = ["suction_01","suction_02","suction_03","suction_04","multi_suction_pad"]
+
+// 01: 
+// 0
 
 const pump_groups = ["Pump_group_1", "Pump_group_2"];
 const small_tube = "TUBE LIFT ID 120";
@@ -79,18 +82,18 @@ function select_crane()
     }
     else if(loadType.toLowerCase().includes("400large"))
     {
-        _head_stack = head_stacks[1];
-        _suction_pack = suction_packs[3];
+        _head_stack = head_stacks[3];
+        _suction_pack = suction_packs[2];
     }
     else if(loadType.toLowerCase().includes("bags"))
     {
         _head_stack = head_stacks[3];
-        _suction_pack = suction_packs[1];
+        _suction_pack = suction_packs[3];
     }
     else if(loadType.toLowerCase().includes("medium"))
     {
-        _head_stack = head_stacks[2];
-        _suction_pack = suction_packs[1];
+        _head_stack = head_stacks[0];
+        _suction_pack = suction_packs[0];
     }
     else if(loadType.toLowerCase().includes("high"))
     {
@@ -99,8 +102,8 @@ function select_crane()
     }
     else if(loadType.toLowerCase().includes("sheet"))
     {
-        _head_stack = head_stacks[3];
-        _suction_pack = suction_packs[3];
+        _head_stack = head_stacks[2];
+        _suction_pack = suction_packs[4];
     }
 
     return [_scenename, _pump_group, _tube, _head_stack, _suction_pack]

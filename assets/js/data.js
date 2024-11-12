@@ -27,12 +27,13 @@ function select_crane()
     let loadType = localStorage.getItem('loadType');
     let jibLength = localStorage.getItem('jibLength');
     let craneType =  localStorage.getItem('craneType');
-
-    let maxLiftingCapacity = localStorage.getItem('maxLiftingCapacity');
     let liftTubeSize = localStorage.getItem('liftTubeSize');
-    let liftTubePower = localStorage.getItem('liftTubePower');
-    let priceLiftTubeSize = localStorage.getItem('priceLiftTubeSize');
-    let priceLiftTubePower = localStorage.getItem('priceLiftTubePower');
+    
+    // let maxLiftingCapacity = localStorage.getItem('maxLiftingCapacity');
+    
+    // let liftTubePower = localStorage.getItem('liftTubePower');
+    // let priceLiftTubeSize = localStorage.getItem('priceLiftTubeSize');
+    // let priceLiftTubePower = localStorage.getItem('priceLiftTubePower');
 
     let _scenename = "";
     let _pump_group = "";

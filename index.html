@@ -235,6 +235,14 @@
     <script src="assets/js/sceneloader.js"></script>
     
     <script type="module">
+
+    
+
+
+
+
+// ----------------------------Bắt đầu 3D--------------------------------
+       
         import * as THREE from 'three'
         import { OrbitControls } from '/jsm/controls/OrbitControls.js'
         import { FBXLoader } from '/jsm/loaders/FBXLoader.js'
@@ -245,27 +253,22 @@
         var renderer;
         var camera;
 
-        function _loadFBX(filename, x, y, z, rot, clr, metal, rough ) {
-            const material = new THREE.MeshStandardMaterial({
-                color: clr, // Màu xám kim loại
-                metalness: metal,  // Độ bóng
-                roughness: rough    // Độ nhám
-            })
-
+        function _loadFBX(scenename, o) {
+            const filename = _fullname(scenename)
             const fbxLoader = new FBXLoader()
             fbxLoader.load(
                 filename,
                 (object) => {
                     object.traverse(function (child) {
                         if (child.isMesh) {
-                            child.material = material
+                            // child.material = material
                             if (child.material) {
                                 child.material.transparent = false
                             }
                         }
                     })
-                    object.position.set(x, y, z)
-                    object.rotation.y = Math.PI / 180 * rot;
+                    object.position.set(o.x, o.z, o.y)
+                    object.rotation.y = Math.PI / 180 * o.rot;
                     scene.add(object)
                     progressBar.style.display = 'none'
                 },
@@ -281,10 +284,11 @@
                 }
             )
         }
+
         function init() {
             scene.add(new THREE.AxesHelper(5))
             
-            const light = new THREE.PointLight(0xffffff, 5)
+            const light = new THREE.PointLight(0xffffff, 1)
             light.position.set(2000,2000,2000)
             scene.add(light)
             
@@ -297,7 +301,7 @@
             const w = window.innerWidth;
             const h = window.innerHeight;
 
-            camera = new THREE.PerspectiveCamera(75, w/h , 0.1, 10000)
+            camera = new THREE.PerspectiveCamera(75, w/h , 0.1, 100000)
             camera.position.set(1200, 1000, 7000)
 
             renderer = new THREE.WebGLRenderer()
@@ -309,45 +313,119 @@
             controls = new OrbitControls(camera, renderer.domElement)
             controls.enableDamping = true
             controls.target.set(1200, 1000, 0)
+
+
         };
 
         function _fullname(s) {
             return 'models/aardwolf_all_part_' + s + '.fbx';
         }
 
-        function _loadScene(tube=100)
+        function __extract_point3(inputString)
         {
-            const sceneloader = new SceneLoader ('MOBILE', 2.5);
-            const scenename = sceneloader.load_Crane();
-            
-            console.log('fbx:', scenename);
+            const p1Match = inputString.match(/p1_(-?\d+)_(-?\d+)_(-?\d+)/);
+            const p2Match = inputString.match(/p2_(-?\d+)_(-?\d+)_(-?\d+)/);
 
-            if(scenename)
-            {
-                const obj = ALL_SCENES.find(item => item.name.toUpperCase() === scenename.toUpperCase());
-                console.log(obj);
-                if(obj)
-                {
-                    //--------------LOAD CRANE--------------------------
-                    _loadFBX(_fullname(obj.name), 0, 0, 0, 0, 0x555555, 1, 0.5);
-
-                    obj.objects.forEach( o => {
-                        
-                        if(o.filename == '#tube')
-                        {
-                            _loadFBX(_fullname('TUBE LIFT ID ' + tube.toString()), o.x, o.y, o.z, o.rot, o.clr, o.metal, o.rough);
-
-                        }else{
-                            _loadFBX(_fullname(o.filename), o.x, o.y, o.z, o.rot, o.clr, o.metal, o.rough);
-                        }
-                        
-                    });
-                }
+            let p1, p2;
+            if (p1Match && p2Match) {
+                // Lấy tọa độ của p1 và p2
+                p1 = { x: parseFloat(p1Match[1]), y: parseFloat(p1Match[2]), z: parseFloat(p1Match[3]) };
+                p2 = { x: parseFloat(p2Match[1]), y: parseFloat(p2Match[2]), z: parseFloat(p2Match[3]) };
             }
-            
+
+            return [p1, p2]
         }
+
+        function clearScene(scene) {
+            // Tạo bản sao của scene.children để tránh ảnh hưởng khi xóa các đối tượng
+            const objects = [...scene.children];
+
+            objects.forEach((object) => {
+                // Kiểm tra nếu đối tượng không phải là ánh sáng
+                if (!object.isLight) {
+                    scene.remove(object);
+
+                    // Giải phóng bộ nhớ nếu có geometry và material
+                    if (object.geometry) object.geometry.dispose();
+                    if (object.material) {
+                        if (Array.isArray(object.material)) {
+                            object.material.forEach((material) => material.dispose());
+                        } else {
+                            object.material.dispose();
+                        }
+                    }
+                }
+            });
+        }
+
+        // Sử dụng hàm
+        
+
+        function _load_a_Scene()
+        {
+            clearScene(scene);
+            let ar = select_crane();
+            let scenename = ar[0];
+
+            var ls = __extract_point3(scenename);
+            console.log(ls,_fullname(scenename));
+
+            const p1 = ls[0], p2 = ls[1];
+
+            
+            _loadFBX(scenename, {x:0, y:0, z:0, rot:0});
+            _loadFBX(ar[1], {x:p1.x, y:0, z:p1.z, rot:0});
+            _loadFBX(ar[2], {x:p2.x, y:p2.y, z:p2.z, rot:0});
+            _loadFBX(ar[3], {x:p2.x - tube_offset, y:p2.y, z:p2.z - tube_height, rot:0});
+            _loadFBX(ar[4], {x:p2.x - tube_offset, y:p2.y, z:p2.z - tube_height, rot:0});
+        }
+
+
         init();
-        _loadScene(180);
+        // _load_a_Scene(ALL_SCENES[7]);
+
+
+        // ---------------------Kết thúc 3D---------------------------
+
+            // -----------Code của B : chọn radio type-------------------//
+
+            function handleRadioChange(name, getValueCallback) {
+                document.querySelectorAll(`input[name="${name}"]`).forEach((radio) => {
+                    radio.addEventListener('change', function () {
+                        const value = getValueCallback(this);
+                        localStorage.setItem(name, value);
+                        _load_a_Scene();
+                    });
+                });
+            }
+
+            // Đảm bảo mọi radio sẽ được xử lý
+            handleRadioChange('craneType', (radio) => radio.id);
+            handleRadioChange('jibLength', (radio) => {
+                const numbers = radio.id.match(/\d+/g); // Tìm tất cả các số trong chuỗi
+                return numbers ? numbers.map(Number)[0] : null; // Chuyển các chuỗi số thành số và trả về mảng số
+            });
+            handleRadioChange('loadType', (radio) => radio.id);
+            handleRadioChange('workLoadLimit', () => {
+                // Đối với workLoadLimit, bạn không cần phải lưu giá trị nào từ radio, chỉ cần load lại scene.
+                return null; 
+            });
+
+    // -----------Code của B-------------------//
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         function onWindowResize() {
             camera.aspect = window.innerWidth / window.innerHeight
             camera.updateProjectionMatrix()
@@ -358,12 +436,12 @@
         
         const stats = new Stats()
         
-        window.addEventListener('click', () => {
-            const cameraPosition = camera.position;
-            const cameraInfoDiv = document.getElementById('cameraInfo');
-            cameraInfoDiv.innerHTML = `Camera Position: x: ${cameraPosition.x.toFixed(2)}, y: ${cameraPosition.y.toFixed(2)}, z: ${cameraPosition.z.toFixed(2)}`;
-            cameraInfoDiv.style.display = 'block'; // Hiển thị thông tin camera
-        });
+        // window.addEventListener('click', () => {
+        //     const cameraPosition = camera.position;
+        //     const cameraInfoDiv = document.getElementById('cameraInfo');
+        //     cameraInfoDiv.innerHTML = `Camera Position: x: ${cameraPosition.x.toFixed(2)}, y: ${cameraPosition.y.toFixed(2)}, z: ${cameraPosition.z.toFixed(2)}`;
+        //     cameraInfoDiv.style.display = 'block'; // Hiển thị thông tin camera
+        // });
         function animate() {
             requestAnimationFrame(animate)
 
@@ -512,7 +590,11 @@
 </script>
 
 <script>
+
+
+
     document.querySelectorAll('input[name="workLoadLimit"]').forEach((radio) => {
+        
         radio.addEventListener('change', function () {
             let maxLiftingCapacity;
             let liftTubeSize;
@@ -527,6 +609,7 @@
                     liftTubePower = '3.3/3.8kw';
                     priceLiftTubeSize = 356;
                     priceLiftTubePower = 2.743;
+
                     break;
                 case '70kg':
                     maxLiftingCapacity = '70kg';

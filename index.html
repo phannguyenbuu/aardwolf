@@ -262,7 +262,7 @@
 
 
 
-// ----------------------------Bắt đầu 3D--------------------------------
+    // ----------------------------Bắt đầu 3D--------------------------------
        
         import * as THREE from 'three'
         import { OrbitControls } from '/jsm/controls/OrbitControls.js'
@@ -323,7 +323,7 @@
             const h = window.innerHeight;
 
             camera = new THREE.PerspectiveCamera(75, w/h , 0.1, 100000)
-            camera.position.set(1200, 1000, 7000)
+            camera.position.set(1200, 1500, 7000)
 
             renderer = new THREE.WebGLRenderer()
             renderer.setSize(w, h)
@@ -335,7 +335,7 @@
             controls.minDistance = 0; // Giới hạn zoom gần nhất
             controls.maxDistance = 10000; // Giới hạn zoom xa nhất
             controls.enableDamping = true
-            controls.target.set(1200, 1000, 0)
+            controls.target.set(1200, 1500, 0)
 
 
         };

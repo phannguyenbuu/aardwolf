@@ -23,21 +23,22 @@
     <style>
         #threejs-container {
             position:absolute;
-            top: 20.2vh;
+            top: 15vh;
             left: 51vw;
             border-radius: 10px;
             overflow: hidden;
             z-index: 999;
             width: 35%;
-            height: 100vh;
+            height: 77vh;
             display: flex;               /* Bật Flexbox */
             justify-content: center;     /* Căn giữa theo chiều ngang */
             align-items: center;         /* Căn giữa theo chiều dọc */
         }
+
         @media screen and (max-width:768px) {
             #threejs-container {
                 display: none;
-                width: 80vw;
+                width: 100vw;
                 top: 17.2vh;
                 left: -4vw;
                 height: 100%;
@@ -52,6 +53,25 @@
                 top: 5%;
             }
         }
+        
+        @media screen and (min-width: 1024px) and (max-width:1600px){
+            #threejs-container {
+                width: 35%;
+                top: 17.5vh;
+                left: 51vw;
+                height: 89%;
+            }
+
+            #viewport-buttons {
+                margin-left: 83vw;
+                margin-top: -5vh;
+            }
+
+            .image-3d {
+                top: 5%;
+            }
+        }
+
     </style>
 </head>
 
@@ -210,14 +230,14 @@
         </a>
         <div id="viewport-buttons" class="d-flex">
             <!-- <img style="width: 85%;" class="h-100" src="assets/images/image-1.png" alt=""> -->
-            <div  class="d-flex flex-column icon-3d">
-                <img style="width: 40px;" src="assets/images/Icon (7).png" alt="">
-                <img style="width: 40px;" src="assets/images/Icon (1).png" alt="">
-                <img style="width: 40px;" src="assets/images/Icon (2).png" alt="">
-                <img style="width: 40px;" src="assets/images/Icon (3).png" alt="">
-                <img style="width: 40px;" src="assets/images/Icon (4).png" alt="">
-                <img style="width: 40px;" src="assets/images/Icon (5).png" alt="">
-                <img style="width: 40px;" src="assets/images/Icon (6).png" alt="">
+            <div class="d-flex flex-column icon-3d">
+                <img id='bottom-view' style="width: 40px;" src="assets/images/Icon (7).png" alt="">
+                <img id='front-view' style="width: 40px;" src="assets/images/Icon (1).png" alt="">
+                <img id='left-view' style="width: 40px;" src="assets/images/Icon (2).png" alt="">
+                <img id='right-view' style="width: 40px;" src="assets/images/Icon (3).png" alt="">
+                <img id='top-view' style="width: 40px;" src="assets/images/Icon (4).png" alt="">
+                <img id='ortho-view' style="width: 40px;" src="assets/images/Icon (5).png" alt="">
+                <img id='360' style="width: 40px;" src="assets/images/Icon (6).png" alt="">
             </div>
         </div>
     </div>
@@ -232,153 +252,9 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
     <script src="assets/js/data.js"></script>
-    <script src="assets/js/sceneloader.js"></script>
-    
+    <script type="module" src="assets/js/sceneloader.js"></script>
+        
     <script type="module">
-        import * as THREE from 'three'
-        import { OrbitControls } from '/jsm/controls/OrbitControls.js'
-        import { FBXLoader } from '/jsm/loaders/FBXLoader.js'
-        import Stats from '/jsm/libs/stats.module.js'
-
-        const scene = new THREE.Scene();
-        var controls;
-        var renderer;
-        var camera;
-
-        function _loadFBX(filename, x, y, z, rot, clr, metal, rough ) {
-            const material = new THREE.MeshStandardMaterial({
-                color: clr, // Màu xám kim loại
-                metalness: metal,  // Độ bóng
-                roughness: rough    // Độ nhám
-            })
-
-            const fbxLoader = new FBXLoader()
-            fbxLoader.load(
-                filename,
-                (object) => {
-                    object.traverse(function (child) {
-                        if (child.isMesh) {
-                            child.material = material
-                            if (child.material) {
-                                child.material.transparent = false
-                            }
-                        }
-                    })
-                    object.position.set(x, y, z)
-                    object.rotation.y = Math.PI / 180 * rot;
-                    scene.add(object)
-                    progressBar.style.display = 'none'
-                },
-                (xhr) => {
-                    if (xhr.lengthComputable) {
-                        var percentComplete = (xhr.loaded / xhr.total) * 100
-                        progressBar.value = percentComplete
-                        progressBar.style.display = 'block'
-                    }
-                },
-                (error) => {
-                    console.log(error)
-                }
-            )
-        }
-        function init() {
-            scene.add(new THREE.AxesHelper(5))
-            
-            const light = new THREE.PointLight(0xffffff, 5)
-            light.position.set(2000,2000,2000)
-            scene.add(light)
-            
-            const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-            directionalLight.position.set(-500, 500, 500).normalize(); // Vị trí của ánh sáng
-            scene.add(directionalLight);
-
-            const ambientLight = new THREE.AmbientLight(0x404040); // Ánh sáng mềm
-            scene.add(ambientLight);
-            const w = window.innerWidth;
-            const h = window.innerHeight;
-
-            camera = new THREE.PerspectiveCamera(75, w/h , 0.1, 10000)
-            camera.position.set(1200, 1000, 7000)
-
-            renderer = new THREE.WebGLRenderer()
-            renderer.setSize(w, h)
-            renderer.setClearColor(0xd1d2d3); // Thiết lập màu nền xám
-
-            const container = document.getElementById('threejs-container');
-            container.appendChild(renderer.domElement);
-            controls = new OrbitControls(camera, renderer.domElement)
-            controls.enableDamping = true
-            controls.target.set(1200, 1000, 0)
-        };
-
-        function _fullname(s) {
-            return 'models/aardwolf_all_part_' + s + '.fbx';
-        }
-
-        function _loadScene(tube=100)
-        {
-            const sceneloader = new SceneLoader ('MOBILE', 2.5);
-            const scenename = sceneloader.load_Crane();
-            
-            console.log('fbx:', scenename);
-
-            if(scenename)
-            {
-                const obj = ALL_SCENES.find(item => item.name.toUpperCase() === scenename.toUpperCase());
-                console.log(obj);
-                if(obj)
-                {
-                    //--------------LOAD CRANE--------------------------
-                    _loadFBX(_fullname(obj.name), 0, 0, 0, 0, 0x555555, 1, 0.5);
-
-                    obj.objects.forEach( o => {
-                        
-                        if(o.filename == '#tube')
-                        {
-                            _loadFBX(_fullname('TUBE LIFT ID ' + tube.toString()), o.x, o.y, o.z, o.rot, o.clr, o.metal, o.rough);
-
-                        }else{
-                            _loadFBX(_fullname(o.filename), o.x, o.y, o.z, o.rot, o.clr, o.metal, o.rough);
-                        }
-                        
-                    });
-                }
-            }
-            
-        }
-        init();
-        _loadScene(180);
-        function onWindowResize() {
-            camera.aspect = window.innerWidth / window.innerHeight
-            camera.updateProjectionMatrix()
-            renderer.setSize(window.innerWidth, window.innerHeight)
-            render()
-        }
-        window.addEventListener('resize', onWindowResize, false)
-        
-        const stats = new Stats()
-        
-        window.addEventListener('click', () => {
-            const cameraPosition = camera.position;
-            const cameraInfoDiv = document.getElementById('cameraInfo');
-            cameraInfoDiv.innerHTML = `Camera Position: x: ${cameraPosition.x.toFixed(2)}, y: ${cameraPosition.y.toFixed(2)}, z: ${cameraPosition.z.toFixed(2)}`;
-            cameraInfoDiv.style.display = 'block'; // Hiển thị thông tin camera
-        });
-        function animate() {
-            requestAnimationFrame(animate)
-
-            if(controls)
-                controls.update()
-
-            render()
-
-            stats.update()
-        }
-        function render() {
-            if(renderer)
-                renderer.render(scene, camera)
-        }
-        animate()
         $(document).ready(function() {
             $('.action-mobile').on('click', function() {
                 $('.menu-mobile').addClass('active');
@@ -505,7 +381,24 @@
     </script>
 
 <script>
+    init_params();
+    
+    function init_params() {
+        var selectedOption = document.querySelector('input[name="loadType"]:checked');
+        localStorage.setItem('loadType', selectedOption ? selectedOption.id : "300max");
+
+        selectedOption = document.querySelector('input[name="jibLength"]:checked');
+        localStorage.setItem('jibLength', selectedOption ? selectedOption.id.match(/\d+/g).map(Number)[0] : 2.5);
+
+        selectedOption = document.querySelector('input[name="craneType"]:checked');
+        localStorage.setItem('craneType', selectedOption ? selectedOption.id : "floor");
+    }
+
     document.getElementById("quoteButton").addEventListener("click", function (e) {
+        init_params();
+        
+
+
         // Kiểm tra tất cả các câu hỏi
         const requiredFields = [
             'craneType',
@@ -528,10 +421,11 @@
             alert("Vui lòng chọn đủ tất cả các mục trước khi tiếp tục.");
         }
     });
-</script>
+  
 
-<script>
+
     document.querySelectorAll('input[name="workLoadLimit"]').forEach((radio) => {
+        
         radio.addEventListener('change', function () {
             let maxLiftingCapacity;
             let liftTubeSize;
@@ -546,6 +440,7 @@
                     liftTubePower = '3.3/3.8kw';
                     priceLiftTubeSize = 356;
                     priceLiftTubePower = 2.743;
+
                     break;
                 case '70kg':
                     maxLiftingCapacity = '70kg';

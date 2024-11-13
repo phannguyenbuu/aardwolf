@@ -163,23 +163,23 @@
                         <div class="row content__left-list-answer">
                             <div class="col-lg-6 col-md-6 col-12 content__left-list-answer--item">
                                 <input type="radio" name="workLoadLimit" id="45kg">
-                                <label for="45kg">WLL 45 kgs</label>
+                                <label for="45kg">WLL <span class="workLoadLimit-45">45 kgs</span></label>
                             </div>
                             <div class="col-lg-6 col-md-6 col-12 content__left-list-answer--item">
                                 <input type="radio" name="workLoadLimit" id="70kg">
-                                <label for="70kg">WLL 70 kgs</label>
+                                <label for="70kg">WLL <span class="workLoadLimit-70">70 kgs</span></label>
                             </div>
                             <div class="col-lg-6 col-md-6 col-12 content__left-list-answer--item">
                                 <input type="radio" name="workLoadLimit" id="80kg">
-                                <label for="80kg">WLL 80 kgs</label>
+                                <label for="80kg">WLL <span class="workLoadLimit-80">80 kgs</span></label>
                             </div>
                             <div class="col-lg-6 col-md-6 col-12 content__left-list-answer--item">
                                 <input type="radio" name="workLoadLimit" id="120kg">
-                                <label for="120kg">WLL 120 kgs</label>
+                                <label for="120kg">WLL <span class="workLoadLimit-120">120 kgs</span></label>
                             </div>
                             <div class="col-lg-6 col-md-6 col-12 content__left-list-answer--item">
                                 <input type="radio" name="workLoadLimit" id="150kg">
-                                <label for="150kg">WLL 150 kgs</label>
+                                <label for="150kg">WLL <span class="workLoadLimit-150">150 kgs</span></label>
                             </div>
                         </div>
                     </div>
@@ -191,20 +191,20 @@
                                 <label for="300max">small cartons (300x300 max)</label>
                             </div>
                             <div class="col-lg-6 col-md-6 col-12 content__left-list-answer--item">
-                                <input type="radio" name="loadType" id="300-400medium">
-                                <label for="300-400medium">medium cartons (300 to 400)</label>
+                                <input type="radio" name="loadType" id="bags">
+                                <label for="bags">Bags</label>
                             </div>
                             <div class="col-lg-6 col-md-6 col-12 content__left-list-answer--item">
-                                <input type="radio" name="loadType" id="400large">
-                                <label for="400large">Large cartons (above 400)</label>
+                                <input type="radio" name="loadType" id="300-400medium">
+                                <label for="300-400medium">medium cartons (300 to 400)</label>
                             </div>
                             <div class="col-lg-6 col-md-6 col-12 content__left-list-answer--item">
                                 <input type="radio" name="loadType" id="highstack">
                                 <label for="highstack">High stack</label>
                             </div>
                             <div class="col-lg-6 col-md-6 col-12 content__left-list-answer--item">
-                                <input type="radio" name="loadType" id="bags">
-                                <label for="bags">Bags</label>
+                                <input type="radio" name="loadType" id="400large">
+                                <label for="400large">Large cartons (above 400)</label>
                             </div>
                             <div class="col-lg-6 col-md-6 col-12 content__left-list-answer--item">
                                 <input type="radio" name="loadType" id="sheetmaterial">
@@ -342,11 +342,21 @@
                 $('#jib-length-3').text('118.11');
                 $('#jib-length-4').text('157.48');
                 $('#jib-length-5').text('196.85');
+                $('.workLoadLimit-45').text('99.21 lbs');
+                $('.workLoadLimit-70').text('154.32 lbs');
+                $('.workLoadLimit-80').text('176.37 lbs');
+                $('.workLoadLimit-120').text('264.55 lbs');
+                $('.workLoadLimit-150').text('330.69 lbs');
             }else{
                 $('#jib-length-25').text('2.5');
                 $('#jib-length-3').text('3');
                 $('#jib-length-4').text('4');
                 $('#jib-length-5').text('5');
+                $('.workLoadLimit-45').text('45 kgs');
+                $('.workLoadLimit-70').text('70 kgs');
+                $('.workLoadLimit-80').text('80 kgs');
+                $('.workLoadLimit-120').text('120 kgs');
+                $('.workLoadLimit-150').text('150 kgs');
             }
             localStorage.setItem('selectedUnit', selectedUnit);
         });
@@ -418,7 +428,7 @@
         if (allSelected) {
             window.location.href = "page2.html";
         } else {
-            alert("Vui lòng chọn đủ tất cả các mục trước khi tiếp tục.");
+            alert("Please select all items before continuing.");
         }
     });
   

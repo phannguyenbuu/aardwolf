@@ -149,10 +149,7 @@
                         </div>
                     </div>
                     <div class="row content__left--content--item m-0">
-                        <div class="col-lg-12 col-md-12 col-12 content__left--content--item-3">Installation height</div>
-                    </div>
-                    <div class="row content__left--content--item m-0">
-                        <div class="col-lg-6 col-md-6 col-6 content__left--content--item-1">2.5m lift tube</div>
+                        <div class="col-lg-6 col-md-6 col-6 content__left--content--item-1">Installation height</div>
                         <div class="col-lg-6 col-md-6 col-6 content__left--content--item-2 d-flex align-items-center">
                             <span>2.9m</span>
                         </div>
@@ -262,11 +259,11 @@
                                 <span>1.7m</span>
                             </div>
                         </div>
-                        <div class="row content__left--content--item m-0">
+                        <!-- <div class="row content__left--content--item m-0">
                             <div class="col-lg-12 col-md-12 col-12 content__left--content--item-3">Installation height</div>
-                        </div>
+                        </div> -->
                         <div class="row content__left--content--item m-0">
-                            <div class="col-lg-6 col-md-6 col-6 content__left--content--item-1">2.5m lift tube</div>
+                            <div class="col-lg-6 col-md-6 col-6 content__left--content--item-1">Installation height</div>
                             <div class="col-lg-6 col-md-6 col-6 content__left--content--item-2 d-flex align-items-center">
                                 <span>2.9m</span>
                             </div>
@@ -415,8 +412,8 @@
     const priceLiftTubePower = localStorage.getItem('priceLiftTubePower');
 
     const totalPrice = parseFloat(priceLiftTubeSize) + parseFloat(priceLiftTubePower);
-    document.getElementById('totalPrice').textContent = totalPrice.toFixed(2)+"US$";
-    document.getElementById('totalPrice2').textContent = totalPrice.toFixed(2)+"US$";
+    document.getElementById('totalPrice').textContent = totalPrice.toFixed(2)+"$";
+    document.getElementById('totalPrice2').textContent = totalPrice.toFixed(2)+"$";
 
     
     if (maxLiftingCapacity) {

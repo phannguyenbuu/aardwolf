@@ -185,7 +185,7 @@
                     </div>
                     <div class="content__left-list--item">
                         <p>4. What type of load are you lifting?</p>
-                        <div class="row content__left-list-answer">
+                        <div class="row content__left-list-answer" id="loadTypeList">
                             <div class="col-lg-6 col-md-6 col-12 content__left-list-answer--item">
                                 <input type="radio" name="loadType" id="300max">
                                 <label for="300max">small cartons (300x300 max)</label>
@@ -211,6 +211,7 @@
                                 <label for="sheetmaterial">Sheet material</label>
                             </div>
                         </div>
+                        
                     </div>
                 </div>
             </div>
@@ -316,9 +317,9 @@
                 if (isWallMountedCrane) {
                     $jibOptions.eq(0).find('input[type="radio"]').prop('disabled', true);
                 }
-                if (isFiveMeterSelected) {
-                    $wllOptions.eq(4).find('input[type="radio"]').prop('disabled', true);
-                }
+                // if (isFiveMeterSelected) {
+                //     $wllOptions.eq(4).find('input[type="radio"]').prop('disabled', true);
+                // }
             }
         }
 
@@ -392,6 +393,28 @@
 
 <script>
     init_params();
+
+    function reorderItems() {
+    const container = document.getElementById('loadTypeList');
+    const items = Array.from(container.children);
+
+    // Clear existing order
+    container.innerHTML = '';
+
+    if (window.innerWidth < 768) {
+        // Mobile order
+        const mobileOrder = [0, 2, 4, 1, 3, 5];
+        mobileOrder.forEach(index => container.appendChild(items[index]));
+    } else {
+        // Desktop order (default order from the original HTML)
+        items.forEach(item => container.appendChild(item));
+    }
+}
+
+// Run the function on load and resize
+window.addEventListener('load', reorderItems);
+window.addEventListener('resize', reorderItems);
+
     
     function init_params() {
         var selectedOption = document.querySelector('input[name="loadType"]:checked');

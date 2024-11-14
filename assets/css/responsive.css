@@ -61,6 +61,13 @@
         width: 100%;
     }
 
+    .content__left-list-answer {
+        flex-direction: column;
+    }
+    .content__left-list-answer--item {
+        width: 100%; /* Full width on smaller screens */
+    }
+    
     .content__action a {
         margin: 5px 0px;
         padding: 10px 0px;

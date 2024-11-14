@@ -408,12 +408,12 @@
     const liftTubeSize = localStorage.getItem('liftTubeSize');
     const liftTubePower = localStorage.getItem('liftTubePower');
 
-    const priceLiftTubeSize = localStorage.getItem('priceLiftTubeSize');
+    const priceLiftTubeSize = localStorage.getItem('priceLiftTubeSize') / 1000;
     const priceLiftTubePower = localStorage.getItem('priceLiftTubePower');
 
-    const totalPrice = parseFloat(priceLiftTubeSize) + parseFloat(priceLiftTubePower);
-    document.getElementById('totalPrice').textContent = totalPrice.toFixed(2)+"$";
-    document.getElementById('totalPrice2').textContent = totalPrice.toFixed(2)+"$";
+    const totalPrice = priceLiftTubeSize + parseFloat(priceLiftTubePower);
+    document.getElementById('totalPrice').textContent = totalPrice.toFixed(3)+"$";
+    document.getElementById('totalPrice2').textContent = totalPrice.toFixed(3)+"$";
 
     
     if (maxLiftingCapacity) {

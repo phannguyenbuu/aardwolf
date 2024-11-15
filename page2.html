@@ -442,35 +442,42 @@
         const doc = new jsPDF();
         const elementHTML = document.getElementById('content-page3');
 
+        // Temporarily make the content visible for capturing
         elementHTML.style.visibility = 'visible';
         elementHTML.style.position = 'static';
 
+        // Capture the content as a canvas
         const canvas = await html2canvas(elementHTML);
         const imgData = canvas.toDataURL('image/png');
-        
+
+        // Define dimensions
         const imgWidth = 190;
         const pageHeight = 295;
         const imgHeight = canvas.height * imgWidth / canvas.width;
-        let heightLeft = imgHeight;
+
         let position = 0;
+        let remainingHeight = imgHeight;
 
+        // Add image to PDF
         doc.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
+        remainingHeight -= pageHeight;
 
-        while (heightLeft >= 0) {
-            position = heightLeft - imgHeight;
+        // Loop for additional pages without whitespace
+        while (remainingHeight > 0) {
+            position = remainingHeight - imgHeight;
             doc.addPage();
             doc.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
-            heightLeft -= pageHeight;
+            remainingHeight -= pageHeight;
         }
 
-        // Tải xuống PDF
+        // Download the PDF
         doc.save('document.pdf');
 
-        // Restore the original styles after PDF is generated
+        // Restore the original styles
         elementHTML.style.visibility = 'hidden';
         elementHTML.style.position = 'absolute';
     }
 </script>
+
 
 </html>

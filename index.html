@@ -162,27 +162,28 @@
                         <p>3. What work load limit do you require?</p>
                         <div class="row content__left-list-answer">
                             <div class="col-lg-6 col-md-6 col-12 content__left-list-answer--item">
-                                <input type="radio" name="workLoadLimit" id="45kg">
+                                <input type="radio" name="workLoadLimit" id="45kg" data-max-lifting-capacity-m="45 kgs" data-max-lifting-capacity-inch="99.21 lbs">
                                 <label for="45kg">WLL <span class="workLoadLimit-45">45 kgs</span></label>
                             </div>
                             <div class="col-lg-6 col-md-6 col-12 content__left-list-answer--item">
-                                <input type="radio" name="workLoadLimit" id="70kg">
+                                <input type="radio" name="workLoadLimit" id="70kg" data-max-lifting-capacity-m="70 kgs" data-max-lifting-capacity-inch="154.32 lbs">
                                 <label for="70kg">WLL <span class="workLoadLimit-70">70 kgs</span></label>
                             </div>
                             <div class="col-lg-6 col-md-6 col-12 content__left-list-answer--item">
-                                <input type="radio" name="workLoadLimit" id="80kg">
+                                <input type="radio" name="workLoadLimit" id="80kg" data-max-lifting-capacity-m="80 kgs" data-max-lifting-capacity-inch="176.37 lbs">
                                 <label for="80kg">WLL <span class="workLoadLimit-80">80 kgs</span></label>
                             </div>
                             <div class="col-lg-6 col-md-6 col-12 content__left-list-answer--item">
-                                <input type="radio" name="workLoadLimit" id="120kg">
+                                <input type="radio" name="workLoadLimit" id="120kg" data-max-lifting-capacity-m="120 kgs" data-max-lifting-capacity-inch="264.55 lbs">
                                 <label for="120kg">WLL <span class="workLoadLimit-120">120 kgs</span></label>
                             </div>
                             <div class="col-lg-6 col-md-6 col-12 content__left-list-answer--item">
-                                <input type="radio" name="workLoadLimit" id="150kg">
+                                <input type="radio" name="workLoadLimit" id="150kg" data-max-lifting-capacity-m="150 kgs" data-max-lifting-capacity-inch="330.69 lbs">
                                 <label for="150kg">WLL <span class="workLoadLimit-150">150 kgs</span></label>
                             </div>
                         </div>
                     </div>
+                    
                     <div class="content__left-list--item">
                         <p>4. What type of load are you lifting?</p>
                         <div class="row content__left-list-answer" id="loadTypeList">
@@ -334,33 +335,29 @@
             toggleOptions();
         });
 
-        $('#unitSelect').change(function() {
-            const selectedUnit = $(this).val();
-            $('.unit-label').text(selectedUnit);
+        $('#unitSelect').change(function () {
+    const selectedUnit = $(this).val();
+    $('.unit-label').text(selectedUnit);
 
-            if(selectedUnit === 'Inch') {
-                $('#jib-length-25').text('98.43');
-                $('#jib-length-3').text('118.11');
-                $('#jib-length-4').text('157.48');
-                $('#jib-length-5').text('196.85');
-                $('.workLoadLimit-45').text('99.21 lbs');
-                $('.workLoadLimit-70').text('154.32 lbs');
-                $('.workLoadLimit-80').text('176.37 lbs');
-                $('.workLoadLimit-120').text('264.55 lbs');
-                $('.workLoadLimit-150').text('330.69 lbs');
-            }else{
-                $('#jib-length-25').text('2.5');
-                $('#jib-length-3').text('3');
-                $('#jib-length-4').text('4');
-                $('#jib-length-5').text('5');
-                $('.workLoadLimit-45').text('45 kgs');
-                $('.workLoadLimit-70').text('70 kgs');
-                $('.workLoadLimit-80').text('80 kgs');
-                $('.workLoadLimit-120').text('120 kgs');
-                $('.workLoadLimit-150').text('150 kgs');
-            }
-            localStorage.setItem('selectedUnit', selectedUnit);
-        });
+    const workLoadLimits = {
+        Inch: ['99.21 lbs', '154.32 lbs', '176.37 lbs', '264.55 lbs', '330.69 lbs'],
+        m: ['45 kgs', '70 kgs', '80 kgs', '120 kgs', '150 kgs']
+    };
+
+    // Cập nhật Work Load Limit hiển thị
+    workLoadLimits[selectedUnit].forEach((value, index) => {
+        $(`.workLoadLimit-${[45, 70, 80, 120, 150][index]}`).text(value);
+    });
+
+    // Lưu lại đơn vị được chọn
+    localStorage.setItem('selectedUnit', selectedUnit);
+
+    // Cập nhật giá trị đã chọn dựa trên đơn vị mới
+    const selectedRadio = document.querySelector('input[name="workLoadLimit"]:checked');
+    if (selectedRadio) {
+        selectedRadio.dispatchEvent(new Event('change'));
+    }
+});
 
     const storedUnit = localStorage.getItem('selectedUnit');
     if (storedUnit) {
@@ -454,64 +451,46 @@ window.addEventListener('resize', reorderItems);
             alert("Please select all items before continuing.");
         }
     });
-  
-
-
     document.querySelectorAll('input[name="workLoadLimit"]').forEach((radio) => {
-        
-        radio.addEventListener('change', function () {
-            let maxLiftingCapacity;
-            let liftTubeSize;
-            let liftTubePower;
-            let priceLiftTubeSize;
-            let priceLiftTubePower;
+    radio.addEventListener('change', function () {
+        const selectedUnit = localStorage.getItem('selectedUnit') || 'm'; // Mặc định là 'm'
 
-            switch (this.id) {
-                case '45kg':
-                    maxLiftingCapacity = '45kg';
-                    liftTubeSize = '160';
-                    liftTubePower = '3.3/3.8kw';
-                    priceLiftTubeSize = 356;
-                    priceLiftTubePower = 2.743;
-
-                    break;
-                case '70kg':
-                    maxLiftingCapacity = '70kg';
-                    liftTubeSize = '160';
-                    liftTubePower = '4.0/4.6kw';
-                    priceLiftTubeSize = 356;
-                    priceLiftTubePower = 3.424;
-                    break;
-                case '80kg':
-                    maxLiftingCapacity = '80kg';
-                    liftTubeSize = '180';
-                    liftTubePower = '4.0/4.6kw';
-                    priceLiftTubeSize = 469;
-                    priceLiftTubePower = 3.424;
-                    break;
-                case '120kg':
-                    maxLiftingCapacity = '120kg';
-                    liftTubeSize = '200';
-                    liftTubePower = '5.7/6.6kw';
-                    priceLiftTubeSize = 328;
-                    priceLiftTubePower = 3.857;
-                    break;
-                case '150kg':
-                    maxLiftingCapacity = '150kg';
-                    liftTubeSize = '250';
-                    liftTubePower = '7.5/8.0kw';
-                    priceLiftTubeSize = 376;
-                    priceLiftTubePower = 5.033;
-                    break;
+        const data = {
+            '45kg': {
+                Inch: { maxLiftingCapacity: '99.21 lbs', liftTubeSize: '160', liftTubePower: '3.3/3.8kw', priceLiftTubeSize: 356, priceLiftTubePower: 2.743 },
+                m: { maxLiftingCapacity: '45kg', liftTubeSize: '160', liftTubePower: '3.3/3.8kw', priceLiftTubeSize: 356, priceLiftTubePower: 2.743 }
+            },
+            '70kg': {
+                Inch: { maxLiftingCapacity: '154.32 lbs', liftTubeSize: '160', liftTubePower: '4.0/4.6kw', priceLiftTubeSize: 356, priceLiftTubePower: 3.424 },
+                m: { maxLiftingCapacity: '70kg', liftTubeSize: '160', liftTubePower: '4.0/4.6kw', priceLiftTubeSize: 356, priceLiftTubePower: 3.424 }
+            },
+            '80kg': {
+                Inch: { maxLiftingCapacity: '176.37 lbs', liftTubeSize: '180', liftTubePower: '4.0/4.6kw', priceLiftTubeSize: 469, priceLiftTubePower: 3.424 },
+                m: { maxLiftingCapacity: '80kg', liftTubeSize: '180', liftTubePower: '4.0/4.6kw', priceLiftTubeSize: 469, priceLiftTubePower: 3.424 }
+            },
+            '120kg': {
+                Inch: { maxLiftingCapacity: '264.55 lbs', liftTubeSize: '200', liftTubePower: '5.7/6.6kw', priceLiftTubeSize: 328, priceLiftTubePower: 3.857 },
+                m: { maxLiftingCapacity: '120kg', liftTubeSize: '200', liftTubePower: '5.7/6.6kw', priceLiftTubeSize: 328, priceLiftTubePower: 3.857 }
+            },
+            '150kg': {
+                Inch: { maxLiftingCapacity: '330.69 lbs', liftTubeSize: '250', liftTubePower: '7.5/8.0kw', priceLiftTubeSize: 376, priceLiftTubePower: 5.033 },
+                m: { maxLiftingCapacity: '150kg', liftTubeSize: '250', liftTubePower: '7.5/8.0kw', priceLiftTubeSize: 376, priceLiftTubePower: 5.033 }
             }
+        };
 
-            localStorage.setItem('maxLiftingCapacity', maxLiftingCapacity);
-            localStorage.setItem('liftTubeSize', liftTubeSize);
-            localStorage.setItem('liftTubePower', liftTubePower);
-            localStorage.setItem('priceLiftTubeSize', priceLiftTubeSize);
-            localStorage.setItem('priceLiftTubePower', priceLiftTubePower);
-        });
+        // Lấy dữ liệu phù hợp với đơn vị
+        const selectedData = data[this.id][selectedUnit];
+
+        if (selectedData) {
+            // Lưu các giá trị tương ứng vào localStorage
+            localStorage.setItem('maxLiftingCapacity', selectedData.maxLiftingCapacity);
+            localStorage.setItem('liftTubeSize', selectedData.liftTubeSize);
+            localStorage.setItem('liftTubePower', selectedData.liftTubePower);
+            localStorage.setItem('priceLiftTubeSize', selectedData.priceLiftTubeSize);
+            localStorage.setItem('priceLiftTubePower', selectedData.priceLiftTubePower);
+        }
     });
+});
 </script>
 
 </body>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<style>polyline
+{fill:none;stroke:black;stroke-width:1}
+</style>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox = '-200 0 1000 1000'>
+  <polyline points="75.5605 14.8239,75.5195 1.80151,73.5166 -0.191895,-42.3184 0.191895,-44.3086 2.19849,-44.2676 15.1756"/>
+  <polyline points="202.393 69.4517,202.219 14.4521,-170.926 15.5474,-170.752 70.5469,202.393 69.4517"/>
+  <polyline points="-165.763 70.5322,-165.668 100.53,197.498 99.4683,197.402 69.4663"/>
+</svg>

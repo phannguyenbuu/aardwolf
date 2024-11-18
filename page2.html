@@ -13,6 +13,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
     <link rel="stylesheet" href="assets/css/responsive.css">
     <title>Vacuum Lifter</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+
     <script type="importmap">
         {
             "imports": {
@@ -564,34 +566,21 @@
 
 <script>
     async function generatePDF() {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
         const elementHTML = document.getElementById('content-page3');
 
-        elementHTML.style.visibility = 'visible';
-        elementHTML.style.position = 'static';
+        // Khởi tạo jsPDF
+        const { jsPDF } = window.jspdf || require("jspdf");
+        const doc = new jsPDF();
 
-        const canvas = await html2canvas(elementHTML);
-        const imgData = canvas.toDataURL('image/png');
-        
-        const imgWidth = 190;
-        const pageHeight = 295;
-        const imgHeight = canvas.height * imgWidth / canvas.width;
-        let heightLeft = imgHeight;
-        let position = 0;
-
-        doc.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
-
-        while (heightLeft >= 0) {
-            position = heightLeft - imgHeight;
-            doc.addPage();
-            doc.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
-            heightLeft -= pageHeight;
-        }
-
-        // Tải xuống PDF
-        doc.save('document.pdf');
+        // Sử dụng jsPDF's html() để xuất nội dung HTML thành PDF
+        doc.html(elementHTML, {
+        callback: function (doc) {
+            // Sau khi HTML được render vào PDF, bạn có thể lưu nó
+            doc.save("output.pdf");
+        },
+        x: 10, // Vị trí bắt đầu trên trục X
+        y: 10  // Vị trí bắt đầu trên trục Y
+        });
 
         // Restore the original styles after PDF is generated
         elementHTML.style.visibility = 'hidden';

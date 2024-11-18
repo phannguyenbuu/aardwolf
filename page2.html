@@ -91,27 +91,32 @@
                 <img src="assets/images/logo.png" alt="logo" class="logo">
     
                 <div class="action-desktop">
-                    <input type="text" placeholder="username">
-                    <input type="password" placeholder="password">
-                    <button class="action__password">login</button>
+                    <input type="text" class="username" placeholder="username">
+                    <input type="password" class="password" placeholder="password">
+                    <button class="action__password loginButton">Login</button>
+                    <p class="userInfo" style="display: none; margin: 0; color: #fff;">Welcome, <span class="userName"></span>!</p>
+                    <button class="logoutButton" style="display: none;">Đăng xuất</button>
                 </div>
+                
 
                 <div class="action-mobile cursor-pointer">
-                    <img src="assets/images/menu.png" alt="">
+                    <img class="menu-mobile-img" src="assets/images/menu.png" alt="">
+                    <p class="userInfo" style="display: none; margin: 0; color: #fff;">Welcome, <span class="userName"></span>!</p>
+                    <button class="logoutButton" style="display: none;">Đăng xuất</button>
                 </div>
 
                 <div class="menu-mobile">
                     <div class="closes"><img src="assets/images/close.png" alt=""></div>
-                    <form action="">
+                    <form action="#">
                         <div class="pb-4 d-flex flex-column">
-                            <input type="text" placeholder="username">
+                            <input type="text" class="username" placeholder="username">
                             <a href="">Sign up</a>
                         </div>
                         <div class="pb-4 d-flex flex-column">
-                            <input type="text" placeholder="password">
+                            <input type="password" class="password" placeholder="password">
                             <a href="">Forgot password</a>
                         </div>
-                        <button class="py-2">Login</button>
+                        <button class="py-2 action__password loginButton">Login</button>
                     </form>
                 </div>
             </div>
@@ -155,13 +160,13 @@
                     <div class="row content__left--content--item m-0">
                         <div class="col-lg-6 col-md-6 col-6 content__left--content--item-1">2.5m lift tube (standard)</div>
                         <div class="col-lg-6 col-md-6 col-6 content__left--content--item-2 d-flex align-items-center">
-                            <span>1.7m</span>
+                            <span id="liftTube17">1.7m</span>
                         </div>
                     </div>
                     <div class="row content__left--content--item m-0">
                         <div class="col-lg-6 col-md-6 col-6 content__left--content--item-1">Installation height</div>
                         <div class="col-lg-6 col-md-6 col-6 content__left--content--item-2 d-flex align-items-center">
-                            <span>2.9m</span>
+                            <span id="liftTube29">2.9m</span>
                         </div>
                     </div>
                     <div class="row content__left--content--item m-0">
@@ -174,7 +179,7 @@
 
                 <div class="content__left--price text-center py-4">
                     <span>Price:</span>
-                    <span id="totalPrice">0$</span>
+                    <span id="totalPrice"></span>
                 </div>
 
                 <div class="content__left-price--action text-center">
@@ -232,9 +237,12 @@
                     <div class="content__left-content-page3 py-4">
                         <p>Aardwolf Vacuum Tube Lifter</p>
                         <p>The above drawing is based on information provided by the buyer. The Aardwolf vacuum tube lifter is combined with a crane, vacuum generator, suction supply hose, lift tube, control unit and suction head.</p>
-                        <p>Lifting capacity: <span id="MaximumLiftingCapacity">??</span>. (As per customer’s request). The Aardwolf Vacuum Tube Lifter is a classic design typically suited for loads between 10 - <span id="maxRangeCapacity">???</span>.</p>
+                        <p>Lifting capacity: <span id="MaximumLiftingCapacity">??</span>. (As per customer’s request). The Aardwolf Vacuum Tube Lifter is a classic design typically suited for loads between <span id="minRangeCapacity">10</span> - <span id="maxRangeCapacity">???</span>.</p>
                     </div>
-    
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
                     <div class="content__left--description-page3">
                         <span>2</span>
                         <span>TECHNICAL DATA</span>
@@ -266,16 +274,13 @@
                         <div class="row content__left--content--item m-0">
                             <div class="col-lg-6 col-md-6 col-6 content__left--content--item-1">2.5m lift tube (standard)</div>
                             <div class="col-lg-6 col-md-6 col-6 content__left--content--item-2 d-flex align-items-center">
-                                <span>1.7m</span>
+                                <span id="liftTube172">1.7m</span>
                             </div>
                         </div>
-                        <!-- <div class="row content__left--content--item m-0">
-                            <div class="col-lg-12 col-md-12 col-12 content__left--content--item-3">Installation height</div>
-                        </div> -->
                         <div class="row content__left--content--item m-0">
                             <div class="col-lg-6 col-md-6 col-6 content__left--content--item-1">Installation height</div>
                             <div class="col-lg-6 col-md-6 col-6 content__left--content--item-2 d-flex align-items-center">
-                                <span>2.9m</span>
+                                <span id="liftTube292">2.9m</span>
                             </div>
                         </div>
                         <div class="row content__left--content--item m-0">
@@ -285,6 +290,8 @@
                             </div>
                         </div>
                     </div>
+                    <br/>
+                    <br/>
     
                     <div class="content__left-note pt-4">
                         <b>Note:</b>
@@ -293,7 +300,7 @@
     
                     <div class="content__left--price text-center py-4">
                         <span>Quotation:</span>
-                        <span id="totalPrice2">0$</span>
+                        <span id="totalPrice2"></span>
                     </div>
                 </div>
             </div>
@@ -322,7 +329,7 @@
             
 
 
-            $('.action-mobile').on('click', function() {
+            $('.action-mobile .menu-mobile-img').on('click', function() {
                 $('.menu-mobile').addClass('active');
             });
 
@@ -415,6 +422,9 @@
 
 <script>
     const maxLiftingCapacity = localStorage.getItem('maxLiftingCapacity');
+    const minLiftingCapacity = localStorage.getItem('minLiftingCapacity');
+    const liftTube17 = localStorage.getItem('liftTube17');
+    const liftTube29 = localStorage.getItem('liftTube29');
     const liftTubeSize = localStorage.getItem('liftTubeSize');
     const liftTubePower = localStorage.getItem('liftTubePower');
 
@@ -422,8 +432,17 @@
     const priceLiftTubePower = localStorage.getItem('priceLiftTubePower');
 
     const totalPrice = priceLiftTubeSize + parseFloat(priceLiftTubePower);
-    document.getElementById('totalPrice').textContent = totalPrice.toFixed(3)+"$";
-    document.getElementById('totalPrice2').textContent = totalPrice.toFixed(3)+"$";
+
+    // Định dạng số thành dấu phẩy
+    function formatPrice(value) {
+        return value.toFixed(3).replace('.', ',') + "$";
+    }
+
+    // Hiển thị giá đã định dạng
+    if(localStorage.getItem('username')){
+        document.getElementById('totalPrice').textContent = formatPrice(totalPrice);
+        document.getElementById('totalPrice2').textContent = formatPrice(totalPrice);
+    }
 
     
     if (maxLiftingCapacity) {
@@ -431,9 +450,22 @@
         document.getElementById('maxRangeCapacity').textContent = maxLiftingCapacity;
     }
 
+    document.getElementById('minRangeCapacity').textContent = minLiftingCapacity;
+
+    if(liftTube17){
+        document.getElementById('liftTube17').textContent = liftTube17;
+    }
+
+    if(liftTube29){
+        document.getElementById('liftTube29').textContent = liftTube29;
+    }
+
+
     if (maxLiftingCapacity && liftTubeSize && liftTubePower) {
         document.querySelector('.content__left--content--item-2 span').textContent = maxLiftingCapacity;
         document.querySelector('.content__left--content--item-2 span#maxLiftingCapacity2').textContent = maxLiftingCapacity;
+        document.querySelector('.content__left--content--item-2 span#liftTube172').textContent = liftTube17;
+        document.querySelector('.content__left--content--item-2 span#liftTube292').textContent = liftTube29;
         document.querySelector('.content__left--content--item-2 span#liftTubeSize2').textContent = liftTubeSize;
         document.querySelector('.content__left--content--item-2 span#vacuumPump2').textContent = liftTubePower;
         const liftTubeSizeElements = document.querySelectorAll('.content__left--content--item-2 span')[1];
@@ -447,46 +479,141 @@
 </script>
 
 <script>
-    async function generatePDF() {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-        const elementHTML = document.getElementById('content-page3');
+   async function generatePDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF(); // Initializes a standard A4-sized PDF document.
 
-        // Temporarily make the content visible for capturing
-        elementHTML.style.visibility = 'visible';
-        elementHTML.style.position = 'static';
+    const elementHTML = document.getElementById('content-page3');
 
-        // Capture the content as a canvas
-        const canvas = await html2canvas(elementHTML);
-        const imgData = canvas.toDataURL('image/png');
+    // Make sure the content is visible for capturing
+    elementHTML.style.visibility = 'visible';
+    elementHTML.style.position = 'static';
 
-        // Define dimensions
-        const imgWidth = 190;
-        const pageHeight = 295;
-        const imgHeight = canvas.height * imgWidth / canvas.width;
+    // Capture the content as a canvas using html2canvas
+    const canvas = await html2canvas(elementHTML, {
+        scale: 2, // Improves image quality
+        scrollX: 0,
+        scrollY: 0,
+        useCORS: true, // Handles external image sources
+    });
 
-        let position = 0;
-        let remainingHeight = imgHeight;
+    // Get the dimensions of the canvas
+    const canvasWidth = canvas.width;
+    const canvasHeight = canvas.height;
 
-        // Add image to PDF
-        doc.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
-        remainingHeight -= pageHeight;
+    // Convert dimensions to mm for PDF scaling
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
 
-        // Loop for additional pages without whitespace
-        while (remainingHeight > 0) {
-            position = remainingHeight - imgHeight;
-            doc.addPage();
-            doc.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
-            remainingHeight -= pageHeight;
-        }
+    // Calculate aspect ratio to fit full page
+    const widthRatio = pageWidth / canvasWidth;
+    const heightRatio = pageHeight / canvasHeight;
+    const scaleRatio = Math.min(widthRatio, heightRatio);
 
-        // Download the PDF
-        doc.save('document.pdf');
+    // Calculate the new width and height of the image
+    const imgWidth = canvasWidth * scaleRatio;
+    const imgHeight = canvasHeight * scaleRatio;
 
-        // Restore the original styles
-        elementHTML.style.visibility = 'hidden';
-        elementHTML.style.position = 'absolute';
+    // Add image to PDF, centering it if needed
+    const xOffset = (pageWidth - imgWidth) / 2;
+    const yOffset = (pageHeight - imgHeight) / 2;
+
+    const imgData = canvas.toDataURL('image/png');
+    doc.addImage(imgData, 'PNG', xOffset, yOffset, imgWidth, imgHeight);
+
+    // Save the PDF file
+    doc.save('fullscreen_document.pdf');
+
+    // Restore original element styling
+    elementHTML.style.visibility = 'hidden';
+    elementHTML.style.position = 'absolute';
+}
+
+
+    const savedUsername = localStorage.getItem('username');
+    if (savedUsername) {
+        // Hiển thị thông tin người dùng nếu đã đăng nhập
+        $('.username, .password, .loginButton').hide();
+        $('.menu-mobile').removeClass('active');
+        $('.menu-mobile-img').hide();
+        $('.userInfo').show();
+        $('.userName').text(savedUsername);
+        $('.logoutButton').show();
+        $('.menu-mobile').removeClass('active');
+        document.getElementById('totalPrice').textContent = formatPrice(totalPrice);
+        document.getElementById('totalPrice2').textContent = formatPrice(totalPrice);
+    } else {
+        // Hiển thị form đăng nhập nếu chưa đăng nhập
+        $('.username, .password, .loginButton').show();
+        $('.menu-mobile-img').show();
+        $('.userInfo, .logoutButton').hide();
     }
+
+    $('.loginButton').click(function () {
+    let username = '';
+    let password = '';
+
+    // Kiểm tra giao diện đang sử dụng: Desktop hay Mobile
+    if ($('.action-desktop').is(':visible')) {
+        username = $('.action-desktop .username').val().trim();
+        password = $('.action-desktop .password').val().trim();
+    } else if ($('.action-mobile').is(':visible')) {
+        username = $('.menu-mobile .username').val().trim();
+        password = $('.menu-mobile .password').val().trim();
+    }
+
+    // Kiểm tra nếu username hoặc password trống
+    if (!username || !password) {
+        alert('Please enter both username and password.');
+        return;
+    }
+
+    // Gửi yêu cầu AJAX
+    $.ajax({
+        url: 'https://www.aardwolf.com.au/api/get_price.php',
+        type: 'POST',
+        data: {
+            'txtUserName': username,
+            'txtPassword': password,
+            '_submit_login': 1
+        },
+        success: function (response) {
+            if (response && response.user && response.user.name) {
+                localStorage.setItem('username', response.user.name);
+
+                // Ẩn form đăng nhập và hiển thị thông tin người dùng
+                $('.username, .password, .loginButton').hide();
+                $('.menu-mobile-img').hide();
+                $('.menu-mobile').removeClass('active');
+                $('.userInfo').show();
+                $('.userName').text(response.user.name);
+                $('.logoutButton').show();
+                document.getElementById('totalPrice').textContent = formatPrice(totalPrice);
+                document.getElementById('totalPrice2').textContent = formatPrice(totalPrice);
+            } else {
+                alert('Login failed! Invalid username or password.');
+            }
+        },
+        error: function (xhr, status, error) {
+            console.error('Login Failed:', error);
+            alert('Login failed! Please try again later.');
+        }
+    });
+});
+
+
+// Xử lý sự kiện đăng xuất
+$('.logoutButton').click(function () {
+    // Xóa username khỏi localStorage
+    localStorage.removeItem('username');
+    $('.menu-mobile-img').show();
+    $('.menu-mobile').removeClass('active');
+
+    // Hiển thị lại form đăng nhập, ẩn thông tin người dùng
+    $('.username, .password, .loginButton').show();
+    $('.userInfo, .logoutButton').hide();
+    window.location.reload();
+});
 </script>
 
 

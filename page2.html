@@ -469,46 +469,56 @@
 </script>
 
 <script>
-    async function generatePDF() {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-        const elementHTML = document.getElementById('content-page3');
+   async function generatePDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF(); // Initializes a standard A4-sized PDF document.
 
-        // Temporarily make the content visible for capturing
-        elementHTML.style.visibility = 'visible';
-        elementHTML.style.position = 'static';
+    const elementHTML = document.getElementById('content-page3');
 
-        // Capture the content as a canvas
-        const canvas = await html2canvas(elementHTML);
-        const imgData = canvas.toDataURL('image/png');
+    // Make sure the content is visible for capturing
+    elementHTML.style.visibility = 'visible';
+    elementHTML.style.position = 'static';
 
-        // Define dimensions
-        const imgWidth = 190;
-        const pageHeight = 295;
-        const imgHeight = canvas.height * imgWidth / canvas.width;
+    // Capture the content as a canvas using html2canvas
+    const canvas = await html2canvas(elementHTML, {
+        scale: 2, // Improves image quality
+        scrollX: 0,
+        scrollY: 0,
+        useCORS: true, // Handles external image sources
+    });
 
-        let position = 0;
-        let remainingHeight = imgHeight;
+    // Get the dimensions of the canvas
+    const canvasWidth = canvas.width;
+    const canvasHeight = canvas.height;
 
-        // Add image to PDF
-        doc.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
-        remainingHeight -= pageHeight;
+    // Convert dimensions to mm for PDF scaling
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
 
-        // Loop for additional pages without whitespace
-        while (remainingHeight > 0) {
-            position = remainingHeight - imgHeight;
-            doc.addPage();
-            doc.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
-            remainingHeight -= pageHeight;
-        }
+    // Calculate aspect ratio to fit full page
+    const widthRatio = pageWidth / canvasWidth;
+    const heightRatio = pageHeight / canvasHeight;
+    const scaleRatio = Math.min(widthRatio, heightRatio);
 
-        // Download the PDF
-        doc.save('document.pdf');
+    // Calculate the new width and height of the image
+    const imgWidth = canvasWidth * scaleRatio;
+    const imgHeight = canvasHeight * scaleRatio;
 
-        // Restore the original styles
-        elementHTML.style.visibility = 'hidden';
-        elementHTML.style.position = 'absolute';
-    }
+    // Add image to PDF, centering it if needed
+    const xOffset = (pageWidth - imgWidth) / 2;
+    const yOffset = (pageHeight - imgHeight) / 2;
+
+    const imgData = canvas.toDataURL('image/png');
+    doc.addImage(imgData, 'PNG', xOffset, yOffset, imgWidth, imgHeight);
+
+    // Save the PDF file
+    doc.save('fullscreen_document.pdf');
+
+    // Restore original element styling
+    elementHTML.style.visibility = 'hidden';
+    elementHTML.style.position = 'absolute';
+}
+
 
     const savedUsername = localStorage.getItem('username');
     if (savedUsername) {

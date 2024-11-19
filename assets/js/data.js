@@ -17,7 +17,7 @@ const ALL_SCENES = [{name: "Mobile Articulated Jib Crane-Two Arm@p1_-87_0_0@p2_2
 ]
 
 
-const head_stacks = ["Single control head","High stack","Extra Hand","Comfort control head"]
+const head_stacks = ["Single control head_@h342","High stack_@h247","Extra Hand_@h247","Comfort control head_@h190"]
 const suction_packs = ["suction_01","suction_02","suction_03","suction_04","multi_suction_pad"]
 
 // 01: 
@@ -26,7 +26,7 @@ const suction_packs = ["suction_01","suction_02","suction_03","suction_04","mult
 const pump_groups = ["Pump_group_1", "Pump_group_2"];
 const small_tube = "TUBE LIFT ID 120";
 const big_tube = "TUBE LIFT ID 250";
-const tube_height = 1919 + 342.3;
+const tube_height = 1918.86;
 const tube_offset = 25.5;
 // In ra mảng data để kiểm tra
 console.log(ALL_SCENES);
@@ -37,6 +37,8 @@ function select_crane()
     let jibLength = localStorage.getItem('jibLength');
     let craneType =  localStorage.getItem('craneType');
     let liftTubeSize = localStorage.getItem('liftTubeSize');
+
+    console.log('load vars',loadType,jibLength,craneType,liftTubeSize)
     
     // let maxLiftingCapacity = localStorage.getItem('maxLiftingCapacity');
     

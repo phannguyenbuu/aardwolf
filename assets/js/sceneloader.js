@@ -205,19 +205,33 @@ async function mergeSVGs(files, scenedata) {
     drawVerticalDimension(mergedSVG, { x:scenedata.dx[0] + scenedata.dx[1] + scenedata.dx[2] + 1200, y: 0}, { x: scenedata.dx[0] + scenedata.dx[1] + scenedata.dx[2] + 1200, y: -scenedata.dy[2] }, 200); // Ngang
 
     var canvas_pdf = document.getElementById('pdf-2d');
-    console.log('canvas_pdf',canvas_pdf);
+    console.log('canvas_pdf', canvas_pdf);
 
     if(canvas_pdf)
     {
         canvas_pdf.innerHTML = '';
         // Hiển thị hoặc xuất SVG gộp
         canvas_pdf.appendChild(mergedSVG);
-        console.log(new XMLSerializer().serializeToString(mergedSVG)); // In nội dung SVG
+        // console.log(new XMLSerializer().serializeToString(mergedSVG)); // In nội dung SVG
     }
   }
 
 function _load_a_Scene()
 {
+    const radioButtons = document.querySelectorAll('input[type="radio"]');
+
+    // Lọc ra các radio button được chọn (checked)
+    const selectedValues = Array.from(radioButtons)
+        .filter(radio => radio.checked)
+        .map(radio => ({
+            name: radio.name, // Lấy thuộc tính name
+            value: radio.value // Lấy giá trị được chọn
+        }));
+
+    // Hiển thị các radio button được chọn
+    console.log("Các giá trị radio được chọn:", selectedValues);
+    
+    
     clearScene(scene);
     let ar = select_crane();
     let scenedata = ar[0];
@@ -230,14 +244,23 @@ function _load_a_Scene()
     _loadFBX(scenedata.name, {x:0, y:0, z:0, rot:0});
     _loadFBX(ar[1], {x:p1.x, y:0, z:p1.z, rot:0});
     _loadFBX(ar[2], {x:p2.x, y:p2.y, z:p2.z, rot:0});
-    _loadFBX(ar[3], {x:p2.x - tube_offset, y:p2.y, z:p2.z - tube_height, rot:0});
-    _loadFBX(ar[4], {x:p2.x - tube_offset, y:p2.y, z:p2.z - tube_height, rot:0});
+
+
+    const ___ls = ar[3].split('@');
+
+    const firstHElement = ___ls.find(item => item.startsWith('h'));
+    const head_h = firstHElement ? parseFloat(firstHElement.slice(1)) : null;
+
+    console.log('head_h', ar[3], head_h);
+
+    _loadFBX(ar[3], {x:p2.x - tube_offset, y:p2.y, z:p2.z - tube_height - head_h, rot:0});
+    _loadFBX(ar[4], {x:p2.x - tube_offset, y:p2.y, z:p2.z - tube_height - head_h, rot:0});
 
     mergeSVGs([{path:scenedata.name,x:0,y:0},
         {path:ar[1],x:p1.x, y:-p1.z},
         {path:ar[2],x:p2.x, y:-p2.z},
-        {path:ar[3],x:p2.x - tube_offset, y:-p2.z + tube_height},
-        {path:ar[4],x:p2.x - tube_offset, y:-p2.z + tube_height}], scenedata);
+        {path:ar[3],x:p2.x - tube_offset, y:-p2.z + tube_height + head_h},
+        {path:ar[4],x:p2.x - tube_offset, y:-p2.z + tube_height + head_h}], scenedata);
     
     // drawDimension(svg, { x: 50, y: 100 }, { x: 300, y: 100 }, 30); // Ngang
     // drawDimension(svg, { x: 400, y: 50 }, { x: 400, y: 200 }, 30); // Dọc
@@ -462,12 +485,12 @@ function drawDimension(svg, p1, p2, h) {
 // Đảm bảo mọi radio sẽ được xử lý
 handleRadioChange('craneType', (radio) => radio.id);
 handleRadioChange('jibLength', (radio) => {
-    const numbers = radio.id.match(/\d+/g); // Tìm tất cả các số trong chuỗi
-    return numbers ? numbers.map(Number)[0] : null; // Chuyển các chuỗi số thành số và trả về mảng số
+    const numbers = radio.id.match(/\d+/g); 
+    return numbers ? numbers.map(Number)[0] : null; 
 });
 handleRadioChange('loadType', (radio) => radio.id);
 handleRadioChange('workLoadLimit', () => {
-    // Đối với workLoadLimit, bạn không cần phải lưu giá trị nào từ radio, chỉ cần load lại scene.
+    
     return null; 
 });
 

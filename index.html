@@ -479,36 +479,52 @@ $('.logoutButton').click(function () {
     init_params();
 
     function reorderItems() {
-    const container = document.getElementById('loadTypeList');
-    const items = Array.from(container.children);
+        const container = document.getElementById('loadTypeList');
+        const items = Array.from(container.children);
 
-    // Clear existing order
-    container.innerHTML = '';
+        // Clear existing order
+        container.innerHTML = '';
 
-    if (window.innerWidth < 768) {
-        // Mobile order
-        const mobileOrder = [0, 2, 4, 1, 3, 5];
-        mobileOrder.forEach(index => container.appendChild(items[index]));
-    } else {
-        // Desktop order (default order from the original HTML)
-        items.forEach(item => container.appendChild(item));
+        if (window.innerWidth < 768) {
+            // Mobile order
+            const mobileOrder = [0, 2, 4, 1, 3, 5];
+            mobileOrder.forEach(index => container.appendChild(items[index]));
+        } else {
+            // Desktop order (default order from the original HTML)
+            items.forEach(item => container.appendChild(item));
+        }
     }
-}
 
-// Run the function on load and resize
-window.addEventListener('load', reorderItems);
-window.addEventListener('resize', reorderItems);
+    // Run the function on load and resize
+    window.addEventListener('load', reorderItems);
+    window.addEventListener('resize', reorderItems);
 
     
     function init_params() {
-        var selectedOption = document.querySelector('input[name="loadType"]:checked');
-        localStorage.setItem('loadType', selectedOption ? selectedOption.id : "300max");
+        let selectedOption;
 
-        selectedOption = document.querySelector('input[name="jibLength"]:checked');
-        localStorage.setItem('jibLength', selectedOption ? selectedOption.id.match(/\d+/g).map(Number)[0] : 2.5);
+        // Xử lý loadType
+        if (!localStorage.getItem('loadType')) {
+            selectedOption = document.querySelector('input[name="loadType"]:checked');
+            localStorage.setItem('loadType', selectedOption ? selectedOption.id : "300max");
+        }
 
-        selectedOption = document.querySelector('input[name="craneType"]:checked');
-        localStorage.setItem('craneType', selectedOption ? selectedOption.id : "floor");
+        // Xử lý jibLength
+        if (!localStorage.getItem('jibLength')) {
+            selectedOption = document.querySelector('input[name="jibLength"]:checked');
+            localStorage.setItem('jibLength', selectedOption ? selectedOption.id.match(/\d+/g).map(Number)[0] : 2.5);
+        }
+
+        // Xử lý craneType
+        if (!localStorage.getItem('craneType')) {
+            selectedOption = document.querySelector('input[name="craneType"]:checked');
+            localStorage.setItem('craneType', selectedOption ? selectedOption.id : "floor");
+        }
+
+        console.log("save vars:");
+        console.log("loadType:", localStorage.getItem('loadType'));
+        console.log("jibLength:", localStorage.getItem('jibLength'));
+        console.log("craneType:", localStorage.getItem('craneType'));
     }
 
     document.getElementById("quoteButton").addEventListener("click", function (e) {

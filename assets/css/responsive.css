@@ -98,28 +98,28 @@
     }
 
     .content__left--content--item {
-        font-size: 15px;
+        font-size: 18px;
     }
 
     #content-page3 .content__left--content--item {
-        font-size: 14px;
+        font-size: 18px;
     }
 
     #content-page3 .content__left--content--item-1 {
-        padding: 13px;
+        padding: 18px;
     }
 
     #content-page3 .content__left-note {
-        font-size: 14px;
+        font-size: 18px;
     }
 
     #content-page3 .content__left-content-page3 p {
         color: #525266;
-        font-size: 13px;
+        font-size: 18px;
     }
 
     #content-page3 .content__left--price {
-        font-size: 13px;
+        font-size: 18px;
     }
 
     .content__left--description-page3 span:last-child {
@@ -136,7 +136,7 @@
     }
 
     #content-page3 .content__left--content--item span{
-        font-size: 14px;
+        font-size: 18px;
     }
 }
     

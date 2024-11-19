@@ -3,7 +3,7 @@
 }
 
 body{
-    /* overflow-x: hidden; */
+    overflow-x: hidden;
     background: #E6E6E6!important;
     position: relative;
 }

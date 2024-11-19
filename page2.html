@@ -207,7 +207,13 @@
         </div>
     </div>
 
-    <div id="content-page3" style="visibility: hidden; position: absolute; top: -100%;">
+    <div id="content-page3" style=" width: 800px; /* Chiều rộng A4 */
+    margin: 0 auto; /* Căn giữa nội dung */
+    overflow: hidden; /* Ẩn phần vượt quá */
+    position: absolute; /* Giữ vị trí tương đối */
+    background: white; /* Đặt nền trắng */
+    visibility: hidden; /* Ẩn khi không cần */
+    top: -100%;">
         <div class="container">
             <div class="row content py-2">
                 <div class="col-lg-12 col-md-12 col-12 content__left">
@@ -229,10 +235,6 @@
                         <p>The above drawing is based on information provided by the buyer. The Aardwolf vacuum tube lifter is combined with a crane, vacuum generator, suction supply hose, lift tube, control unit and suction head.</p>
                         <p>Lifting capacity: <span id="MaximumLiftingCapacity">??</span>. (As per customer’s request). The Aardwolf Vacuum Tube Lifter is a classic design typically suited for loads between <span id="minRangeCapacity">10</span> - <span id="maxRangeCapacity">???</span>.</p>
                     </div>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
                     <div class="content__left--description-page3">
                         <span>2</span>
                         <span>TECHNICAL DATA</span>
@@ -248,8 +250,10 @@
                         <div class="row content__left--content--item m-0">
                             <div class="col-lg-6 col-md-6 col-6 content__left--content--item-1">Lift tube size</div>
                             <div class="col-lg-6 col-md-6 col-6 content__left--content--item-2 d-flex align-items-center">
-                                <img src="assets/images/icon-1.png" alt="">
-                                <span id="liftTubeSize2">100-200</span>
+                                <div class="d-flex align-items-center">
+                                    <img style="width: 20px;" src="assets/images/icon-1.png" alt="">
+                                    <span id="liftTubeSize2">100-200</span>
+                                </div>
                             </div>
                         </div>
                         <div class="row content__left--content--item m-0">
@@ -280,14 +284,10 @@
                             </div>
                         </div>
                     </div>
-                    <br/>
-                    <br/>
-    
                     <div class="content__left-note pt-4">
                         <b>Note:</b>
                         <span>It is recommended that the buyer purchase extra vacuum heads to cover all eventualities such as different carton sizes and the possibility of porous materials.</span>
                     </div>
-    
                     <div class="content__left--price text-center py-4">
                         <span>Quotation:</span>
                         <span id="totalPrice2"></span>
@@ -429,7 +429,7 @@
     }
 
     // Hiển thị giá đã định dạng
-    if(localStorage.getItem('username')){
+    if(localStorage.getItem('user_name')){
         document.getElementById('totalPrice').textContent = formatPrice(totalPrice);
         document.getElementById('totalPrice2').textContent = formatPrice(totalPrice);
     }
@@ -469,58 +469,70 @@
 </script>
 
 <script>
-   async function generatePDF() {
+  async function generatePDF() {
     const { jsPDF } = window.jspdf;
-    const doc = new jsPDF(); // Initializes a standard A4-sized PDF document.
+
+    // Khởi tạo file PDF với kích thước A4
+    const doc = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4', // Định dạng A4
+    });
 
     const elementHTML = document.getElementById('content-page3');
 
-    // Make sure the content is visible for capturing
+    // Hiển thị nội dung cần chụp
     elementHTML.style.visibility = 'visible';
     elementHTML.style.position = 'static';
 
-    // Capture the content as a canvas using html2canvas
+    // Render nội dung HTML sang canvas với độ phân giải cao
     const canvas = await html2canvas(elementHTML, {
-        scale: 2, // Improves image quality
+        scale: 3, // Tăng scale để đảm bảo độ nét
         scrollX: 0,
         scrollY: 0,
-        useCORS: true, // Handles external image sources
+        useCORS: true, // Hỗ trợ ảnh bên ngoài
     });
 
-    // Get the dimensions of the canvas
+    // Chuyển canvas sang định dạng ảnh
+    const imgData = canvas.toDataURL('image/png');
+
+    // Lấy kích thước canvas gốc
     const canvasWidth = canvas.width;
     const canvasHeight = canvas.height;
 
-    // Convert dimensions to mm for PDF scaling
-    const pageWidth = doc.internal.pageSize.getWidth();
-    const pageHeight = doc.internal.pageSize.getHeight();
+    // Kích thước A4 trong PDF (210mm x 297mm)
+    const pageWidth = 210; // Chiều rộng A4
+    const pageHeight = 297; // Chiều cao A4
 
-    // Calculate aspect ratio to fit full page
+    // Tính tỷ lệ scale để bảo toàn tỷ lệ gốc của ảnh
     const widthRatio = pageWidth / canvasWidth;
     const heightRatio = pageHeight / canvasHeight;
     const scaleRatio = Math.min(widthRatio, heightRatio);
 
-    // Calculate the new width and height of the image
-    const imgWidth = canvasWidth * scaleRatio;
-    const imgHeight = canvasHeight * scaleRatio;
+    // Kích thước ảnh sau khi scale
+    const imgWidth = 155;
+    const imgHeight = 290;
 
-    // Add image to PDF, centering it if needed
-    const xOffset = (pageWidth - imgWidth) / 2;
-    const yOffset = (pageHeight - imgHeight) / 2;
+    // Căn chỉnh hình ảnh vào giữa trang
+    const xOffset = (pageWidth - imgWidth) / 2; // Canh giữa theo chiều ngang
+    const yOffset = (pageHeight - imgHeight) / 2; // Canh giữa theo chiều dọc
 
-    const imgData = canvas.toDataURL('image/png');
+    // Chèn ảnh vào PDF
     doc.addImage(imgData, 'PNG', xOffset, yOffset, imgWidth, imgHeight);
 
-    // Save the PDF file
-    doc.save('fullscreen_document.pdf');
+    // Xuất file PDF
+    doc.save('full_page_a4.pdf');
 
-    // Restore original element styling
+    // Khôi phục trạng thái ban đầu của phần tử HTML
     elementHTML.style.visibility = 'hidden';
     elementHTML.style.position = 'absolute';
 }
 
 
-    const savedUsername = localStorage.getItem('username');
+
+
+
+    const savedUsername = localStorage.getItem('user_name');
     if (savedUsername) {
         // Hiển thị thông tin người dùng nếu đã đăng nhập
         $('.username, .password, .loginButton').hide();
@@ -539,7 +551,8 @@
         $('.userInfo, .logoutButton').hide();
     }
 
-    $('.loginButton').click(function () {
+    $('.loginButton').click(function (e) {
+        e.preventDefault();
     let username = '';
     let password = '';
 
@@ -569,7 +582,7 @@
         },
         success: function (response) {
             if (response && response.user && response.user.name) {
-                localStorage.setItem('username', response.user.name);
+                localStorage.setItem('user_name', response.user.name);
 
                 // Ẩn form đăng nhập và hiển thị thông tin người dùng
                 $('.username, .password, .loginButton').hide();
@@ -595,7 +608,7 @@
 // Xử lý sự kiện đăng xuất
 $('.logoutButton').click(function () {
     // Xóa username khỏi localStorage
-    localStorage.removeItem('username');
+    localStorage.removeItem('user_name');
     $('.menu-mobile-img').show();
     $('.menu-mobile').removeClass('active');
 

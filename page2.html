@@ -207,13 +207,15 @@
         </div>
     </div>
 
-    <div id="content-page3" style=" width: 800px; /* Chiều rộng A4 */
-    margin: 0 auto; /* Căn giữa nội dung */
-    overflow: hidden; /* Ẩn phần vượt quá */
-    position: absolute; /* Giữ vị trí tương đối */
-    background: white; /* Đặt nền trắng */
-    visibility: hidden; /* Ẩn khi không cần */
-    top: -100%;">
+    <div id="content-page3" style=" width: 800px;
+    margin: 0 auto;
+    overflow: hidden;
+    position: absolute;
+    background: white;
+    visibility: hidden;
+    top: -100%;
+    "
+    >
         <div class="container">
             <div class="row content py-2">
                 <div class="col-lg-12 col-md-12 col-12 content__left">
@@ -481,9 +483,12 @@
 
     const elementHTML = document.getElementById('content-page3');
 
-    // Hiển thị nội dung cần chụp
-    elementHTML.style.visibility = 'visible';
-    elementHTML.style.position = 'static';
+    if(elementHTML){
+        elementHTML.style.visibility = 'visible';
+        elementHTML.style.position = 'absolute';
+        elementHTML.style.left = '-9999px'; // Đẩy ra ngoài màn hình
+        elementHTML.style.top = '0';
+    }
 
     // Render nội dung HTML sang canvas với độ phân giải cao
     const canvas = await html2canvas(elementHTML, {
@@ -526,6 +531,8 @@
     // Khôi phục trạng thái ban đầu của phần tử HTML
     elementHTML.style.visibility = 'hidden';
     elementHTML.style.position = 'absolute';
+    elementHTML.style.left = '0'; // Đẩy ra ngoài màn hình
+    elementHTML.style.top = '-100%';
 }
 
 

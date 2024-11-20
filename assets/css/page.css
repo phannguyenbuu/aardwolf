@@ -174,18 +174,23 @@ body{
 .content__left--description-page3{
     border-bottom: 2px solid #CC2200;
     padding-bottom: 8px;
+    display: flex;
+    align-items: center;
 }
 
 .content__left--description-page3 span:first-child{
     background-color: #F2F2F2;
     font-weight: bold;
-    padding: 7px 14px;
+    padding: 4px 14px;
     border-radius: 50%;
+    margin-right: 10px;
+    font-size: 21px;
 }
 
 .content__left--description-page3 span:last-child{
     font-weight: bold;
     font-size: 29px;
+    margin-right: 10px;
 }
 
 #loadTypeList {

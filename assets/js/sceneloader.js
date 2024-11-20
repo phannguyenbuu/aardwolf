@@ -9,24 +9,43 @@ const scene = new THREE.Scene();
 var controls;
 var renderer;
 var camera;
+var dim_txt_size = '200';
 
-function _loadFBX(scenename, o) {
-    const filename = _fullname(scenename)
-    const fbxLoader = new FBXLoader()
+function _loadFBX(scenedata, o) {
+    const filename = _fullname(scenedata)
+    const wireframeMaterial = new THREE.MeshBasicMaterial({
+        color: 0x000000,
+        wireframe: true,
+        opacity: 0.05,          // Độ mờ (từ 0.0 đến 1.0, với 0 là hoàn toàn trong suốt và 1 là không trong suốt)
+        transparent: true 
+      });
+    const fbxLoader = new FBXLoader();
+
     fbxLoader.load(
         filename,
         (object) => {
             object.traverse(function (child) {
                 if (child.isMesh) {
-                    // child.material = material
-                    if (child.material) {
-                        child.material.transparent = false
-                    }
+                    
                 }
             })
             object.position.set(o.x, o.z, o.y)
             object.rotation.y = Math.PI / 180 * o.rot;
-            scene.add(object)
+
+            const objectCopy = object.clone(); // Tạo bản sao của object
+
+            objectCopy.traverse(function(child) {
+                if (child.isMesh) {
+                    child.material = wireframeMaterial; // Thay đổi vật liệu của mesh con
+                }
+            });
+            // Thay đổi vị trí hoặc các thuộc tính của bản sao nếu cần
+            // objectCopy.position.set(o.x + 10, o.z, o.y); // Ví dụ: di chuyển bản sao một chút
+
+            // Thêm cả object và objectCopy vào scene
+            scene.add(object);      // Thêm đối tượng gốc vào scene
+            scene.add(objectCopy);  // Thêm bản sao vào scene
+
             progressBar.style.display = 'none'
         },
         (xhr) => {
@@ -119,24 +138,132 @@ function clearScene(scene) {
 
 // Sử dụng hàm
 
+async function mergeSVGs(files, scenedata) {
+    const parser = new DOMParser();
+    const mergedSVG = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+
+    mergedSVG.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+    mergedSVG.setAttribute("version", "1.1");
+
+    for (let file of files) {
+        const response = await fetch('models/svg/' + file.path + '.svg');
+        console.log('models/svg/' + file.path + '.svg');
+
+        const svgText = await response.text();
+        const lines = svgText.split('\n');
+
+        // Duyệt qua từng dòng trong SVG
+        let valid_content = '';
+
+        lines.forEach(line => {if (line.includes('<polyline') || line.includes('svg')) valid_content += line + "\n"});
+
+
+        const parser = new DOMParser();
+        const svgDocument = parser.parseFromString(valid_content, 'image/svg+xml');
+        // console.log(svgDocument);
+
+        // Lấy tất cả các phần tử <polyline>
+        const polylineElements = svgDocument.querySelectorAll('polyline');
+
+        // Tạo nhóm <g> để di chuyển SVG
+        const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
+        group.setAttribute("transform", `translate(${file.x}, ${file.y})`);
+
+        // Duyệt qua tất cả các phần tử <polyline> và thêm chúng vào nhóm <g>
+        polylineElements.forEach(polyline => {
+            // console.log(polyline);  // In ra phần tử <polyline>
+            // console.log(polyline.getAttribute('points'));  // In ra thuộc tính 'points' của <polyline>
+
+            // Tạo một bản sao của polyline và thêm vào nhóm <g>
+            const polylineClone = polyline.cloneNode(true);
+            group.appendChild(polylineClone);  // Thêm phần tử <polyline> vào nhóm <g>
+        });
+
+        // Nếu bạn muốn thêm nhóm <g> vào tài liệu SVG hiện tại
+        // svgDocument.documentElement.appendChild(group);
+
+        // Kiểm tra lại toàn bộ nội dung SVG sau khi thêm nhóm <g>
+        // console.log(svgDocument.documentElement.outerHTML);
+
+
+        // Thêm vào SVG tổng hợp
+        mergedSVG.appendChild(group);
+    }
+
+    mergedSVG.setAttribute("viewBox", `${-2000} ${-5500} ${8000} ${6000}`);
+
+    let dy = -scenedata.dy[1] - 300;
+    drawDimension(mergedSVG, { x: scenedata.dx[0], y: dy}, { x: scenedata.dx[0] + scenedata.dx[1], y: dy }, 200); // Ngang
+    drawDimension(mergedSVG, { x:  scenedata.dx[0] + scenedata.dx[1], y: dy}, { x:  scenedata.dx[0] + scenedata.dx[1] + scenedata.dx[2], y: dy }, 200); // Ngang
+
+    drawVerticalDimension(mergedSVG, { x: 1200, y: 0}, { x: 1200, y: -286 }, 200); // Ngang
+    drawVerticalDimension(mergedSVG, { x: 1700, y: 0}, { x: 1700, y: -942 }, 200); // Ngang
+    drawVerticalDimension(mergedSVG, { x: -700, y: 0}, { x: - 700, y: -1400 }, 200); // Ngang
+    drawVerticalDimension(mergedSVG, { x: -1200, y: 0}, { x: - 1200, y: -scenedata.dy[0] }, 200); // Ngang
+    drawVerticalDimension(mergedSVG, { x:- 1700, y: 0}, { x: - 1700, y: -scenedata.dy[1] }, 200); // Ngang
+    drawVerticalDimension(mergedSVG, { x:scenedata.dx[0] + scenedata.dx[1] + scenedata.dx[2] + 500, y: 0}, { x: scenedata.dx[0] + scenedata.dx[1] + scenedata.dx[2] + 500, y: -33 }, 200); // Ngang
+    drawVerticalDimension(mergedSVG, { x:scenedata.dx[0] + scenedata.dx[1] + scenedata.dx[2] + 1200, y: 0}, { x: scenedata.dx[0] + scenedata.dx[1] + scenedata.dx[2] + 1200, y: -scenedata.dy[2] }, 200); // Ngang
+
+    var canvas_pdf = document.getElementById('pdf-2d');
+    console.log('canvas_pdf', canvas_pdf);
+
+    if(canvas_pdf)
+    {
+        canvas_pdf.innerHTML = '';
+        // Hiển thị hoặc xuất SVG gộp
+        canvas_pdf.appendChild(mergedSVG);
+        // console.log(new XMLSerializer().serializeToString(mergedSVG)); // In nội dung SVG
+    }
+  }
 
 function _load_a_Scene()
 {
+    const radioButtons = document.querySelectorAll('input[type="radio"]');
+
+    // Lọc ra các radio button được chọn (checked)
+    const selectedValues = Array.from(radioButtons)
+        .filter(radio => radio.checked)
+        .map(radio => ({
+            name: radio.name, // Lấy thuộc tính name
+            value: radio.value // Lấy giá trị được chọn
+        }));
+
+    // Hiển thị các radio button được chọn
+    console.log("Các giá trị radio được chọn:", selectedValues);
+    
+    
     clearScene(scene);
     let ar = select_crane();
-    let scenename = ar[0];
+    let scenedata = ar[0];
 
-    var ls = __extract_point3(scenename);
-    console.log(ls,_fullname(scenename));
+    var ls = __extract_point3(scenedata.name);
+    console.log(ls,_fullname(scenedata.name));
 
     const p1 = ls[0], p2 = ls[1];
-
     
-    _loadFBX(scenename, {x:0, y:0, z:0, rot:0});
+    _loadFBX(scenedata.name, {x:0, y:0, z:0, rot:0});
     _loadFBX(ar[1], {x:p1.x, y:0, z:p1.z, rot:0});
     _loadFBX(ar[2], {x:p2.x, y:p2.y, z:p2.z, rot:0});
-    _loadFBX(ar[3], {x:p2.x - tube_offset, y:p2.y, z:p2.z - tube_height, rot:0});
-    _loadFBX(ar[4], {x:p2.x - tube_offset, y:p2.y, z:p2.z - tube_height, rot:0});
+
+
+    const ___ls = ar[3].split('@');
+
+    const firstHElement = ___ls.find(item => item.startsWith('h'));
+    const head_h = firstHElement ? parseFloat(firstHElement.slice(1)) : null;
+
+    console.log('head_h', ar[3], head_h);
+
+    _loadFBX(ar[3], {x:p2.x - tube_offset, y:p2.y, z:p2.z - tube_height - head_h, rot:0});
+    _loadFBX(ar[4], {x:p2.x - tube_offset, y:p2.y, z:p2.z - tube_height - head_h, rot:0});
+
+    mergeSVGs([{path:scenedata.name,x:0,y:0},
+        {path:ar[1],x:p1.x, y:-p1.z},
+        {path:ar[2],x:p2.x, y:-p2.z},
+        {path:ar[3],x:p2.x - tube_offset, y:-p2.z + tube_height + head_h},
+        {path:ar[4],x:p2.x - tube_offset, y:-p2.z + tube_height + head_h}], scenedata);
+    
+    // drawDimension(svg, { x: 50, y: 100 }, { x: 300, y: 100 }, 30); // Ngang
+    // drawDimension(svg, { x: 400, y: 50 }, { x: 400, y: 200 }, 30); // Dọc
 }
 
 
@@ -157,15 +284,213 @@ function handleRadioChange(name, getValueCallback) {
     });
 }
 
+
+
+function drawVerticalDimension(svg, p1, p2, h) {
+    const xmlns = "http://www.w3.org/2000/svg";
+
+    // Tính toán độ dài
+    const dy = Math.abs(p2.y - p1.y);
+    const length = dy;
+
+    // Định nghĩa nhóm SVG
+    const group = document.createElementNS(xmlns, "g");
+
+    const defs = document.createElementNS(xmlns, "defs");
+
+    // Marker bắt đầu
+    const markerStart = document.createElementNS(xmlns, "marker");
+    markerStart.setAttribute("id", "arrow-start");
+    markerStart.setAttribute("markerWidth", "10");
+    markerStart.setAttribute("markerHeight", "10");
+    markerStart.setAttribute("refX", "10");
+    markerStart.setAttribute("refY", "5");
+    markerStart.setAttribute("orient", "auto");
+    const pathStart = document.createElementNS(xmlns, "path");
+    pathStart.setAttribute("d", "M 0 0 L 10 5 L 0 10 Z");
+    pathStart.setAttribute("fill", "black");
+    markerStart.appendChild(pathStart);
+    defs.appendChild(markerStart);
+
+    // Marker kết thúc
+    const markerEnd = document.createElementNS(xmlns, "marker");
+    markerEnd.setAttribute("id", "arrow-end");
+    markerEnd.setAttribute("markerWidth", "10");
+    markerEnd.setAttribute("markerHeight", "10");
+    markerEnd.setAttribute("refX", "10");
+    markerEnd.setAttribute("refY", "5");
+    markerEnd.setAttribute("orient", "auto-start-reverse");
+    const pathEnd = document.createElementNS(xmlns, "path");
+    pathEnd.setAttribute("d", "M 0 0 L 10 5 L 0 10 Z");
+    pathEnd.setAttribute("fill", "black");
+    markerEnd.appendChild(pathEnd);
+    defs.appendChild(markerEnd);
+
+    svg.appendChild(defs);
+
+    // Đường chính (line p1 -> p2)
+    const mainLine = document.createElementNS(xmlns, "line");
+    mainLine.setAttribute("x1", p1.x);
+    mainLine.setAttribute("y1", p1.y);
+    mainLine.setAttribute("x2", p2.x);
+    mainLine.setAttribute("y2", p2.y);
+    mainLine.setAttribute("stroke", "black");
+    mainLine.setAttribute("stroke-width", "5");
+    mainLine.setAttribute("marker-start", "url(#arrow-end)");
+    mainLine.setAttribute("marker-end", "url(#arrow-start)");
+
+    // Đường phụ ngang tại p1
+    const perpLine1 = document.createElementNS(xmlns, "line");
+    perpLine1.setAttribute("x1", p1.x - h);
+    perpLine1.setAttribute("y1", p1.y);
+    perpLine1.setAttribute("x2", p1.x + h);
+    perpLine1.setAttribute("y2", p1.y);
+    perpLine1.setAttribute("stroke", "black");
+    perpLine1.setAttribute("stroke-width", "5");
+
+    // Đường phụ ngang tại p2
+    const perpLine2 = document.createElementNS(xmlns, "line");
+    perpLine2.setAttribute("x1", p2.x - h);
+    perpLine2.setAttribute("y1", p2.y);
+    perpLine2.setAttribute("x2", p2.x + h);
+    perpLine2.setAttribute("y2", p2.y);
+    perpLine2.setAttribute("stroke", "black");
+    perpLine2.setAttribute("stroke-width", "5");
+
+    // Văn bản kích thước
+    const text = document.createElementNS(xmlns, "text");
+    const textX = p1.x - 50; // Tọa độ X của văn bản
+    const textY = (p1.y + p2.y) / 2; // Tọa độ Y của văn bản
+    text.setAttribute("x", textX);
+    text.setAttribute("y", textY);
+    text.setAttribute("font-size", dim_txt_size);
+    text.setAttribute("fill", "black");
+    text.setAttribute("text-anchor", "middle");
+    text.setAttribute("transform", `rotate(-90, ${textX}, ${textY})`); // Xoay 90 độ
+    text.textContent = `${Math.round(length)}`;
+
+    // Thêm vào nhóm
+    group.appendChild(mainLine);
+    group.appendChild(perpLine1);
+    group.appendChild(perpLine2);
+    group.appendChild(text);
+
+    // Thêm vào SVG
+    svg.appendChild(group);
+}
+
+
+
+
+function drawDimension(svg, p1, p2, h) {
+    const xmlns = "http://www.w3.org/2000/svg";
+
+    // Tính toán vector
+    const isHorizontal = p1.y === p2.y; // Kiểm tra nếu là đường ngang
+    const dx = p2.x - p1.x;
+    const dy = p2.y - p1.y;
+    const length = Math.sqrt(dx * dx + dy * dy);
+
+    // Tọa độ văn bản
+    const textX = (p1.x + p2.x) / 2;
+    const textY = p1.y - 50;
+
+    // Định nghĩa nhóm SVG
+    const group = document.createElementNS(xmlns, "g");
+
+    const defs = document.createElementNS(xmlns, "defs");
+
+    const markerStart = document.createElementNS(xmlns, "marker");
+    markerStart.setAttribute("id", "arrow-start");
+    markerStart.setAttribute("markerWidth", "10");
+    markerStart.setAttribute("markerHeight", "10");
+    markerStart.setAttribute("refX", "10"); // Di chuyển marker-start
+    markerStart.setAttribute("refY", "5");
+    markerStart.setAttribute("orient", "auto"); // Hướng tự động
+    const pathStart = document.createElementNS(xmlns, "path");
+    pathStart.setAttribute("d", "M 0 0 L 10 5 L 0 10 Z");
+    pathStart.setAttribute("fill", "black"); // Màu marker bắt đầu
+    markerStart.appendChild(pathStart);
+    defs.appendChild(markerStart);
+
+    // Định nghĩa marker cho cuối (marker-end)
+    const markerEnd = document.createElementNS(xmlns, "marker");
+    markerEnd.setAttribute("id", "arrow-end");
+    markerEnd.setAttribute("markerWidth", "10");
+    markerEnd.setAttribute("markerHeight", "10");
+    markerEnd.setAttribute("refX", "10"); // Di chuyển marker-end
+    markerEnd.setAttribute("refY", "5");
+    markerEnd.setAttribute("orient", "auto-start-reverse"); // Hướng ngược lại
+    const pathEnd = document.createElementNS(xmlns, "path");
+    pathEnd.setAttribute("d", "M 0 0 L 10 5 L 0 10 Z");
+    pathEnd.setAttribute("fill", "black"); // Màu marker kết thúc
+    markerEnd.appendChild(pathEnd);
+    defs.appendChild(markerEnd);
+
+    svg.appendChild(defs);
+
+
+    // Đường chính (line p1 -> p2)
+    const mainLine = document.createElementNS(xmlns, "line");
+    mainLine.setAttribute("x1", p1.x);
+    mainLine.setAttribute("y1", p1.y);
+    mainLine.setAttribute("x2", p2.x);
+    mainLine.setAttribute("y2", p2.y);
+    mainLine.setAttribute("stroke", "black");
+    mainLine.setAttribute("stroke-width", "5");
+    mainLine.setAttribute("marker-end", "url(#arrow-start)");
+    mainLine.setAttribute("marker-start", "url(#arrow-end)");
+
+    svg.appendChild(defs);
+
+    // Đường phụ vuông góc tại p1
+    const perpLine1 = document.createElementNS(xmlns, "line");
+    perpLine1.setAttribute("x1", p1.x);
+    perpLine1.setAttribute("y1", p1.y - h);
+    perpLine1.setAttribute("x2", p1.x);
+    perpLine1.setAttribute("y2", p1.y + h);
+    perpLine1.setAttribute("stroke", "black");
+    perpLine1.setAttribute("stroke-width", "5");
+
+    // Đường phụ vuông góc tại p2
+    const perpLine2 = document.createElementNS(xmlns, "line");
+    perpLine2.setAttribute("x1", p2.x);
+    perpLine2.setAttribute("y1", p2.y - h);
+    perpLine2.setAttribute("x2", p2.x);
+    perpLine2.setAttribute("y2", p2.y + h);
+    perpLine2.setAttribute("stroke", "black");
+    perpLine2.setAttribute("stroke-width", "5");
+
+    // Văn bản kích thước
+    const text = document.createElementNS(xmlns, "text");
+    text.setAttribute("x", textX);
+    text.setAttribute("y", textY - 5);
+    text.setAttribute("font-size", dim_txt_size);
+    text.setAttribute("fill", "black");
+    text.setAttribute("text-anchor", "middle");
+    text.textContent = `${Math.round(length)}`;
+
+    // Thêm vào nhóm
+    group.appendChild(mainLine);
+    group.appendChild(perpLine1);
+    group.appendChild(perpLine2);
+    group.appendChild(text);
+
+    // Thêm vào SVG
+    svg.appendChild(group);
+}
+
+
+
 // Đảm bảo mọi radio sẽ được xử lý
 handleRadioChange('craneType', (radio) => radio.id);
 handleRadioChange('jibLength', (radio) => {
-    const numbers = radio.id.match(/\d+/g); // Tìm tất cả các số trong chuỗi
-    return numbers ? numbers.map(Number)[0] : null; // Chuyển các chuỗi số thành số và trả về mảng số
+    const numbers = radio.id.match(/\d+/g); 
+    return numbers ? numbers.map(Number)[0] : null; 
 });
 handleRadioChange('loadType', (radio) => radio.id);
 handleRadioChange('workLoadLimit', () => {
-    // Đối với workLoadLimit, bạn không cần phải lưu giá trị nào từ radio, chỉ cần load lại scene.
+    
     return null; 
 });
 

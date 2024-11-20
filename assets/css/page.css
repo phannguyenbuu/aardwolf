@@ -167,7 +167,7 @@ body{
 .content__left--title-page3 p {
     color: #CC2200;
     font-weight: bold;
-    font-size: 29px;
+    font-size: 24px;
     padding: 20px 0px;
 }
 
@@ -190,7 +190,6 @@ body{
 .content__left--description-page3 span:last-child{
     font-weight: bold;
     font-size: 29px;
-    margin-right: 10px;
 }
 
 #loadTypeList {
@@ -201,15 +200,16 @@ body{
 .content__left-list-answer--item {
     flex: 1 1 100%; /* Mặc định mỗi item chiếm 100% chiều ngang */
     order: 0; /* Thứ tự mặc định */
+    font-size: 24px;
 }
 
 .content__left-content-page3 p{
     color: #525266;
-    font-size: 25px;
+    font-size: 20px;
 }
 
 #content-page3 .content__left-note{
-    font-size: 25px;
+    font-size: 20px;
 }
 
 #content-page3 .content__left--price{
@@ -217,7 +217,7 @@ body{
 }
 
 #content-page3 .content__left--content--item{
-    font-size: 25px;
+    font-size: 20px;
 }
 
 .content__left-content-page3 p:first-child {

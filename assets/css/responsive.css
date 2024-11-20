@@ -49,6 +49,29 @@
 
 }
 
+@media (min-width: 768px) {
+    .content__left-list-answer--item {
+        flex: 1 1 50%; /* Chia đều 2 cột trên desktop */
+    }
+
+    .item-1 { order: 0; }
+    .item-2 { order: 1; }
+    .item-3 { order: 2; }
+    .item-4 { order: 3; }
+    .item-5 { order: 4; }
+    .item-6 { order: 5; }
+}
+
+@media (max-width: 767px) {
+    /* Thứ tự mới trên mobile */
+    .item-1 { order: 0; }
+    .item-3 { order: 1; }
+    .item-5 { order: 2; }
+    .item-2 { order: 3; }
+    .item-4 { order: 4; }
+    .item-6 { order: 5; }
+}
+
 /* mobile */
 @media (max-width: 739px){
     .action-desktop {

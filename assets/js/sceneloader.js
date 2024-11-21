@@ -48,6 +48,72 @@ class SceneLoader {
     load_a_scene() {
         console.log('Scene loaded with crane type:', this.crane_type);
     }
+<<<<<<< main
+=======
+  }
+
+function _load_a_Scene()
+{
+    
+    const radioButtons = document.querySelectorAll('input[type="radio"]');
+
+    // Lọc ra các radio button được chọn (checked)
+    const selectedValues = Array.from(radioButtons)
+        .filter(radio => radio.checked)
+        .map(radio => ({
+            name: radio.name, // Lấy thuộc tính name
+            value: radio.value // Lấy giá trị được chọn
+        }));
+
+    // Hiển thị các radio button được chọn
+    // console.log("Các giá trị radio được chọn:", selectedValues);
+    
+    
+    clearScene(scene);
+    let ar = select_crane();
+    let scenedata = ar[0];
+
+    var ls = __extract_point3(scenedata.name);
+    // console.log(ls,_fullname(scenedata.name));
+
+    const p1 = ls[0], p2 = ls[1];
+
+    let tube_height = __tube_height;
+
+    if(scenedata.name.toLowerCase().includes('articulated'))
+    {
+        tube_height -= 300;
+        ar[2] = ar[2].replace(' ID ', ' SM ');
+    }
+    
+    _loadFBX(scenedata.name, {x:0, y:0, z:0, rot:0});
+    _loadFBX(ar[1], {x:p1.x, y:0, z:p1.z, rot:0});
+    _loadFBX(ar[2], {x:p2.x, y:p2.y, z:p2.z, rot:0});
+
+
+    var ___ls = ar[3].split('@');
+    const pad_name = ___ls[0];
+    const firstHElement = ___ls.find(item => item.startsWith('h'));
+    const head_h = firstHElement ? parseFloat(firstHElement.slice(1)) : null;
+
+    // console.log('head_h', ar[3], head_h);
+
+    const suction_name = ar[4].split('@')[0];
+
+    
+
+    _loadFBX(pad_name, {x:p2.x - tube_offset, y:p2.y, z:p2.z - tube_height - head_h, rot:0});
+    _loadFBX(suction_name, {x:p2.x - tube_offset, y:p2.y, z:p2.z - tube_height - head_h, rot:0});
+
+    mergeSVGs([{path:scenedata.name,x:0,y:0},
+        {path:ar[1],x:p1.x, y:-p1.z},
+        {path:ar[2],x:p2.x, y:-p2.z},
+        {path:pad_name,x:p2.x - tube_offset, y:-p2.z + tube_height + head_h},
+        {path:suction_name,x:p2.x - tube_offset, y:-p2.z + tube_height + head_h}], scenedata,
+        -3000,-6000,10000,7500);
+    
+    calc_price(ar);
+>>>>>>> local
 }
 
 

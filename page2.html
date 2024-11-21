@@ -23,18 +23,50 @@
         }
     </script>
     <style>
+<<<<<<< main
+=======
+        .content__left--title-page3 {
+            transform: translateY(0px);
+        }
+
+        #pdf-content {
+            transform: translateY(-300px);
+        }
+
+        svg 
+        {
+            scale:1;
+            transform: translateY(-50px);
+            max-height: 800px;
+        }
+
+        polyline
+        {
+            fill:none;stroke:black;stroke-width:5
+        }
+
+>>>>>>> local
         #threejs-container {
             position:absolute;
             top: 12.2vh;
             left: 51vw;
             border-radius: 10px;
             overflow: hidden;
+<<<<<<< main
             z-index: 999;
             width: 38vw;
             height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
+=======
+            z-index: 998;
+            width: 35%;
+            height: 50vh;
+            display: flex;               /* Bật Flexbox */
+            justify-content: center;     /* Căn giữa theo chiều ngang */
+            align-items: center;         /* Căn giữa theo chiều dọc */
+>>>>>>> local
         }
         @media screen and (max-width:768px) {
             #threejs-container {
@@ -187,7 +219,7 @@
         </div>
     </div>
 
-    <div id="content-page3" style="visibility: hidden; position: absolute; top: -100%;">
+    <div id="content-page3" style="visibility: hidden; position: fixed; top: -99999px;">
         <div class="container">
             <div class="row content py-2">
                 <div class="col-lg-12 col-md-12 col-12 content__left">
@@ -459,7 +491,7 @@
             $('.footer a').on('click', function(event) {
                 event.preventDefault();
                 
-                $('html, body').animate({ scrollTop: 0 }, 'slow');
+                ('html, body').animate({ scrollTop: 0 }, 'slow');
                 
                 $('.image-3d').fadeIn();
                 $('#threejs-container').fadeIn();
@@ -565,6 +597,7 @@
 </script>
 
 <script>
+<<<<<<< main
     async function generatePDF() {
         const elementHTML = document.getElementById('content-page3');
 
@@ -577,6 +610,125 @@
         callback: function (doc) {
             // Sau khi HTML được render vào PDF, bạn có thể lưu nó
             doc.save("output.pdf");
+=======
+   async function generatePDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF(); // Initializes a standard A4-sized PDF document.
+
+    const elementHTML = document.getElementById('content-page3');
+
+    // Make sure the content is visible for capturing
+    elementHTML.style.visibility = 'visible';
+    // elementHTML.style.position = 'static';
+    
+
+    // return;
+
+    // Capture the content as a canvas using html2canvas
+    const canvas = await html2canvas(elementHTML, {
+        scale: 2, // Improves image quality
+        scrollX: 0,
+        scrollY: 0,
+        useCORS: true, // Handles external image sources
+    });
+
+    // Get the dimensions of the canvas
+    const canvasWidth = canvas.width;
+    const canvasHeight = canvas.height;
+
+    // Convert dimensions to mm for PDF scaling
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
+
+    // Calculate aspect ratio to fit full page
+    const widthRatio = pageWidth / canvasWidth;
+    const heightRatio = pageHeight / canvasHeight;
+    const scaleRatio = Math.min(widthRatio, heightRatio);
+
+    // Calculate the new width and height of the image
+    const imgWidth = canvasWidth * scaleRatio;
+    const imgHeight = canvasHeight * scaleRatio;
+
+    // Add image to PDF, centering it if needed
+    const xOffset = (pageWidth - imgWidth) / 2;
+    const yOffset = (pageHeight - imgHeight) / 2;
+
+    const imgData = canvas.toDataURL('image/png');
+    doc.addImage(imgData, 'PNG', xOffset, yOffset, imgWidth, imgHeight);
+
+    // Save the PDF file
+    doc.save('fullscreen_document.pdf');
+
+    // Restore original element styling
+    elementHTML.style.visibility = 'hidden';
+    elementHTML.style.position = 'absolute';
+}
+
+
+    const savedUsername = localStorage.getItem('username');
+    if (savedUsername) {
+        // Hiển thị thông tin người dùng nếu đã đăng nhập
+        $('.username, .password, .loginButton').hide();
+        $('.menu-mobile').removeClass('active');
+        $('.menu-mobile-img').hide();
+        $('.userInfo').show();
+        $('.userName').text(savedUsername);
+        $('.logoutButton').show();
+        $('.menu-mobile').removeClass('active');
+        document.getElementById('totalPrice').textContent = formatPrice(totalPrice);
+        document.getElementById('totalPrice2').textContent = formatPrice(totalPrice);
+    } else {
+        // Hiển thị form đăng nhập nếu chưa đăng nhập
+        $('.username, .password, .loginButton').show();
+        $('.menu-mobile-img').show();
+        $('.userInfo, .logoutButton').hide();
+    }
+
+    $('.loginButton').click(function () {
+    let username = '';
+    let password = '';
+
+    // Kiểm tra giao diện đang sử dụng: Desktop hay Mobile
+    if ($('.action-desktop').is(':visible')) {
+        username = $('.action-desktop .username').val().trim();
+        password = $('.action-desktop .password').val().trim();
+    } else if ($('.action-mobile').is(':visible')) {
+        username = $('.menu-mobile .username').val().trim();
+        password = $('.menu-mobile .password').val().trim();
+    }
+
+    // Kiểm tra nếu username hoặc password trống
+    if (!username || !password) {
+        alert('Please enter both username and password.');
+        return;
+    }
+
+    // Gửi yêu cầu AJAX
+    $.ajax({
+        url: 'https://www.aardwolf.com.au/api/get_price.php',
+        type: 'POST',
+        data: {
+            'txtUserName': username,
+            'txtPassword': password,
+            '_submit_login': 1
+        },
+        success: function (response) {
+            if (response && response.user && response.user.name) {
+                localStorage.setItem('username', response.user.name);
+
+                // Ẩn form đăng nhập và hiển thị thông tin người dùng
+                $('.username, .password, .loginButton').hide();
+                $('.menu-mobile-img').hide();
+                $('.menu-mobile').removeClass('active');
+                $('.userInfo').show();
+                $('.userName').text(response.user.name);
+                $('.logoutButton').show();
+                document.getElementById('totalPrice').textContent = formatPrice(totalPrice);
+                document.getElementById('totalPrice2').textContent = formatPrice(totalPrice);
+            } else {
+                alert('Login failed! Invalid username or password.');
+            }
+>>>>>>> local
         },
         x: 10, // Vị trí bắt đầu trên trục X
         y: 10  // Vị trí bắt đầu trên trục Y

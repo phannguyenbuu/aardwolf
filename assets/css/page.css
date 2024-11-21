@@ -260,9 +260,15 @@ input[type="radio"]:disabled + label {
 
 
 .image-3d {
+<<<<<<< main
     position: absolute;
     top: 4%;
     right: 0;
+=======
+    position: fixed;
+    top: 80px;
+    /* right: 0;
+>>>>>>> local
     left: 0;
     bottom: 0;
     width: 100%;

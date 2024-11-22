@@ -23,6 +23,7 @@
         }
     </script>
     <style>
+<<<<<<< HEAD
 <<<<<<< main
 =======
         .content__left--title-page3 {
@@ -40,12 +41,23 @@
             max-height: 800px;
         }
 
+=======
+        svg 
+        {
+            scale:0.8;
+            transform: translateY(-75px);
+            max-height: 800px;
+        }
+>>>>>>> 7309194779d6eca56d5682159270d75692cc65da
         polyline
         {
             fill:none;stroke:black;stroke-width:5
         }
+<<<<<<< HEAD
 
 >>>>>>> local
+=======
+>>>>>>> 7309194779d6eca56d5682159270d75692cc65da
         #threejs-container {
             position:absolute;
             top: 12.2vh;
@@ -55,7 +67,7 @@
 <<<<<<< main
             z-index: 999;
             width: 38vw;
-            height: 100vh;
+            height: 75vh;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -71,8 +83,8 @@
         @media screen and (max-width:768px) {
             #threejs-container {
                 display: none;
-                width: 80vw;
-                top: 17.2vh;
+                width: 86vw;
+                top: 14vh;
                 left: -4vw;
                 height: 100%;
             }
@@ -86,6 +98,25 @@
                 top: 5%;
             }
         }
+
+        @media screen and (min-width: 1024px) and (max-width:1600px){
+            #threejs-container {
+                width: 35%;
+                top: 13.5vh;
+                left: 51vw;
+                height: 84vh;
+            }
+
+            #viewport-buttons {
+                margin-left: 83vw;
+                margin-top: -5vh;
+            }
+
+            .image-3d {
+                top: 5%;
+            }
+        }
+
     </style>
 </head>
 
@@ -96,27 +127,32 @@
                 <img src="assets/images/logo.png" alt="logo" class="logo">
     
                 <div class="action-desktop">
-                    <input type="text" placeholder="username">
-                    <input type="password" placeholder="password">
-                    <button class="action__password">login</button>
+                    <input type="text" class="username" placeholder="username">
+                    <input type="password" class="password" placeholder="password">
+                    <button class="action__password loginButton">Login</button>
+                    <p class="userInfo" style="display: none; margin: 0; color: #fff;">Welcome, <span class="userName"></span>!</p>
+                    <button class="logoutButton" style="display: none;">Đăng xuất</button>
                 </div>
+                
 
                 <div class="action-mobile cursor-pointer">
-                    <img src="assets/images/menu.png" alt="">
+                    <img class="menu-mobile-img" src="assets/images/menu.png" alt="">
+                    <p class="userInfo" style="display: none; margin: 0; color: #fff;">Welcome, <span class="userName"></span>!</p>
+                    <button class="logoutButton" style="display: none;">Đăng xuất</button>
                 </div>
 
                 <div class="menu-mobile">
                     <div class="closes"><img src="assets/images/close.png" alt=""></div>
-                    <form action="">
+                    <form action="#">
                         <div class="pb-4 d-flex flex-column">
-                            <input type="text" placeholder="username">
+                            <input type="text" class="username" placeholder="username">
                             <a href="">Sign up</a>
                         </div>
                         <div class="pb-4 d-flex flex-column">
-                            <input type="text" placeholder="password">
+                            <input type="password" class="password" placeholder="password">
                             <a href="">Forgot password</a>
                         </div>
-                        <button class="py-2">Login</button>
+                        <button class="py-2 action__password loginButton">Login</button>
                     </form>
                 </div>
             </div>
@@ -160,16 +196,13 @@
                     <div class="row content__left--content--item m-0">
                         <div class="col-lg-6 col-md-6 col-6 content__left--content--item-1">2.5m lift tube (standard)</div>
                         <div class="col-lg-6 col-md-6 col-6 content__left--content--item-2 d-flex align-items-center">
-                            <span>1.7m</span>
+                            <span id="liftTube17">1.7m</span>
                         </div>
                     </div>
                     <div class="row content__left--content--item m-0">
-                        <div class="col-lg-12 col-md-12 col-12 content__left--content--item-3">Installation height</div>
-                    </div>
-                    <div class="row content__left--content--item m-0">
-                        <div class="col-lg-6 col-md-6 col-6 content__left--content--item-1">2.5m lift tube</div>
+                        <div class="col-lg-6 col-md-6 col-6 content__left--content--item-1">Installation height</div>
                         <div class="col-lg-6 col-md-6 col-6 content__left--content--item-2 d-flex align-items-center">
-                            <span>2.9m</span>
+                            <span id="liftTube29">2.9m</span>
                         </div>
                     </div>
                     <div class="row content__left--content--item m-0">
@@ -182,7 +215,7 @@
 
                 <div class="content__left--price text-center py-4">
                     <span>Price:</span>
-                    <span id="totalPrice">0$</span>
+                    <span id="totalPrice"></span>
                 </div>
 
                 <div class="content__left-price--action text-center">
@@ -208,18 +241,31 @@
         </a>
         <div class="d-flex">
             <img style="width: 85%;" class="h-100" src="assets/images/image-1.png" alt="">
-            <div class="d-flex flex-column icon-3d">
-                <img style="width: 40px;" src="assets/images/Icon (1).png" alt="">
-                <img style="width: 40px;" src="assets/images/Icon (2).png" alt="">
-                <img style="width: 40px;" src="assets/images/Icon (3).png" alt="">
-                <img style="width: 40px;" src="assets/images/Icon (4).png" alt="">
-                <img style="width: 40px;" src="assets/images/Icon (5).png" alt="">
-                <img style="width: 40px;" src="assets/images/Icon (6).png" alt="">
+            <div  class="d-flex flex-column icon-3d">
+                <img id='bottom-view' style="width: 40px;" src="assets/images/Icon (7).png" alt="">
+                <img id='front-view' style="width: 40px;" src="assets/images/Icon (1).png" alt="">
+                <img id='left-view' style="width: 40px;" src="assets/images/Icon (2).png" alt="">
+                <img id='right-view' style="width: 40px;" src="assets/images/Icon (3).png" alt="">
+                <img id='top-view' style="width: 40px;" src="assets/images/Icon (4).png" alt="">
+                <img id='ortho-view' style="width: 40px;" src="assets/images/Icon (5).png" alt="">
+                <img id='360' style="width: 40px;" src="assets/images/Icon (6).png" alt="">
             </div>
         </div>
     </div>
 
+<<<<<<< HEAD
     <div id="content-page3" style="visibility: hidden; position: fixed; top: -99999px;">
+=======
+    <div id="content-page3" style=" width: 800px;
+    margin: 0 auto;
+    overflow: hidden;
+    position: absolute;
+    background: white;
+    visibility: hidden;
+    top: -100%;
+    "
+    >
+>>>>>>> 7309194779d6eca56d5682159270d75692cc65da
         <div class="container">
             <div class="row content py-2">
                 <div class="col-lg-12 col-md-12 col-12 content__left">
@@ -227,7 +273,7 @@
                         <p>QUOTATION</p>
                     </div>
     
-                    <div class="content__left--image-page3 text-center">
+                    <div id='pdf-2d' class="content__left--image-page3 text-center">
                         <img src="assets/images/image-2.png" alt="">
                     </div>
     
@@ -239,9 +285,8 @@
                     <div class="content__left-content-page3 py-4">
                         <p>Aardwolf Vacuum Tube Lifter</p>
                         <p>The above drawing is based on information provided by the buyer. The Aardwolf vacuum tube lifter is combined with a crane, vacuum generator, suction supply hose, lift tube, control unit and suction head.</p>
-                        <p>Lifting capacity: <span id="MaximumLiftingCapacity">??</span>. (As per customer’s request). The Aardwolf Vacuum Tube Lifter is a classic design typically suited for loads between 10 - <span id="maxRangeCapacity">???</span>.</p>
+                        <p>Lifting capacity: <span id="MaximumLiftingCapacity">??</span>. (As per customer’s request). The Aardwolf Vacuum Tube Lifter is a classic design typically suited for loads between <span id="minRangeCapacity">10</span> - <span id="maxRangeCapacity">???</span>.</p>
                     </div>
-    
                     <div class="content__left--description-page3">
                         <span>2</span>
                         <span>TECHNICAL DATA</span>
@@ -257,8 +302,10 @@
                         <div class="row content__left--content--item m-0">
                             <div class="col-lg-6 col-md-6 col-6 content__left--content--item-1">Lift tube size</div>
                             <div class="col-lg-6 col-md-6 col-6 content__left--content--item-2 d-flex align-items-center">
-                                <img src="assets/images/icon-1.png" alt="">
-                                <span id="liftTubeSize2">100-200</span>
+                                <div class="d-flex align-items-center">
+                                    <img style="width: 20px;" src="assets/images/icon-1.png" alt="">
+                                    <span id="liftTubeSize2">100-200</span>
+                                </div>
                             </div>
                         </div>
                         <div class="row content__left--content--item m-0">
@@ -273,16 +320,13 @@
                         <div class="row content__left--content--item m-0">
                             <div class="col-lg-6 col-md-6 col-6 content__left--content--item-1">2.5m lift tube (standard)</div>
                             <div class="col-lg-6 col-md-6 col-6 content__left--content--item-2 d-flex align-items-center">
-                                <span>1.7m</span>
+                                <span id="liftTube172">1.7m</span>
                             </div>
                         </div>
                         <div class="row content__left--content--item m-0">
-                            <div class="col-lg-12 col-md-12 col-12 content__left--content--item-3">Installation height</div>
-                        </div>
-                        <div class="row content__left--content--item m-0">
-                            <div class="col-lg-6 col-md-6 col-6 content__left--content--item-1">2.5m lift tube</div>
+                            <div class="col-lg-6 col-md-6 col-6 content__left--content--item-1">Installation height</div>
                             <div class="col-lg-6 col-md-6 col-6 content__left--content--item-2 d-flex align-items-center">
-                                <span>2.9m</span>
+                                <span id="liftTube292">2.9m</span>
                             </div>
                         </div>
                         <div class="row content__left--content--item m-0">
@@ -292,15 +336,13 @@
                             </div>
                         </div>
                     </div>
-    
                     <div class="content__left-note pt-4">
                         <b>Note:</b>
                         <span>It is recommended that the buyer purchase extra vacuum heads to cover all eventualities such as different carton sizes and the possibility of porous materials.</span>
                     </div>
-    
                     <div class="content__left--price text-center py-4">
                         <span>Quotation:</span>
-                        <span id="totalPrice2">0$</span>
+                        <span id="totalPrice2"></span>
                     </div>
                 </div>
             </div>
@@ -321,158 +363,15 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
-    <script src="assets/js/data.js"></script>
-    <script src="assets/js/sceneloader.js"></script>
-    <script type="module">
-        import * as THREE from 'three'
-        import { OrbitControls } from '/jsm/controls/OrbitControls.js'
-        import { FBXLoader } from '/jsm/loaders/FBXLoader.js'
-        import Stats from '/jsm/libs/stats.module.js'
-        const scene = new THREE.Scene();
-        var controls;
-        var renderer;
-        var camera;
-        function _loadFBX(filename, x, y, z, rot, clr, metal, rough ) {
-            const material = new THREE.MeshStandardMaterial({
-                color: clr, // Màu xám kim loại
-                metalness: metal,  // Độ bóng
-                roughness: rough    // Độ nhám
-            })
-            const fbxLoader = new FBXLoader()
-            fbxLoader.load(
-                filename,
-                (object) => {
-                    object.traverse(function (child) {
-                        if (child.isMesh) {
-                            child.material = material
-                            if (child.material) {
-                                child.material.transparent = false
-                            }
-                        }
-                    })
-                    // object.scale.set(1, 1, 1)
-                    object.position.set(x, y, z)
-                    object.rotation.y = Math.PI / 180 * rot;
-                    scene.add(object)
-                    progressBar.style.display = 'none'
-                },
-                (xhr) => {
-                    if (xhr.lengthComputable) {
-                        var percentComplete = (xhr.loaded / xhr.total) * 100
-                        progressBar.value = percentComplete
-                        progressBar.style.display = 'block'
-                    }
-                },
-                (error) => {
-                    console.log(error)
-                }
-            )
-        }
-        function init() {
-            scene.add(new THREE.AxesHelper(5))
-            const light = new THREE.PointLight(0xffffff, 5)
-            light.position.set(2000,2000,2000)
-            scene.add(light)
+<script src="assets/js/data.js"></script>
+<script type = 'module' src="assets/js/sceneloader.js"></script>
+
+<script type="module">
+    $(document).ready(function() {
             
-            const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-            directionalLight.position.set(-500, 500, 500).normalize(); // Vị trí của ánh sáng
-            scene.add(directionalLight);
 
-            const ambientLight = new THREE.AmbientLight(0x404040); // Ánh sáng mềm
-            scene.add(ambientLight);
 
-            const w = window.innerWidth;
-            const h = window.innerHeight;
-
-            camera = new THREE.PerspectiveCamera(75, w/h , 0.1, 10000)
-            camera.position.set(1200, 1000, 7000)
-
-            renderer = new THREE.WebGLRenderer()
-            renderer.setSize(w, h)
-            renderer.setClearColor(0xd1d2d3); // Thiết lập màu nền xám
-
-            const container = document.getElementById('threejs-container');
-            container.appendChild(renderer.domElement);
-            controls = new OrbitControls(camera, renderer.domElement)
-            controls.enableDamping = true
-            controls.target.set(1200, 1000, 0)
-        };
-
-        function _fullname(s) {
-            return 'models/aardwolf_all_part_' + s + '.fbx';
-        }
-
-        function _loadScene(tube=100)
-        {
-            const sceneloader = new SceneLoader ('MOBILE', 2.5);
-            const scenename = sceneloader.load_Crane();
-            
-            console.log('fbx:', scenename);
-
-            if(scenename)
-            {
-                const obj = ALL_SCENES.find(item => item.name.toUpperCase() === scenename.toUpperCase());
-                console.log(obj);
-
-                if(obj)
-                {
-                    _loadFBX(_fullname(obj.name), 0, 0, 0, 0, 0x555555, 1, 0.5);
-
-                    obj.objects.forEach( o => {
-                        
-                        if(o.filename == '#tube')
-                        {
-                            _loadFBX(_fullname('TUBE LIFT ID ' + tube.toString()), o.x, o.y, o.z, o.rot, o.clr, o.metal, o.rough);
-
-                        }else{
-                            _loadFBX(_fullname(o.filename), o.x, o.y, o.z, o.rot, o.clr, o.metal, o.rough);
-                        }
-                        
-                    });
-                }
-            }
-            
-        }
-        
-        init();
-        _loadScene(180);
-
-        function onWindowResize() {
-            camera.aspect = window.innerWidth / window.innerHeight
-            camera.updateProjectionMatrix()
-            renderer.setSize(window.innerWidth, window.innerHeight)
-            render()
-        }
-        window.addEventListener('resize', onWindowResize, false)
-        
-        const stats = new Stats()
-        
-        window.addEventListener('click', () => {
-            const cameraPosition = camera.position;
-            const cameraInfoDiv = document.getElementById('cameraInfo');
-            cameraInfoDiv.innerHTML = `Camera Position: x: ${cameraPosition.x.toFixed(2)}, y: ${cameraPosition.y.toFixed(2)}, z: ${cameraPosition.z.toFixed(2)}`;
-            cameraInfoDiv.style.display = 'block'; // Hiển thị thông tin camera
-        });
-
-        function animate() {
-            requestAnimationFrame(animate)
-
-            if(controls)
-                controls.update()
-
-            render()
-
-            stats.update()
-        }
-
-        function render() {
-            if(renderer)
-                renderer.render(scene, camera)
-        }
-
-        animate()
-        $(document).ready(function() {
-            $('.action-mobile').on('click', function() {
+            $('.action-mobile .menu-mobile-img').on('click', function() {
                 $('.menu-mobile').addClass('active');
             });
 
@@ -565,15 +464,27 @@
 
 <script>
     const maxLiftingCapacity = localStorage.getItem('maxLiftingCapacity');
+    const minLiftingCapacity = localStorage.getItem('minLiftingCapacity');
+    const liftTube17 = localStorage.getItem('liftTube17');
+    const liftTube29 = localStorage.getItem('liftTube29');
     const liftTubeSize = localStorage.getItem('liftTubeSize');
     const liftTubePower = localStorage.getItem('liftTubePower');
 
-    const priceLiftTubeSize = localStorage.getItem('priceLiftTubeSize');
+    const priceLiftTubeSize = localStorage.getItem('priceLiftTubeSize') / 1000;
     const priceLiftTubePower = localStorage.getItem('priceLiftTubePower');
 
-    const totalPrice = parseFloat(priceLiftTubeSize) + parseFloat(priceLiftTubePower);
-    document.getElementById('totalPrice').textContent = totalPrice.toFixed(2)+"US$";
-    document.getElementById('totalPrice2').textContent = totalPrice.toFixed(2)+"US$";
+    const totalPrice = priceLiftTubeSize + parseFloat(priceLiftTubePower);
+
+    // Định dạng số thành dấu phẩy
+    function formatPrice(value) {
+        return value.toFixed(3).replace('.', ',') + "$";
+    }
+
+    // Hiển thị giá đã định dạng
+    if(localStorage.getItem('user_name')){
+        document.getElementById('totalPrice').textContent = formatPrice(totalPrice);
+        document.getElementById('totalPrice2').textContent = formatPrice(totalPrice);
+    }
 
     
     if (maxLiftingCapacity) {
@@ -581,9 +492,22 @@
         document.getElementById('maxRangeCapacity').textContent = maxLiftingCapacity;
     }
 
+    document.getElementById('minRangeCapacity').textContent = minLiftingCapacity;
+
+    if(liftTube17){
+        document.getElementById('liftTube17').textContent = liftTube17;
+    }
+
+    if(liftTube29){
+        document.getElementById('liftTube29').textContent = liftTube29;
+    }
+
+
     if (maxLiftingCapacity && liftTubeSize && liftTubePower) {
         document.querySelector('.content__left--content--item-2 span').textContent = maxLiftingCapacity;
         document.querySelector('.content__left--content--item-2 span#maxLiftingCapacity2').textContent = maxLiftingCapacity;
+        document.querySelector('.content__left--content--item-2 span#liftTube172').textContent = liftTube17;
+        document.querySelector('.content__left--content--item-2 span#liftTube292').textContent = liftTube29;
         document.querySelector('.content__left--content--item-2 span#liftTubeSize2').textContent = liftTubeSize;
         document.querySelector('.content__left--content--item-2 span#vacuumPump2').textContent = liftTubePower;
         const liftTubeSizeElements = document.querySelectorAll('.content__left--content--item-2 span')[1];
@@ -597,6 +521,7 @@
 </script>
 
 <script>
+<<<<<<< HEAD
 <<<<<<< main
     async function generatePDF() {
         const elementHTML = document.getElementById('content-page3');
@@ -736,8 +661,162 @@
 
         // Restore the original styles after PDF is generated
         elementHTML.style.visibility = 'hidden';
+=======
+  async function generatePDF() {
+    const { jsPDF } = window.jspdf;
+
+    // Khởi tạo file PDF với kích thước A4
+    const doc = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4', // Định dạng A4
+    });
+
+    const elementHTML = document.getElementById('content-page3');
+
+    if(elementHTML){
+        elementHTML.style.visibility = 'visible';
+>>>>>>> 7309194779d6eca56d5682159270d75692cc65da
         elementHTML.style.position = 'absolute';
+        elementHTML.style.left = '-9999px'; // Đẩy ra ngoài màn hình
+        elementHTML.style.top = '0';
     }
+
+    // Render nội dung HTML sang canvas với độ phân giải cao
+    const canvas = await html2canvas(elementHTML, {
+        scale: 3, // Tăng scale để đảm bảo độ nét
+        scrollX: 0,
+        scrollY: 0,
+        useCORS: true, // Hỗ trợ ảnh bên ngoài
+    });
+
+    // Chuyển canvas sang định dạng ảnh
+    const imgData = canvas.toDataURL('image/png');
+
+    // Lấy kích thước canvas gốc
+    const canvasWidth = canvas.width;
+    const canvasHeight = canvas.height;
+
+    // Kích thước A4 trong PDF (210mm x 297mm)
+    const pageWidth = 210; // Chiều rộng A4
+    const pageHeight = 297; // Chiều cao A4
+
+    // Tính tỷ lệ scale để bảo toàn tỷ lệ gốc của ảnh
+    const widthRatio = pageWidth / canvasWidth;
+    const heightRatio = pageHeight / canvasHeight;
+    const scaleRatio = Math.min(widthRatio, heightRatio);
+
+    // Kích thước ảnh sau khi scale
+    const imgWidth = 155;
+    const imgHeight = 290;
+
+    // Căn chỉnh hình ảnh vào giữa trang
+    const xOffset = (pageWidth - imgWidth) / 2; // Canh giữa theo chiều ngang
+    const yOffset = (pageHeight - imgHeight) / 2; // Canh giữa theo chiều dọc
+
+    // Chèn ảnh vào PDF
+    doc.addImage(imgData, 'PNG', xOffset, yOffset, imgWidth, imgHeight);
+
+    // Xuất file PDF
+    doc.save('full_page_a4.pdf');
+
+    // Khôi phục trạng thái ban đầu của phần tử HTML
+    elementHTML.style.visibility = 'hidden';
+    elementHTML.style.position = 'absolute';
+    elementHTML.style.left = '0'; // Đẩy ra ngoài màn hình
+    elementHTML.style.top = '-100%';
+}
+
+
+
+
+
+    const savedUsername = localStorage.getItem('user_name');
+    if (savedUsername) {
+        // Hiển thị thông tin người dùng nếu đã đăng nhập
+        $('.username, .password, .loginButton').hide();
+        $('.menu-mobile').removeClass('active');
+        $('.menu-mobile-img').hide();
+        $('.userInfo').show();
+        $('.userName').text(savedUsername);
+        $('.logoutButton').show();
+        $('.menu-mobile').removeClass('active');
+        document.getElementById('totalPrice').textContent = formatPrice(totalPrice);
+        document.getElementById('totalPrice2').textContent = formatPrice(totalPrice);
+    } else {
+        // Hiển thị form đăng nhập nếu chưa đăng nhập
+        $('.username, .password, .loginButton').show();
+        $('.menu-mobile-img').show();
+        $('.userInfo, .logoutButton').hide();
+    }
+
+    $('.loginButton').click(function (e) {
+        e.preventDefault();
+    let username = '';
+    let password = '';
+
+    // Kiểm tra giao diện đang sử dụng: Desktop hay Mobile
+    if ($('.action-desktop').is(':visible')) {
+        username = $('.action-desktop .username').val().trim();
+        password = $('.action-desktop .password').val().trim();
+    } else if ($('.action-mobile').is(':visible')) {
+        username = $('.menu-mobile .username').val().trim();
+        password = $('.menu-mobile .password').val().trim();
+    }
+
+    // Kiểm tra nếu username hoặc password trống
+    if (!username || !password) {
+        alert('Please enter both username and password.');
+        return;
+    }
+
+    // Gửi yêu cầu AJAX
+    $.ajax({
+        url: 'https://www.aardwolf.com.au/api/get_price.php',
+        type: 'POST',
+        data: {
+            'txtUserName': username,
+            'txtPassword': password,
+            '_submit_login': 1
+        },
+        success: function (response) {
+            if (response && response.user && response.user.name) {
+                localStorage.setItem('user_name', response.user.name);
+
+                // Ẩn form đăng nhập và hiển thị thông tin người dùng
+                $('.username, .password, .loginButton').hide();
+                $('.menu-mobile-img').hide();
+                $('.menu-mobile').removeClass('active');
+                $('.userInfo').show();
+                $('.userName').text(response.user.name);
+                $('.logoutButton').show();
+                document.getElementById('totalPrice').textContent = formatPrice(totalPrice);
+                document.getElementById('totalPrice2').textContent = formatPrice(totalPrice);
+            } else {
+                alert('Login failed! Invalid username or password.');
+            }
+        },
+        error: function (xhr, status, error) {
+            console.error('Login Failed:', error);
+            alert('Login failed! Please try again later.');
+        }
+    });
+});
+
+
+// Xử lý sự kiện đăng xuất
+$('.logoutButton').click(function () {
+    // Xóa username khỏi localStorage
+    localStorage.removeItem('user_name');
+    $('.menu-mobile-img').show();
+    $('.menu-mobile').removeClass('active');
+
+    // Hiển thị lại form đăng nhập, ẩn thông tin người dùng
+    $('.username, .password, .loginButton').show();
+    $('.userInfo, .logoutButton').hide();
+    window.location.reload();
+});
 </script>
+
 
 </html>

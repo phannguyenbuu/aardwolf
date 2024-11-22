@@ -23,22 +23,23 @@
     <style>
         #threejs-container {
             position:absolute;
-            top: 20.2vh;
+            top: 15vh;
             left: 51vw;
             border-radius: 10px;
             overflow: hidden;
             z-index: 999;
             width: 35%;
-            height: 100vh;
+            height: 77vh;
             display: flex;               /* Bật Flexbox */
             justify-content: center;     /* Căn giữa theo chiều ngang */
             align-items: center;         /* Căn giữa theo chiều dọc */
         }
+
         @media screen and (max-width:768px) {
 <<<<<<< main
             #threejs-container {
                 display: none;
-                width: 80vw;
+                width: 100vw;
                 top: 17.2vh;
                 left: -4vw;
                 height: 100%;
@@ -66,6 +67,25 @@
 >>>>>>> local
             }
         }
+        
+        @media screen and (min-width: 1024px) and (max-width:1600px){
+            #threejs-container {
+                width: 35%;
+                top: 17.5vh;
+                left: 51vw;
+                height: 89%;
+            }
+
+            #viewport-buttons {
+                margin-left: 83vw;
+                margin-top: -5vh;
+            }
+
+            .image-3d {
+                top: 5%;
+            }
+        }
+
     </style>
 </head>
 
@@ -76,27 +96,32 @@
                 <img src="assets/images/logo.png" alt="logo" class="logo">
     
                 <div class="action-desktop">
-                    <input type="text" placeholder="username">
-                    <input type="password" placeholder="password">
-                    <button class="action__password">login</button>
+                    <input type="text" class="username" placeholder="username">
+                    <input type="password" class="password" placeholder="password">
+                    <button class="action__password loginButton">Login</button>
+                    <p class="userInfo" style="display: none; margin: 0; color: #fff;">Welcome, <span class="userName"></span>!</p>
+                    <button class="logoutButton" style="display: none;">Đăng xuất</button>
                 </div>
+                
 
                 <div class="action-mobile cursor-pointer">
-                    <img src="assets/images/menu.png" alt="">
+                    <img class="menu-mobile-img" src="assets/images/menu.png" alt="">
+                    <p class="userInfo" style="display: none; margin: 0; color: #fff;">Welcome, <span class="userName"></span>!</p>
+                    <button class="logoutButton" style="display: none;">Đăng xuất</button>
                 </div>
 
                 <div class="menu-mobile">
                     <div class="closes"><img src="assets/images/close.png" alt=""></div>
-                    <form action="">
+                    <form action="#">
                         <div class="pb-4 d-flex flex-column">
-                            <input type="text" placeholder="username">
+                            <input type="text" class="username" placeholder="username">
                             <a href="">Sign up</a>
                         </div>
                         <div class="pb-4 d-flex flex-column">
-                            <input type="text" placeholder="password">
+                            <input type="password" class="password" placeholder="password">
                             <a href="">Forgot password</a>
                         </div>
-                        <button class="py-2">Login</button>
+                        <button class="py-2 action__password loginButton">Login</button>
                     </form>
                 </div>
             </div>
@@ -156,32 +181,34 @@
                         <p>3. What work load limit do you require?</p>
                         <div class="row content__left-list-answer">
                             <div class="col-lg-6 col-md-6 col-12 content__left-list-answer--item">
-                                <input type="radio" name="workLoadLimit" id="45kg">
-                                <label for="45kg">WLL 45 kgs</label>
+                                <input type="radio" name="workLoadLimit" id="45kg" data-max-lifting-capacity-m="45 kgs" data-max-lifting-capacity-inch="99.21 lbs">
+                                <label for="45kg">WLL <span class="workLoadLimit-45">45 kgs</span></label>
                             </div>
                             <div class="col-lg-6 col-md-6 col-12 content__left-list-answer--item">
-                                <input type="radio" name="workLoadLimit" id="70kg">
-                                <label for="70kg">WLL 70 kgs</label>
+                                <input type="radio" name="workLoadLimit" id="70kg" data-max-lifting-capacity-m="70 kgs" data-max-lifting-capacity-inch="154.32 lbs">
+                                <label for="70kg">WLL <span class="workLoadLimit-70">70 kgs</span></label>
                             </div>
                             <div class="col-lg-6 col-md-6 col-12 content__left-list-answer--item">
-                                <input type="radio" name="workLoadLimit" id="80kg">
-                                <label for="80kg">WLL 80 kgs</label>
+                                <input type="radio" name="workLoadLimit" id="80kg" data-max-lifting-capacity-m="80 kgs" data-max-lifting-capacity-inch="176.37 lbs">
+                                <label for="80kg">WLL <span class="workLoadLimit-80">80 kgs</span></label>
                             </div>
                             <div class="col-lg-6 col-md-6 col-12 content__left-list-answer--item">
-                                <input type="radio" name="workLoadLimit" id="120kg">
-                                <label for="120kg">WLL 120 kgs</label>
+                                <input type="radio" name="workLoadLimit" id="120kg" data-max-lifting-capacity-m="120 kgs" data-max-lifting-capacity-inch="264.55 lbs">
+                                <label for="120kg">WLL <span class="workLoadLimit-120">120 kgs</span></label>
                             </div>
                             <div class="col-lg-6 col-md-6 col-12 content__left-list-answer--item">
-                                <input type="radio" name="workLoadLimit" id="150kg">
-                                <label for="150kg">WLL 150 kgs</label>
+                                <input type="radio" name="workLoadLimit" id="150kg" data-max-lifting-capacity-m="150 kgs" data-max-lifting-capacity-inch="330.69 lbs">
+                                <label for="150kg">WLL <span class="workLoadLimit-150">150 kgs</span></label>
                             </div>
                         </div>
                     </div>
+                    
                     <div class="content__left-list--item">
                         <p>4. What type of load are you lifting?</p>
-                        <div class="row content__left-list-answer">
-                            <div class="col-lg-6 col-md-6 col-12 content__left-list-answer--item">
+                        <div class="row content__left-list-answer" id="loadTypeList">
+                            <div class="col-lg-6 col-md-6 col-12 content__left-list-answer--item item-1">
                                 <input type="radio" name="loadType" id="300max">
+<<<<<<< HEAD
 <<<<<<< main
                                 <label for="300max">small cartons (300x300 max)</label>
                             </div>
@@ -214,21 +241,42 @@
                                 <label for="400large">Large cartons (above 400)</label>
                             </div>
                             
+=======
+                                <label for="300max">Small cartons (300x300 max)</label>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-12 content__left-list-answer--item item-2">
+                                <input type="radio" name="loadType" id="bags">
+                                <label for="bags">Bags</label>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-12 content__left-list-answer--item item-3">
+                                <input type="radio" name="loadType" id="300-400medium">
+                                <label for="300-400medium">Medium cartons (300 to 400)</label>
+                            </div>
+>>>>>>> 7309194779d6eca56d5682159270d75692cc65da
                             <div class="col-lg-6 col-md-6 col-12 content__left-list-answer--item item-4">
                                 <input type="radio" name="loadType" id="highstack">
                                 <label for="highstack">High stack</label>
                             </div>
+<<<<<<< HEAD
                             <div class="col-lg-6 col-md-6 col-12 content__left-list-answer--item item-2">
                                 <input type="radio" name="loadType" id="bags">
                                 <label for="bags">Bags</label>
                             </div>
                            <div class="col-lg-6 col-md-6 col-12 content__left-list-answer--item item-6">
 >>>>>>> local
+=======
+                            <div class="col-lg-6 col-md-6 col-12 content__left-list-answer--item item-5">
+                                <input type="radio" name="loadType" id="400large">
+                                <label for="400large">Large cartons (above 400)</label>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-12 content__left-list-answer--item item-6">
+>>>>>>> 7309194779d6eca56d5682159270d75692cc65da
                                 <input type="radio" name="loadType" id="sheetmaterial">
                                 <label for="sheetmaterial">Sheet material</label>
                             </div>
                         </div>
                     </div>
+                    
                 </div>
             </div>
         </div>
@@ -247,14 +295,14 @@
         </a>
         <div id="viewport-buttons" class="d-flex">
             <!-- <img style="width: 85%;" class="h-100" src="assets/images/image-1.png" alt=""> -->
-            <div  class="d-flex flex-column icon-3d">
-                <img style="width: 40px;" src="assets/images/Icon (7).png" alt="">
-                <img style="width: 40px;" src="assets/images/Icon (1).png" alt="">
-                <img style="width: 40px;" src="assets/images/Icon (2).png" alt="">
-                <img style="width: 40px;" src="assets/images/Icon (3).png" alt="">
-                <img style="width: 40px;" src="assets/images/Icon (4).png" alt="">
-                <img style="width: 40px;" src="assets/images/Icon (5).png" alt="">
-                <img style="width: 40px;" src="assets/images/Icon (6).png" alt="">
+            <div class="d-flex flex-column icon-3d">
+                <img id='bottom-view' style="width: 40px;" src="assets/images/Icon (7).png" alt="">
+                <img id='front-view' style="width: 40px;" src="assets/images/Icon (1).png" alt="">
+                <img id='left-view' style="width: 40px;" src="assets/images/Icon (2).png" alt="">
+                <img id='right-view' style="width: 40px;" src="assets/images/Icon (3).png" alt="">
+                <img id='top-view' style="width: 40px;" src="assets/images/Icon (4).png" alt="">
+                <img id='ortho-view' style="width: 40px;" src="assets/images/Icon (5).png" alt="">
+                <img id='360' style="width: 40px;" src="assets/images/Icon (6).png" alt="">
             </div>
         </div>
     </div>
@@ -277,155 +325,11 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
     <script src="assets/js/data.js"></script>
-    <script src="assets/js/sceneloader.js"></script>
-    
+    <script type="module" src="assets/js/sceneloader.js"></script>
+        
     <script type="module">
-        import * as THREE from 'three'
-        import { OrbitControls } from '/jsm/controls/OrbitControls.js'
-        import { FBXLoader } from '/jsm/loaders/FBXLoader.js'
-        import Stats from '/jsm/libs/stats.module.js'
-
-        const scene = new THREE.Scene();
-        var controls;
-        var renderer;
-        var camera;
-
-        function _loadFBX(filename, x, y, z, rot, clr, metal, rough ) {
-            const material = new THREE.MeshStandardMaterial({
-                color: clr, // Màu xám kim loại
-                metalness: metal,  // Độ bóng
-                roughness: rough    // Độ nhám
-            })
-
-            const fbxLoader = new FBXLoader()
-            fbxLoader.load(
-                filename,
-                (object) => {
-                    object.traverse(function (child) {
-                        if (child.isMesh) {
-                            child.material = material
-                            if (child.material) {
-                                child.material.transparent = false
-                            }
-                        }
-                    })
-                    object.position.set(x, y, z)
-                    object.rotation.y = Math.PI / 180 * rot;
-                    scene.add(object)
-                    progressBar.style.display = 'none'
-                },
-                (xhr) => {
-                    if (xhr.lengthComputable) {
-                        var percentComplete = (xhr.loaded / xhr.total) * 100
-                        progressBar.value = percentComplete
-                        progressBar.style.display = 'block'
-                    }
-                },
-                (error) => {
-                    console.log(error)
-                }
-            )
-        }
-        function init() {
-            scene.add(new THREE.AxesHelper(5))
-            
-            const light = new THREE.PointLight(0xffffff, 5)
-            light.position.set(2000,2000,2000)
-            scene.add(light)
-            
-            const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-            directionalLight.position.set(-500, 500, 500).normalize(); // Vị trí của ánh sáng
-            scene.add(directionalLight);
-
-            const ambientLight = new THREE.AmbientLight(0x404040); // Ánh sáng mềm
-            scene.add(ambientLight);
-            const w = window.innerWidth;
-            const h = window.innerHeight;
-
-            camera = new THREE.PerspectiveCamera(75, w/h , 0.1, 10000)
-            camera.position.set(1200, 1000, 7000)
-
-            renderer = new THREE.WebGLRenderer()
-            renderer.setSize(w, h)
-            renderer.setClearColor(0xd1d2d3); // Thiết lập màu nền xám
-
-            const container = document.getElementById('threejs-container');
-            container.appendChild(renderer.domElement);
-            controls = new OrbitControls(camera, renderer.domElement)
-            controls.enableDamping = true
-            controls.target.set(1200, 1000, 0)
-        };
-
-        function _fullname(s) {
-            return 'models/aardwolf_all_part_' + s + '.fbx';
-        }
-
-        function _loadScene(tube=100)
-        {
-            const sceneloader = new SceneLoader ('MOBILE', 2.5);
-            const scenename = sceneloader.load_Crane();
-            
-            console.log('fbx:', scenename);
-
-            if(scenename)
-            {
-                const obj = ALL_SCENES.find(item => item.name.toUpperCase() === scenename.toUpperCase());
-                console.log(obj);
-                if(obj)
-                {
-                    //--------------LOAD CRANE--------------------------
-                    _loadFBX(_fullname(obj.name), 0, 0, 0, 0, 0x555555, 1, 0.5);
-
-                    obj.objects.forEach( o => {
-                        
-                        if(o.filename == '#tube')
-                        {
-                            _loadFBX(_fullname('TUBE LIFT ID ' + tube.toString()), o.x, o.y, o.z, o.rot, o.clr, o.metal, o.rough);
-
-                        }else{
-                            _loadFBX(_fullname(o.filename), o.x, o.y, o.z, o.rot, o.clr, o.metal, o.rough);
-                        }
-                        
-                    });
-                }
-            }
-            
-        }
-        init();
-        _loadScene(180);
-        function onWindowResize() {
-            camera.aspect = window.innerWidth / window.innerHeight
-            camera.updateProjectionMatrix()
-            renderer.setSize(window.innerWidth, window.innerHeight)
-            render()
-        }
-        window.addEventListener('resize', onWindowResize, false)
-        
-        const stats = new Stats()
-        
-        window.addEventListener('click', () => {
-            const cameraPosition = camera.position;
-            const cameraInfoDiv = document.getElementById('cameraInfo');
-            cameraInfoDiv.innerHTML = `Camera Position: x: ${cameraPosition.x.toFixed(2)}, y: ${cameraPosition.y.toFixed(2)}, z: ${cameraPosition.z.toFixed(2)}`;
-            cameraInfoDiv.style.display = 'block'; // Hiển thị thông tin camera
-        });
-        function animate() {
-            requestAnimationFrame(animate)
-
-            if(controls)
-                controls.update()
-
-            render()
-
-            stats.update()
-        }
-        function render() {
-            if(renderer)
-                renderer.render(scene, camera)
-        }
-        animate()
         $(document).ready(function() {
-            $('.action-mobile').on('click', function() {
+            $('.action-mobile .menu-mobile-img').on('click', function() {
                 $('.menu-mobile').addClass('active');
             });
 
@@ -485,9 +389,9 @@
                 if (isWallMountedCrane) {
                     $jibOptions.eq(0).find('input[type="radio"]').prop('disabled', true);
                 }
-                if (isFiveMeterSelected) {
-                    $wllOptions.eq(4).find('input[type="radio"]').prop('disabled', true);
-                }
+                // if (isFiveMeterSelected) {
+                //     $wllOptions.eq(4).find('input[type="radio"]').prop('disabled', true);
+                // }
             }
         }
 
@@ -502,7 +406,7 @@
             toggleOptions();
         });
 
-        $('#unitSelect').change(function() {
+        $('#unitSelect').change(function () {
             const selectedUnit = $(this).val();
             $('.unit-label').text(selectedUnit);
 
@@ -511,15 +415,41 @@
                 $('#jib-length-3').text('118.11');
                 $('#jib-length-4').text('157.48');
                 $('#jib-length-5').text('196.85');
+                $('.workLoadLimit-45').text('99.21 lbs');
+                $('.workLoadLimit-70').text('154.32 lbs');
+                $('.workLoadLimit-80').text('176.37 lbs');
+                $('.workLoadLimit-120').text('264.55 lbs');
+                $('.workLoadLimit-150').text('330.69 lbs');
             }else{
                 $('#jib-length-25').text('2.5');
                 $('#jib-length-3').text('3');
                 $('#jib-length-4').text('4');
                 $('#jib-length-5').text('5');
+                $('.workLoadLimit-45').text('45 kgs');
+                $('.workLoadLimit-70').text('70 kgs');
+                $('.workLoadLimit-80').text('80 kgs');
+                $('.workLoadLimit-120').text('120 kgs');
+                $('.workLoadLimit-150').text('150 kgs');
             }
 
-            
+            const workLoadLimits = {
+                Inch: ['99.21 lbs', '154.32 lbs', '176.37 lbs', '264.55 lbs', '330.69 lbs'],
+                m: ['45 kgs', '70 kgs', '80 kgs', '120 kgs', '150 kgs']
+            };
+
+            // Cập nhật Work Load Limit hiển thị
+            workLoadLimits[selectedUnit].forEach((value, index) => {
+                $(`.workLoadLimit-${[45, 70, 80, 120, 150][index]}`).text(value);
+            });
+
+            // Lưu lại đơn vị được chọn
             localStorage.setItem('selectedUnit', selectedUnit);
+
+            // Cập nhật giá trị đã chọn dựa trên đơn vị mới
+            const selectedRadio = document.querySelector('input[name="workLoadLimit"]:checked');
+            if (selectedRadio) {
+                selectedRadio.dispatchEvent(new Event('change'));
+            }
         });
 
     const storedUnit = localStorage.getItem('selectedUnit');
@@ -528,10 +458,130 @@
     }
 
     });
+
+    const savedUsername = localStorage.getItem('user_name');
+    if (savedUsername) {
+        // Hiển thị thông tin người dùng nếu đã đăng nhập
+        $('.username, .password, .loginButton').hide();
+        $('.menu-mobile').removeClass('active');
+        $('.menu-mobile-img').hide();
+        $('.userInfo').show();
+        $('.userName').text(savedUsername);
+        $('.logoutButton').show();
+        $('.menu-mobile').removeClass('active');
+    } else {
+        // Hiển thị form đăng nhập nếu chưa đăng nhập
+        $('.username, .password, .loginButton').show();
+        $('.menu-mobile-img').show();
+        $('.userInfo, .logoutButton').hide();
+    }
+
+    $('.loginButton').click(function (e) {
+        e.preventDefault();
+    let username = '';
+    let password = '';
+
+    // Kiểm tra giao diện đang sử dụng: Desktop hay Mobile
+    if ($('.action-desktop').is(':visible')) {
+        username = $('.action-desktop .username').val().trim();
+        password = $('.action-desktop .password').val().trim();
+    } else if ($('.action-mobile').is(':visible')) {
+        username = $('.menu-mobile .username').val().trim();
+        password = $('.menu-mobile .password').val().trim();
+    }
+    // Kiểm tra nếu username hoặc password trống
+    if (!username || !password) {
+        alert('Please enter both username and password.');
+        return;
+    }
+
+    // Gửi yêu cầu AJAX
+    $.ajax({
+        url: 'https://www.aardwolf.com.au/api/get_price.php',
+        type: 'POST',
+        data: {
+            'txtUserName': username,
+            'txtPassword': password,
+            '_submit_login': 1
+        },
+        success: function (response) {
+            if (response && response.user && response.user.name) {
+                localStorage.setItem('user_name', response.user.name);
+
+                // Ẩn form đăng nhập và hiển thị thông tin người dùng
+                $('.username, .password, .loginButton').hide();
+                $('.menu-mobile-img').hide();
+                $('.menu-mobile').removeClass('active');
+                $('.userInfo').show();
+                $('.userName').text(response.user.name);
+                $('.logoutButton').show();
+
+            } else {
+                alert('Login failed! Invalid username or password.');
+            }
+        },
+        error: function (xhr, status, error) {
+            console.error('Login Failed:', error);
+            alert('Login failed! Please try again later.');
+        }
+    });
+});
+
+
+// Xử lý sự kiện đăng xuất
+$('.logoutButton').click(function () {
+    // Xóa username khỏi localStorage
+    localStorage.removeItem('user_name');
+    $('.menu-mobile-img').show();
+    $('.menu-mobile').removeClass('active');
+
+    // Hiển thị lại form đăng nhập, ẩn thông tin người dùng
+    $('.username, .password, .loginButton').show();
+    $('.userInfo, .logoutButton').hide();
+});
     </script>
 
 <script>
+    init_params();
+
+    function reorderItems() {
+    const container = document.getElementById('loadTypeList');
+    const items = Array.from(container.children);
+
+    // Clear existing order/
+    // container.innerHTML = '';
+
+    // if (window.innerWidth < 768) {
+    //     // Mobile order
+    //     const mobileOrder = [0, 2, 4, 1, 3, 5];
+    //     mobileOrder.forEach(index => container.appendChild(items[index]));
+    // } else {
+    //     // Desktop order (default order from the original HTML)
+    //     items.forEach(item => container.appendChild(item));
+    // }
+}
+
+// Run the function on load and resize
+window.addEventListener('load', reorderItems);
+window.addEventListener('resize', reorderItems);
+
+    
+    function init_params() {
+        var selectedOption = document.querySelector('input[name="loadType"]:checked');
+        localStorage.setItem('loadType', selectedOption ? selectedOption.id : "300max");
+
+        selectedOption = document.querySelector('input[name="jibLength"]:checked');
+        localStorage.setItem('jibLength', selectedOption ? selectedOption.id.match(/\d+/g).map(Number)[0] : 2.5);
+
+        selectedOption = document.querySelector('input[name="craneType"]:checked');
+        localStorage.setItem('craneType', selectedOption ? selectedOption.id : "floor");
+    }
+
     document.getElementById("quoteButton").addEventListener("click", function (e) {
+        init_params();
+        
+
+
         // Kiểm tra tất cả các câu hỏi
         const requiredFields = [
             'craneType',
@@ -551,65 +601,142 @@
         if (allSelected) {
             window.location.href = "page2.html";
         } else {
-            alert("Vui lòng chọn đủ tất cả các mục trước khi tiếp tục.");
+            alert("Please select all items before continuing.");
         }
     });
-</script>
-
-<script>
     document.querySelectorAll('input[name="workLoadLimit"]').forEach((radio) => {
-        radio.addEventListener('change', function () {
-            let maxLiftingCapacity;
-            let liftTubeSize;
-            let liftTubePower;
-            let priceLiftTubeSize;
-            let priceLiftTubePower;
+    radio.addEventListener('change', function () {
+        const selectedUnit = localStorage.getItem('selectedUnit') || 'm';
 
-            switch (this.id) {
-                case '45kg':
-                    maxLiftingCapacity = '45kg';
-                    liftTubeSize = '160';
-                    liftTubePower = '3.3/3.8kw';
-                    priceLiftTubeSize = 356;
-                    priceLiftTubePower = 2.743;
-                    break;
-                case '70kg':
-                    maxLiftingCapacity = '70kg';
-                    liftTubeSize = '160';
-                    liftTubePower = '4.0/4.6kw';
-                    priceLiftTubeSize = 356;
-                    priceLiftTubePower = 3.424;
-                    break;
-                case '80kg':
-                    maxLiftingCapacity = '80kg';
-                    liftTubeSize = '180';
-                    liftTubePower = '4.0/4.6kw';
-                    priceLiftTubeSize = 469;
-                    priceLiftTubePower = 3.424;
-                    break;
-                case '120kg':
-                    maxLiftingCapacity = '120kg';
-                    liftTubeSize = '200';
-                    liftTubePower = '5.7/6.6kw';
-                    priceLiftTubeSize = 328;
-                    priceLiftTubePower = 3.857;
-                    break;
-                case '150kg':
-                    maxLiftingCapacity = '150kg';
-                    liftTubeSize = '250';
-                    liftTubePower = '7.5/8.0kw';
-                    priceLiftTubeSize = 376;
-                    priceLiftTubePower = 5.033;
-                    break;
+        const data = {
+            '45kg': {
+                Inch: { 
+                    maxLiftingCapacity: '99.21 lbs', 
+                    minLiftingCapacity: '22.05', 
+                    liftTube17: '66.93 Inch', 
+                    liftTube29: '114.17 Inch', 
+                    liftTubeSize: '160', 
+                    liftTubePower: '3.3/3.8kw', 
+                    priceLiftTubeSize: 356, 
+                    priceLiftTubePower: 2.743 
+                },
+                m: { 
+                    maxLiftingCapacity: '45kg', 
+                    minLiftingCapacity: '10', 
+                    liftTube17: '1.7m', 
+                    liftTube29: '2.9m', 
+                    liftTubeSize: '160', 
+                    liftTubePower: '3.3/3.8kw', 
+                    priceLiftTubeSize: 356,
+                    priceLiftTubePower: 2.743 
+                }
+            },
+            '70kg': {
+                Inch: { 
+                    maxLiftingCapacity: '154.32 lbs', 
+                    minLiftingCapacity: '22.05', 
+                    liftTube17: '66.93 Inch', 
+                    liftTube29: '114.17 Inch', 
+                    liftTubeSize: '160', 
+                    liftTubePower: '4.0/4.6kw', 
+                    priceLiftTubeSize: 356, 
+                    priceLiftTubePower: 3.424 
+                },
+                m: { 
+                    maxLiftingCapacity: '70kg', 
+                    minLiftingCapacity: '10', 
+                    liftTube17: '1.7m', 
+                    liftTube29: '2.9m', 
+                    liftTubeSize: '160', 
+                    liftTubePower: '4.0/4.6kw', 
+                    priceLiftTubeSize: 356, 
+                    priceLiftTubePower: 3.424 
+                }
+            },
+            '80kg': {
+                Inch: { 
+                    maxLiftingCapacity: '176.37 lbs', 
+                    minLiftingCapacity: '22.05', 
+                    liftTube17: '66.93 Inch', 
+                    liftTube29: '114.17 Inch', 
+                    liftTubeSize: '180', 
+                    liftTubePower: '4.0/4.6kw', 
+                    priceLiftTubeSize: 469, 
+                    priceLiftTubePower: 3.424 
+                },
+                m: { 
+                    maxLiftingCapacity: '80kg',
+                    minLiftingCapacity: '10', 
+                    liftTube17: '1.7m', 
+                    liftTube29: '2.9m', 
+                    liftTubeSize: '180', 
+                    liftTubePower: '4.0/4.6kw',
+                    priceLiftTubeSize: 469, 
+                    priceLiftTubePower: 3.424 
+                }
+            },
+            '120kg': {
+                Inch: { 
+                    maxLiftingCapacity: '264.55 lbs', 
+                    minLiftingCapacity: '22.05', 
+                    liftTube17: '66.93 Inch', 
+                    liftTube29: '114.17 Inch', 
+                    liftTubeSize: '200', 
+                    liftTubePower: '5.7/6.6kw', 
+                    priceLiftTubeSize: 328, 
+                    priceLiftTubePower: 3.857 
+                },
+                m: { 
+                    maxLiftingCapacity: '120kg', 
+                    minLiftingCapacity: '10', 
+                    liftTube17: '1.7m', 
+                    liftTube29: '2.9m', 
+                    liftTubeSize: '200', 
+                    liftTubePower: '5.7/6.6kw', 
+                    priceLiftTubeSize: 328, 
+                    priceLiftTubePower: 3.857 
+                }
+            },
+            '150kg': {
+                Inch: { 
+                    maxLiftingCapacity: '330.69 lbs', 
+                    minLiftingCapacity: '22.05', 
+                    liftTube17: '66.93 Inch', 
+                    liftTube29: '114.17 Inch', 
+                    liftTubeSize: '250', 
+                    liftTubePower: '7.5/8.0kw', 
+                    priceLiftTubeSize: 376, 
+                    priceLiftTubePower: 5.033 
+                },
+                m: { 
+                    maxLiftingCapacity: '150kg', 
+                    minLiftingCapacity: '10', 
+                    liftTube17: '1.7m', 
+                    liftTube29: '2.9m', 
+                    liftTubeSize: '250', 
+                    liftTubePower: '7.5/8.0kw', 
+                    priceLiftTubeSize: 376, 
+                    priceLiftTubePower: 5.033 
+                }
             }
+        };
 
-            localStorage.setItem('maxLiftingCapacity', maxLiftingCapacity);
-            localStorage.setItem('liftTubeSize', liftTubeSize);
-            localStorage.setItem('liftTubePower', liftTubePower);
-            localStorage.setItem('priceLiftTubeSize', priceLiftTubeSize);
-            localStorage.setItem('priceLiftTubePower', priceLiftTubePower);
-        });
+        // Lấy dữ liệu phù hợp với đơn vị
+        const selectedData = data[this.id][selectedUnit];
+
+        if (selectedData) {
+            // Lưu các giá trị tương ứng vào localStorage
+            localStorage.setItem('maxLiftingCapacity', selectedData.maxLiftingCapacity);
+            localStorage.setItem('minLiftingCapacity', selectedData.minLiftingCapacity);
+            localStorage.setItem('liftTube17', selectedData.liftTube17);
+            localStorage.setItem('liftTube29', selectedData.liftTube29);
+            localStorage.setItem('liftTubeSize', selectedData.liftTubeSize);
+            localStorage.setItem('liftTubePower', selectedData.liftTubePower);
+            localStorage.setItem('priceLiftTubeSize', selectedData.priceLiftTubeSize);
+            localStorage.setItem('priceLiftTubePower', selectedData.priceLiftTubePower);
+        }
     });
+});
 </script>
 
 </body>

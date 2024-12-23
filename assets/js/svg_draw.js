@@ -145,9 +145,9 @@ export class SvgDrawCls {
         let rh = bb.height + 20 * m;
         this.sc = Math.min(this.w / rw, this.h / rh);
 
-        this.x += (210 * this.drw - this.sc * rw - 50)/2;
+        this.x = (210 * this.drw - (dx[0] + dx[1] + dx[2]) * this.sc) / 2;
 
-        if(this.istyp('arti')) this.x += 20;
+        // if(this.istyp('arti')) this.x += 20;
 
         console.log('sc',this.x, bb.width, this.w);
         
@@ -166,12 +166,12 @@ export class SvgDrawCls {
         console.log('w', this.pad.path);
         let pad_y = window.SettingObj.posPad.z * this.sc /  this.drw;
 
-        if(pad_y > 20)
+        if(pad_y > 10)
         {
-            pad_y = pad_y - 4 * this.drw;
+            pad_y = pad_y - 10;
 
             if(this.pad.path.toLowerCase().includes('multi'))
-                pad_y = pad_y + 4 * this.drw;
+                pad_y = pad_y + 20;
         }
 
         this.drawPls(pls, nx);
@@ -200,7 +200,7 @@ export class SvgDrawCls {
                 this.data.vx ? this.data.vx[2]: dx[2]); // Ngang
 
         // console.log(this.y, dy[0], this.sc);
-    
+        
         this.drawVerticalDimension(nx + this.x - 800 * this.sc, -  this.y, 
             - this.y - dy[0] * this.sc, m, this.data.vy[0]);
         this.drawVerticalDimension(nx + this.x + (dx[0] + dx[1] + dx[2] + 800) * this.sc, 
@@ -237,7 +237,7 @@ export class SvgDrawCls {
 
         this.scalePls(this.zoom_objs, window.SettingObj.zoomft.scale,  window.SettingObj.zoomft.x);
             
-        let bb = this.calculateGlobalBounds(this.zoom_objs);
+        // let bb = this.calculateGlobalBounds(this.zoom_objs);
         
         let bx = this.drw * 105;
         let by = this.y + 65;
@@ -246,7 +246,7 @@ export class SvgDrawCls {
         
         this.page.drawCircle({x: bx, y: by, size: 21 * this.drw, // Diameter of the circle
             borderColor: rgb(0, 0, 0), // Circle border color (blue)
-            borderWidth: 1, // Circle border width
+            borderWidth: 0.1, // Circle border width
         });
     
         this.page.drawText('A', {
@@ -296,9 +296,9 @@ export class SvgDrawCls {
             thickness: this.thick, color: rgb(0, 0, 0),});
     
         // Mũi tên đầu
-        this.drawArrow(this.page, p1.x, p1.y, "down");
+        this.drawArrow(p1.x, p1.y, "down");
         // Mũi tên cuối
-        this.drawArrow(this.page, p2.x, p2.y, "up");
+        this.drawArrow(p2.x, p2.y, "up");
     
         // Đường ngang phụ tại p1
         this.page.drawLine({start: { x: p1.x - h, y: p1.y }, end: { x: p1.x + h, y: p1.y },

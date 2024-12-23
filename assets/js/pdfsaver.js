@@ -6,7 +6,7 @@ const fontkit = window.fontkit;
 
 export class PdfSaverCls {
     constructor() {
-        this.thick = 0.01;
+        this.thick = 0.1;
         this.drw = 2.54;
         this.margin_left = this.drw * 19.1;
         this.margin_right = this.drw * 19.1;
@@ -45,7 +45,7 @@ export class PdfSaverCls {
 
         labels.forEach((label, index) => {
             this.drawText(label, this.margin_left + this.drw * 2.5, 
-                bottom_y - this.rowHeight * index - cellPadding, this.font_sz, true);
+                bottom_y - this.rowHeight * index - cellPadding, 1.33 * this.font_sz, true);
         });
 
         const dataitm = window.SettingObj.getCurrentWorkload();
@@ -60,7 +60,7 @@ export class PdfSaverCls {
             let s = (itm.key === 'liftTubeSize' ? 'Ø' : '') + dataitm[itm.key];
             if(itm.key.includes('2.5')) s = itm.key;
 
-            this.drawText(s, xOffset, bottom_y - this.rowHeight * itm.y - cellPadding, this.font_sz);
+            this.drawText(s, xOffset, bottom_y - this.rowHeight * itm.y - cellPadding, 1.33 * this.font_sz);
         });
     }
 
@@ -140,7 +140,7 @@ export class PdfSaverCls {
         bottom_y -= this.drw * 2.2; //this.drw * 2.2;
         this.page.drawLine({start: { x: this.margin_left, y: bottom_y }, 
             end: { x: this.drw * 210 - this.margin_right, y: bottom_y },
-            thickness: this.thick * 50,color: rgb(1, 0, 0),});
+            thickness: this.thick, color: rgb(1, 0, 0),});
 
         bottom_y -= this.drw * 7.3; //this.drw * 8.2;
         this.draw_txt('Aardwolf Vacuum Tube Lifter', this.margin_left, bottom_y, this.drw * 4, true, 0);
@@ -168,7 +168,7 @@ export class PdfSaverCls {
         bottom_y -= this.drw * 2.4; //this.drw * 2.2;
         this.page.drawLine({start: { x: this.margin_left, y: bottom_y }, 
             end: { x: this.drw * 210 - this.margin_right, y: bottom_y },
-            thickness: this.thick * 50, color: rgb(1, 0, 0),});
+            thickness: this.thick, color: rgb(1, 0, 0),});
         
         bottom_y -= this.drw * 3.5; //this.drw * 4;
         this.draw_table_border(bottom_y, 7, this.thick, rgb(0.8,0.8,0.8));
@@ -177,10 +177,10 @@ export class PdfSaverCls {
         bottom_y = this.drw * 39.3; //this.drw * 64;
         this.draw_txt('Note:', this.margin_left, bottom_y, this.font_sz, true, 1);
         this.draw_txt('It is recommended that the buyer purchase extra vacuum heads to cover all eventualities such as',
-        this.margin_left + this.drw * 10, bottom_y, this.font_sz, false, 2, this.margin_right - this.margin_left);
+            this.margin_left + this.drw * 12, bottom_y, this.font_sz, false, 2, this.margin_right - this.margin_left);
 
-        this.draw_txt('different carton sizes and the possibility of porous materials.', this.margin_left + this.drw * 10, 
-            bottom_y - this.drw * 4, this.font_sz);
+        this.draw_txt('different carton sizes and the possibility of porous materials.', 
+            this.margin_left + this.drw * 12, bottom_y - this.drw * 4, this.font_sz);
 
         bottom_y -= this.drw * 14.5; //this.drw * 11.1;
         
@@ -190,7 +190,7 @@ export class PdfSaverCls {
         this.draw_txt(`${window.SettingObj.userName ? window.SettingObj.totalPrice : ''}`,
             this.margin_left + this.drw * 90, bottom_y, this.font_sz, true, 0);
 
-        this.page.drawImage(this.logoImage, {x: this.drw * 149, y: this.drw * (297-17), 
+        this.page.drawImage(this.logoImage, {x: this.drw * 149, y: this.drw * (297-17-6), 
             width: 36 * this.drw, height: 9 * this.drw,});
 
         var svg = new SvgDrawCls(this, this.margin_left, 155 * this.drw, 

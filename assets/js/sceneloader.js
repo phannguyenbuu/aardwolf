@@ -5,95 +5,110 @@ import { OrbitControls } from '/jsm/controls/OrbitControls.js'
 import { FBXLoader } from '/jsm/loaders/FBXLoader.js'
 import Stats from '/jsm/libs/stats.module.js'
 
-const scene = new THREE.Scene();
+// import Stats from 'stats.js'; // Nếu dùng npm
+const progressBarContainer = document.getElementById('progressBarContainer');
+
+// Khởi tạo Stats
+const stats = new Stats();
+stats.showPanel(0); // Hiển thị tab FPS (0: FPS, 1: ms, 2: mb, 3+: custom)
+// Chỉnh sửa CSS của stats.dom để không ảnh hưởng đến các sự kiện chuột
+
+stats.dom.style.left = '500px !important';
+
+stats.dom.style.zIndex = '0';  // Đặt z-index thấp để không chặn sự kiện chuột
+var scene = new THREE.Scene();
+var renderer = new THREE.WebGLRenderer({ antialias: true });
 var controls;
-var renderer;
 var camera;
-var dim_txt_size = '200';
+const __tube_height = 1918.86;
+const tube_offset = 25.5;
 
-function _loadFBX(scenedata, o) {
-    const filename = _fullname(scenedata)
-    const wireframeMaterial = new THREE.MeshBasicMaterial({
-        color: 0x000000,
-        wireframe: true,
-        opacity: 0.05,          // Độ mờ (từ 0.0 đến 1.0, với 0 là hoàn toàn trong suốt và 1 là không trong suốt)
-        transparent: true 
-      });
-    const fbxLoader = new FBXLoader();
-
-    fbxLoader.load(
-        filename,
-        (object) => {
-            object.traverse(function (child) {
-                if (child.isMesh) {
-                    
-                }
-            })
-            object.position.set(o.x, o.z, o.y)
-            object.rotation.y = Math.PI / 180 * o.rot;
-
-            const objectCopy = object.clone(); // Tạo bản sao của object
-
-            objectCopy.traverse(function(child) {
-                if (child.isMesh) {
-                    child.material = wireframeMaterial; // Thay đổi vật liệu của mesh con
-                }
-            });
-            // Thay đổi vị trí hoặc các thuộc tính của bản sao nếu cần
-            // objectCopy.position.set(o.x + 10, o.z, o.y); // Ví dụ: di chuyển bản sao một chút
-
-            // Thêm cả object và objectCopy vào scene
-            scene.add(object);      // Thêm đối tượng gốc vào scene
-            scene.add(objectCopy);  // Thêm bản sao vào scene
-
-            progressBar.style.display = 'none'
-        },
-        (xhr) => {
-            if (xhr.lengthComputable) {
-                var percentComplete = (xhr.loaded / xhr.total) * 100
-                progressBar.value = percentComplete
-                progressBar.style.display = 'block'
-            }
-        },
-        (error) => {
-            console.log(error)
-        }
-    )
-}
+var ls_model_finished = undefined;
 
 function init() {
+    
     scene.add(new THREE.AxesHelper(5))
     
-    const light = new THREE.PointLight(0xffffff, 1)
-    light.position.set(2000,2000,2000)
-    scene.add(light)
+    // const light = new THREE.PointLight(0xffffff, 1);
+    // light.position.set(2000,2000,2000);
+    // scene.add(light);
+
+    const ambientLight = new THREE.AmbientLight(0x808080); // Ánh sáng mềm
+    scene.add(ambientLight);
     
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-    directionalLight.position.set(-500, 500, 500).normalize(); // Vị trí của ánh sáng
+    const directionalLight = new THREE.DirectionalLight(0xdadada, 1);
+    directionalLight.position.set(232, 380, 336); // Vị trí của ánh sáng
     scene.add(directionalLight);
 
-    const ambientLight = new THREE.AmbientLight(0x404040); // Ánh sáng mềm
-    scene.add(ambientLight);
     const w = window.innerWidth;
     const h = window.innerHeight;
 
-    camera = new THREE.PerspectiveCamera(75, w/h , 0.1, 100000)
-    camera.position.set(1200, 1500, 7000)
-
-    renderer = new THREE.WebGLRenderer()
-    renderer.setSize(w, h)
-    renderer.setClearColor(0xd1d2d3); // Thiết lập màu nền xám
+    camera = new THREE.PerspectiveCamera(75, w/h , 0.1, 100000);
+    
+    renderer.setSize(w, h);
+    renderer.setClearColor(window.innerWidth <= 820 ? 0xe6e6e6 : 0xd1d2d3); // Thiết lập màu nền xám
 
     const container = document.getElementById('threejs-container');
     container.appendChild(renderer.domElement);
     controls = new OrbitControls(camera, renderer.domElement)
+    controls.enablePan = true;
+    controls.panSpeed = 1.0;
     controls.minDistance = 0; // Giới hạn zoom gần nhất
     controls.maxDistance = 10000; // Giới hạn zoom xa nhất
-    controls.enableDamping = true
-    controls.target.set(1200, 1500, 0)
+    controls.enableDamping = true;
 
+    camera.position.set(window.innerWidth <= 820 ? 800 : 2000, 1500, 8000)
+    controls.target.set(window.innerWidth <= 820 ? 800 : 2000, 1500, 0)
+
+    // Xử lý sự kiện touch
+    renderer.domElement.addEventListener("touchstart", (event) => {
+        if (event.touches.length === 2) {
+            // Lưu vị trí ban đầu khi có hai ngón tay chạm
+            isPanning = true;
+            lastTouchPos = {
+                x: (event.touches[0].clientX + event.touches[1].clientX) / 2,
+                y: (event.touches[0].clientY + event.touches[1].clientY) / 2,
+            };
+        }
+    });
+
+    renderer.domElement.addEventListener("touchmove", (event) => {
+        if (isPanning && event.touches.length === 2) {
+            // Tính vị trí hiện tại
+            const currentTouchPos = {
+                x: (event.touches[0].clientX + event.touches[1].clientX) / 2,
+                y: (event.touches[0].clientY + event.touches[1].clientY) / 2,
+            };
+
+            // Tính sự thay đổi tọa độ
+            const deltaX = currentTouchPos.x - lastTouchPos.x;
+            const deltaY = currentTouchPos.y - lastTouchPos.y;
+
+            // Di chuyển camera
+            handlePan(deltaX, deltaY);
+
+            // Cập nhật vị trí cuối
+            lastTouchPos = currentTouchPos;
+        }
+    });
+
+    renderer.domElement.addEventListener("touchend", () => {
+        isPanning = false;
+        lastTouchPos = null;
+    });
 
 };
+
+// Biến lưu trạng thái cảm ứng
+let isPanning = false;
+let lastTouchPos = null;
+
+// Hàm xử lý pan camera
+function handlePan(deltaX, deltaY) {
+    const panSpeed = 0.01; // Điều chỉnh tốc độ di chuyển
+    camera.position.x -= deltaX * panSpeed;
+    camera.position.y += deltaY * panSpeed; // Lưu ý: y được đảo vì hệ tọa độ ngược
+}
 
 function _fullname(s) {
     return 'models/aardwolf_all_part_' + s + '.fbx';
@@ -111,441 +126,218 @@ function __extract_point3(inputString)
         p2 = { x: parseFloat(p2Match[1]), y: parseFloat(p2Match[2]), z: parseFloat(p2Match[3]) };
     }
 
-    return [p1, p2]
+    return [p1, p2];
 }
 
-function clearScene(scene) {
-    // Tạo bản sao của scene.children để tránh ảnh hưởng khi xóa các đối tượng
-    const objects = [...scene.children];
+export function clearScene(scene) {
 
-    objects.forEach((object) => {
-        // Kiểm tra nếu đối tượng không phải là ánh sáng
-        if (!object.isLight) {
-            scene.remove(object);
+    return new Promise((resolve) => {
+        function removeObjects() {
+            // Lặp qua tất cả các đối tượng trong scene.children
+            for (let i = scene.children.length - 1; i >= 0; i--) {
+                const object = scene.children[i];
 
-            // Giải phóng bộ nhớ nếu có geometry và material
-            if (object.geometry) object.geometry.dispose();
-            if (object.material) {
-                if (Array.isArray(object.material)) {
-                    object.material.forEach((material) => material.dispose());
-                } else {
-                    object.material.dispose();
+                // Nếu không phải ánh sáng, thực hiện xóa
+                if (!object.isLight) {
+                    scene.remove(object);
+
+                    // Giải phóng bộ nhớ
+                    if (object.geometry) object.geometry.dispose();
+                    if (object.material) {
+                        if (Array.isArray(object.material)) {
+                            for (let material of object.material) {
+                                material.dispose();
+                            }
+                        } else {
+                            object.material.dispose();
+                        }
+                    }
                 }
             }
+
+            // Kiểm tra nếu chỉ còn ánh sáng trong scene
+            if (scene.children.every(child => child.isLight)) {
+                resolve(); // Kết thúc nếu tất cả đã được xóa
+            } else {
+                // Gọi lại hàm removeObjects sau một khoảng thời gian ngắn
+                setTimeout(removeObjects, 0);
+            }
         }
+
+        removeObjects(); // Gọi hàm lần đầu tiên
     });
 }
 
-// Sử dụng hàm
+//------------------------PRELOAD DaarscenedataATA
 
-async function mergeSVGs(files, scenedata) {
-    const parser = new DOMParser();
-    const mergedSVG = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+export function loadDefault() {
+    const loader = new FBXLoader();
+    const url = ALL_SCENES[0].name;
 
-    mergedSVG.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-    mergedSVG.setAttribute("version", "1.1");
-
-    for (let file of files) {
-        const response = await fetch('models/svg/' + file.path + '.svg');
-        console.log('models/svg/' + file.path + '.svg');
-
-        const svgText = await response.text();
-        const lines = svgText.split('\n');
-
-        // Duyệt qua từng dòng trong SVG
-        let valid_content = '';
-
-        lines.forEach(line => {if (line.includes('<polyline') || line.includes('svg')) valid_content += line + "\n"});
-
-
-        const parser = new DOMParser();
-        const svgDocument = parser.parseFromString(valid_content, 'image/svg+xml');
-        // console.log(svgDocument);
-
-        // Lấy tất cả các phần tử <polyline>
-        const polylineElements = svgDocument.querySelectorAll('polyline');
-
-        // Tạo nhóm <g> để di chuyển SVG
-        const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
-        group.setAttribute("transform", `translate(${file.x}, ${file.y})`);
-
-        // Duyệt qua tất cả các phần tử <polyline> và thêm chúng vào nhóm <g>
-        polylineElements.forEach(polyline => {
-            // console.log(polyline);  // In ra phần tử <polyline>
-            // console.log(polyline.getAttribute('points'));  // In ra thuộc tính 'points' của <polyline>
-
-            // Tạo một bản sao của polyline và thêm vào nhóm <g>
-            const polylineClone = polyline.cloneNode(true);
-            group.appendChild(polylineClone);  // Thêm phần tử <polyline> vào nhóm <g>
-        });
-
-        // Nếu bạn muốn thêm nhóm <g> vào tài liệu SVG hiện tại
-        // svgDocument.documentElement.appendChild(group);
-
-        // Kiểm tra lại toàn bộ nội dung SVG sau khi thêm nhóm <g>
-        // console.log(svgDocument.documentElement.outerHTML);
-
-
-        // Thêm vào SVG tổng hợp
-        mergedSVG.appendChild(group);
-    }
-
-    mergedSVG.setAttribute("viewBox", `${-2000} ${-5500} ${8000} ${6000}`);
-
-    let dy = -scenedata.dy[1] - 300;
-    drawDimension(mergedSVG, { x: scenedata.dx[0], y: dy}, { x: scenedata.dx[0] + scenedata.dx[1], y: dy }, 200); // Ngang
-    drawDimension(mergedSVG, { x:  scenedata.dx[0] + scenedata.dx[1], y: dy}, { x:  scenedata.dx[0] + scenedata.dx[1] + scenedata.dx[2], y: dy }, 200); // Ngang
-
-    drawVerticalDimension(mergedSVG, { x: 1200, y: 0}, { x: 1200, y: -286 }, 200); // Ngang
-    drawVerticalDimension(mergedSVG, { x: 1700, y: 0}, { x: 1700, y: -942 }, 200); // Ngang
-    drawVerticalDimension(mergedSVG, { x: -700, y: 0}, { x: - 700, y: -1400 }, 200); // Ngang
-    drawVerticalDimension(mergedSVG, { x: -1200, y: 0}, { x: - 1200, y: -scenedata.dy[0] }, 200); // Ngang
-    drawVerticalDimension(mergedSVG, { x:- 1700, y: 0}, { x: - 1700, y: -scenedata.dy[1] }, 200); // Ngang
-    drawVerticalDimension(mergedSVG, { x:scenedata.dx[0] + scenedata.dx[1] + scenedata.dx[2] + 500, y: 0}, { x: scenedata.dx[0] + scenedata.dx[1] + scenedata.dx[2] + 500, y: -33 }, 200); // Ngang
-    drawVerticalDimension(mergedSVG, { x:scenedata.dx[0] + scenedata.dx[1] + scenedata.dx[2] + 1200, y: 0}, { x: scenedata.dx[0] + scenedata.dx[1] + scenedata.dx[2] + 1200, y: -scenedata.dy[2] }, 200); // Ngang
-
-    var canvas_pdf = document.getElementById('pdf-2d');
-    console.log('canvas_pdf', canvas_pdf);
-
-    if(canvas_pdf)
-    {
-        canvas_pdf.innerHTML = '';
-        // Hiển thị hoặc xuất SVG gộp
-        canvas_pdf.appendChild(mergedSVG);
-        // console.log(new XMLSerializer().serializeToString(mergedSVG)); // In nội dung SVG
-    }
-<<<<<<< HEAD
-<<<<<<< main
-=======
-=======
->>>>>>> 7309194779d6eca56d5682159270d75692cc65da
-  }
-
-function _load_a_Scene()
-{
-<<<<<<< HEAD
-    
-=======
->>>>>>> 7309194779d6eca56d5682159270d75692cc65da
-    const radioButtons = document.querySelectorAll('input[type="radio"]');
-
-    // Lọc ra các radio button được chọn (checked)
-    const selectedValues = Array.from(radioButtons)
-        .filter(radio => radio.checked)
-        .map(radio => ({
-            name: radio.name, // Lấy thuộc tính name
-            value: radio.value // Lấy giá trị được chọn
-        }));
-
-    // Hiển thị các radio button được chọn
-<<<<<<< HEAD
-    // console.log("Các giá trị radio được chọn:", selectedValues);
-=======
-    console.log("Các giá trị radio được chọn:", selectedValues);
->>>>>>> 7309194779d6eca56d5682159270d75692cc65da
-    
-    
-    clearScene(scene);
-    let ar = select_crane();
-    let scenedata = ar[0];
-
-    var ls = __extract_point3(scenedata.name);
-<<<<<<< HEAD
-    // console.log(ls,_fullname(scenedata.name));
-
-    const p1 = ls[0], p2 = ls[1];
-
-    let tube_height = __tube_height;
-
-    if(scenedata.name.toLowerCase().includes('articulated'))
-    {
-        tube_height -= 300;
-        ar[2] = ar[2].replace(' ID ', ' SM ');
-    }
-=======
-    console.log(ls,_fullname(scenedata.name));
-
-    const p1 = ls[0], p2 = ls[1];
->>>>>>> 7309194779d6eca56d5682159270d75692cc65da
-    
-    _loadFBX(scenedata.name, {x:0, y:0, z:0, rot:0});
-    _loadFBX(ar[1], {x:p1.x, y:0, z:p1.z, rot:0});
-    _loadFBX(ar[2], {x:p2.x, y:p2.y, z:p2.z, rot:0});
-
-
-<<<<<<< HEAD
-    var ___ls = ar[3].split('@');
-    const pad_name = ___ls[0];
-    const firstHElement = ___ls.find(item => item.startsWith('h'));
-    const head_h = firstHElement ? parseFloat(firstHElement.slice(1)) : null;
-
-    // console.log('head_h', ar[3], head_h);
-
-    const suction_name = ar[4].split('@')[0];
-
-    
-
-    _loadFBX(pad_name, {x:p2.x - tube_offset, y:p2.y, z:p2.z - tube_height - head_h, rot:0});
-    _loadFBX(suction_name, {x:p2.x - tube_offset, y:p2.y, z:p2.z - tube_height - head_h, rot:0});
-=======
-    const ___ls = ar[3].split('@');
-
-    const firstHElement = ___ls.find(item => item.startsWith('h'));
-    const head_h = firstHElement ? parseFloat(firstHElement.slice(1)) : null;
-
-    console.log('head_h', ar[3], head_h);
-
-    _loadFBX(ar[3], {x:p2.x - tube_offset, y:p2.y, z:p2.z - tube_height - head_h, rot:0});
-    _loadFBX(ar[4], {x:p2.x - tube_offset, y:p2.y, z:p2.z - tube_height - head_h, rot:0});
->>>>>>> 7309194779d6eca56d5682159270d75692cc65da
-
-    mergeSVGs([{path:scenedata.name,x:0,y:0},
-        {path:ar[1],x:p1.x, y:-p1.z},
-        {path:ar[2],x:p2.x, y:-p2.z},
-<<<<<<< HEAD
-        {path:pad_name,x:p2.x - tube_offset, y:-p2.z + tube_height + head_h},
-        {path:suction_name,x:p2.x - tube_offset, y:-p2.z + tube_height + head_h}], scenedata,
-        -3000,-6000,10000,7500);
-    
-    calc_price(ar);
->>>>>>> local
-=======
-        {path:ar[3],x:p2.x - tube_offset, y:-p2.z + tube_height + head_h},
-        {path:ar[4],x:p2.x - tube_offset, y:-p2.z + tube_height + head_h}], scenedata);
-    
-    // drawDimension(svg, { x: 50, y: 100 }, { x: 300, y: 100 }, 30); // Ngang
-    // drawDimension(svg, { x: 400, y: 50 }, { x: 400, y: 200 }, 30); // Dọc
+    loader.load(_fullname(url), function (object) {
+            // Add the model to the scene
+            scene.add(object);
+          }, undefined, function (error) {
+            console.error(error);
+    });
 }
 
+export class PreloadFBXCLS {
+    constructor(scenedata) {
+        this.enableX = false;
+        this.scenedata = scenedata;
+        this.localkey = 'aardwolf_3d_data';
+        
+        this.preloadAllFBX(this.scenedata).then((results) => {
+            this.loadedObjects = [];
+            this.failedObjects = [];
+
+            results.forEach((result, index) => {
+                const sceneobj = this.scenedata[index]; // Lấy dữ liệu cảnh hiện tại
+
+                if (result.status === 'fulfilled') {
+                    let obj = result.value.object;
+                    obj.name = sceneobj.name;
+                    this.loadedObjects.push(obj);
+                    console.log(`Loaded: ${obj.name}`);
+
+                    
+                    if(index === results.length - 1)
+                    {
+                        this.enableX = true;
+                        progressBarContainer.style.display = 'none';
+                    }        
+                    //     progressBarContainer.style.display = 'none';
+                    // }
+                } else {
+                    this.failedObjects.push({ id: this.scenedata[index].id, error: result.reason.error });
+                    console.error(`Failed to load: ${sceneobj}`);
+                }
+            });
+
+            
+
+            console.log('Loaded Objects:', this.loadedObjects);
+            console.log('Failed Objects:', this.failedObjects);
+        })
+        .catch((error) => {
+            progressBarContainer.style.display = 'none';
+            console.error('Unexpected error during preload:', error);
+        });
+    }
+
+    waitForEnableX = (checkInterval = 100) => {
+        return new Promise((resolve) => {
+            const interval = setInterval(() => {
+                if (this.enableX) {
+                    clearInterval(interval);
+                    resolve();
+                }
+            }, checkInterval);
+        });
+    };
+
+    addToScene(scene, name, pos) {
+        if(this.loadedObjects)
+        {
+            const obj = this.loadedObjects.find(o => o.name === name);
+            
+            if(obj)
+            {
+                console.log('Found', obj, name);
+                obj.position.set(pos.x, pos.z, pos.y);
+                scene.add(obj);
+            }else
+                console.log('Not found', name);
+        }
+    }
+
+    preloadFBX(url){
+        return new Promise((resolve, reject) => {
+            const loader = new FBXLoader();
+            loader.load(
+                url,
+                (object) => resolve({ url, object }), // Trả về URL và đối tượng đã tải
+                undefined,                          // Tiến trình tải
+                (error) => reject({ url, error })   // Trả về URL và lỗi nếu tải thất bại
+            );
+        });
+    };
+
+    preloadAllFBX() {
+        if (window.innerWidth > 820) 
+            progressBarContainer.style.display = 'block';
+        
+        const promises = this.scenedata.map((item) => this.preloadFBX(_fullname(item.name)));
+        return Promise.allSettled(promises); // Dùng Promise.allSettled để không bị lỗi nếu 1 file fail
+    };
+    
+}
+
+//------------------------PRELOAD DATA
+
+export async function _load_a_Scene(src_data)
+{
+    const obj_container = window.preload;
+    let [_crane, _pump_group, _tube, _head_stack, _suction_pack] = src_data;
+    
+    window.SettingObj.priceResult(_crane,  _head_stack, _suction_pack);
+    
+    await clearScene(scene);
+    
+    
+    const _crane_name = _crane.name;
+    
+    const [p1, p2] = __extract_point3(_crane_name);
+    let tube_height = __tube_height;
+       
+    console.log('Crane',_crane_name);
+    obj_container.addToScene(scene, _crane_name, {x:0, y:0, z:0});
+   
+    
+    if(_tube)
+    {
+        var pump_z = p1.z;
+        if(_crane_name.toLowerCase().includes("mobile")) pump_z += 310;
+
+        // _loadFBX(_pump_group, {x:p1.x, y:0, z:pump_z, rot:0}, onLoadComplete);
+        obj_container.addToScene(scene, _pump_group.name, {x:p1.x, y:0, z:pump_z});
+
+        if(_crane.name.toLowerCase().includes('articulated'))
+            tube_height -= 300;
+        
+        // _loadFBX(_tube, {x:p2.x, y:p2.y, z:p2.z, rot:0}, onLoadComplete);
+        obj_container.addToScene(scene, _tube.name, {x:p2.x, y:p2.y, z:p2.z});
+    
+
+        if(_head_stack && _suction_pack)
+        {
+            const pad = {x: p2.x - tube_offset, y: p2.y, z:p2.z - tube_height - _head_stack.y};
+            obj_container.addToScene(scene, _head_stack.name, pad);
+            obj_container.addToScene(scene, _suction_pack.name, pad);
+
+            window.SettingObj.posPad = pad;
+
+            const ext = 1100;
+            var mv_x = 0;
+
+            // console.log('pad_y', pad.z);
+
+            window.SettingObj.pdfContent = [{path:_crane.name, x:0 + mv_x, y:0},
+                {path:_pump_group.name,x:mv_x + p1.x, y:-p1.z},
+                {path:_tube.name,x:mv_x + p2.x, y:-p2.z},
+                {path:_head_stack.name,x:mv_x + pad.x, y: - pad.z},
+                {path:_suction_pack.name,x:mv_x + pad.x, y: - pad.z}]
+        }
+    }
+
+    scene.visible = true;
+}
 
 document.addEventListener("DOMContentLoaded", function() {
     init();
-    _load_a_Scene();
+    // _load_a_Scene();
 });
-
-
-
-function handleRadioChange(name, getValueCallback) {
-    document.querySelectorAll(`input[name="${name}"]`).forEach((radio) => {
-        radio.addEventListener('change', function () {
-            const value = getValueCallback(this);
-            localStorage.setItem(name, value);
-            _load_a_Scene();
-        });
-    });
->>>>>>> 7309194779d6eca56d5682159270d75692cc65da
-}
-
-
-
-function drawVerticalDimension(svg, p1, p2, h) {
-    const xmlns = "http://www.w3.org/2000/svg";
-
-    // Tính toán độ dài
-    const dy = Math.abs(p2.y - p1.y);
-    const length = dy;
-
-    // Định nghĩa nhóm SVG
-    const group = document.createElementNS(xmlns, "g");
-
-    const defs = document.createElementNS(xmlns, "defs");
-
-    // Marker bắt đầu
-    const markerStart = document.createElementNS(xmlns, "marker");
-    markerStart.setAttribute("id", "arrow-start");
-    markerStart.setAttribute("markerWidth", "10");
-    markerStart.setAttribute("markerHeight", "10");
-    markerStart.setAttribute("refX", "10");
-    markerStart.setAttribute("refY", "5");
-    markerStart.setAttribute("orient", "auto");
-    const pathStart = document.createElementNS(xmlns, "path");
-    pathStart.setAttribute("d", "M 0 0 L 10 5 L 0 10 Z");
-    pathStart.setAttribute("fill", "black");
-    markerStart.appendChild(pathStart);
-    defs.appendChild(markerStart);
-
-    // Marker kết thúc
-    const markerEnd = document.createElementNS(xmlns, "marker");
-    markerEnd.setAttribute("id", "arrow-end");
-    markerEnd.setAttribute("markerWidth", "10");
-    markerEnd.setAttribute("markerHeight", "10");
-    markerEnd.setAttribute("refX", "10");
-    markerEnd.setAttribute("refY", "5");
-    markerEnd.setAttribute("orient", "auto-start-reverse");
-    const pathEnd = document.createElementNS(xmlns, "path");
-    pathEnd.setAttribute("d", "M 0 0 L 10 5 L 0 10 Z");
-    pathEnd.setAttribute("fill", "black");
-    markerEnd.appendChild(pathEnd);
-    defs.appendChild(markerEnd);
-
-    svg.appendChild(defs);
-
-    // Đường chính (line p1 -> p2)
-    const mainLine = document.createElementNS(xmlns, "line");
-    mainLine.setAttribute("x1", p1.x);
-    mainLine.setAttribute("y1", p1.y);
-    mainLine.setAttribute("x2", p2.x);
-    mainLine.setAttribute("y2", p2.y);
-    mainLine.setAttribute("stroke", "black");
-    mainLine.setAttribute("stroke-width", "5");
-    mainLine.setAttribute("marker-start", "url(#arrow-end)");
-    mainLine.setAttribute("marker-end", "url(#arrow-start)");
-
-    // Đường phụ ngang tại p1
-    const perpLine1 = document.createElementNS(xmlns, "line");
-    perpLine1.setAttribute("x1", p1.x - h);
-    perpLine1.setAttribute("y1", p1.y);
-    perpLine1.setAttribute("x2", p1.x + h);
-    perpLine1.setAttribute("y2", p1.y);
-    perpLine1.setAttribute("stroke", "black");
-    perpLine1.setAttribute("stroke-width", "5");
-
-    // Đường phụ ngang tại p2
-    const perpLine2 = document.createElementNS(xmlns, "line");
-    perpLine2.setAttribute("x1", p2.x - h);
-    perpLine2.setAttribute("y1", p2.y);
-    perpLine2.setAttribute("x2", p2.x + h);
-    perpLine2.setAttribute("y2", p2.y);
-    perpLine2.setAttribute("stroke", "black");
-    perpLine2.setAttribute("stroke-width", "5");
-
-    // Văn bản kích thước
-    const text = document.createElementNS(xmlns, "text");
-    const textX = p1.x - 50; // Tọa độ X của văn bản
-    const textY = (p1.y + p2.y) / 2; // Tọa độ Y của văn bản
-    text.setAttribute("x", textX);
-    text.setAttribute("y", textY);
-    text.setAttribute("font-size", dim_txt_size);
-    text.setAttribute("fill", "black");
-    text.setAttribute("text-anchor", "middle");
-    text.setAttribute("transform", `rotate(-90, ${textX}, ${textY})`); // Xoay 90 độ
-    text.textContent = `${Math.round(length)}`;
-
-    // Thêm vào nhóm
-    group.appendChild(mainLine);
-    group.appendChild(perpLine1);
-    group.appendChild(perpLine2);
-    group.appendChild(text);
-
-    // Thêm vào SVG
-    svg.appendChild(group);
-}
-
-
-
-
-function drawDimension(svg, p1, p2, h) {
-    const xmlns = "http://www.w3.org/2000/svg";
-
-    // Tính toán vector
-    const isHorizontal = p1.y === p2.y; // Kiểm tra nếu là đường ngang
-    const dx = p2.x - p1.x;
-    const dy = p2.y - p1.y;
-    const length = Math.sqrt(dx * dx + dy * dy);
-
-    // Tọa độ văn bản
-    const textX = (p1.x + p2.x) / 2;
-    const textY = p1.y - 50;
-
-    // Định nghĩa nhóm SVG
-    const group = document.createElementNS(xmlns, "g");
-
-    const defs = document.createElementNS(xmlns, "defs");
-
-    const markerStart = document.createElementNS(xmlns, "marker");
-    markerStart.setAttribute("id", "arrow-start");
-    markerStart.setAttribute("markerWidth", "10");
-    markerStart.setAttribute("markerHeight", "10");
-    markerStart.setAttribute("refX", "10"); // Di chuyển marker-start
-    markerStart.setAttribute("refY", "5");
-    markerStart.setAttribute("orient", "auto"); // Hướng tự động
-    const pathStart = document.createElementNS(xmlns, "path");
-    pathStart.setAttribute("d", "M 0 0 L 10 5 L 0 10 Z");
-    pathStart.setAttribute("fill", "black"); // Màu marker bắt đầu
-    markerStart.appendChild(pathStart);
-    defs.appendChild(markerStart);
-
-    // Định nghĩa marker cho cuối (marker-end)
-    const markerEnd = document.createElementNS(xmlns, "marker");
-    markerEnd.setAttribute("id", "arrow-end");
-    markerEnd.setAttribute("markerWidth", "10");
-    markerEnd.setAttribute("markerHeight", "10");
-    markerEnd.setAttribute("refX", "10"); // Di chuyển marker-end
-    markerEnd.setAttribute("refY", "5");
-    markerEnd.setAttribute("orient", "auto-start-reverse"); // Hướng ngược lại
-    const pathEnd = document.createElementNS(xmlns, "path");
-    pathEnd.setAttribute("d", "M 0 0 L 10 5 L 0 10 Z");
-    pathEnd.setAttribute("fill", "black"); // Màu marker kết thúc
-    markerEnd.appendChild(pathEnd);
-    defs.appendChild(markerEnd);
-
-    svg.appendChild(defs);
-
-
-    // Đường chính (line p1 -> p2)
-    const mainLine = document.createElementNS(xmlns, "line");
-    mainLine.setAttribute("x1", p1.x);
-    mainLine.setAttribute("y1", p1.y);
-    mainLine.setAttribute("x2", p2.x);
-    mainLine.setAttribute("y2", p2.y);
-    mainLine.setAttribute("stroke", "black");
-    mainLine.setAttribute("stroke-width", "5");
-    mainLine.setAttribute("marker-end", "url(#arrow-start)");
-    mainLine.setAttribute("marker-start", "url(#arrow-end)");
-
-    svg.appendChild(defs);
-
-    // Đường phụ vuông góc tại p1
-    const perpLine1 = document.createElementNS(xmlns, "line");
-    perpLine1.setAttribute("x1", p1.x);
-    perpLine1.setAttribute("y1", p1.y - h);
-    perpLine1.setAttribute("x2", p1.x);
-    perpLine1.setAttribute("y2", p1.y + h);
-    perpLine1.setAttribute("stroke", "black");
-    perpLine1.setAttribute("stroke-width", "5");
-
-    // Đường phụ vuông góc tại p2
-    const perpLine2 = document.createElementNS(xmlns, "line");
-    perpLine2.setAttribute("x1", p2.x);
-    perpLine2.setAttribute("y1", p2.y - h);
-    perpLine2.setAttribute("x2", p2.x);
-    perpLine2.setAttribute("y2", p2.y + h);
-    perpLine2.setAttribute("stroke", "black");
-    perpLine2.setAttribute("stroke-width", "5");
-
-    // Văn bản kích thước
-    const text = document.createElementNS(xmlns, "text");
-    text.setAttribute("x", textX);
-    text.setAttribute("y", textY - 5);
-    text.setAttribute("font-size", dim_txt_size);
-    text.setAttribute("fill", "black");
-    text.setAttribute("text-anchor", "middle");
-    text.textContent = `${Math.round(length)}`;
-
-    // Thêm vào nhóm
-    group.appendChild(mainLine);
-    group.appendChild(perpLine1);
-    group.appendChild(perpLine2);
-    group.appendChild(text);
-
-    // Thêm vào SVG
-    svg.appendChild(group);
-}
-
-
-
-// Đảm bảo mọi radio sẽ được xử lý
-handleRadioChange('craneType', (radio) => radio.id);
-handleRadioChange('jibLength', (radio) => {
-    const numbers = radio.id.match(/\d+/g); 
-    return numbers ? numbers.map(Number)[0] : null; 
-});
-handleRadioChange('loadType', (radio) => radio.id);
-handleRadioChange('workLoadLimit', () => {
-    
-    return null; 
-});
-
 
 function onWindowResize() {
     camera.aspect = window.innerWidth / window.innerHeight
@@ -554,57 +346,153 @@ function onWindowResize() {
     render()
 }
 window.addEventListener('resize', onWindowResize, false)
+let startPosition;
+let endPosition;
+let cmr_progress = 0; // Tiến độ chuyển động (từ 0 đến 1)
+let duration = 1; // Thời gian chuyển động (giây)
+let startTime = null; // Thời gian bắt đầu hiệu ứng chuyển động
 
-document.getElementById('bottom-view').addEventListener('click', function(e) {
-    // Đặt vị trí camera tại (1200, 1500, 7000)
-    camera.position.set(0, -8000, 0);
-});
-
-document.getElementById('front-view').addEventListener('click', function(e) {
-    // Đặt vị trí camera tại (1200, 1500, 7000)
-    camera.position.set(0, 1500, 7000);
-});
-
-document.getElementById('left-view').addEventListener('click', function(e) {
-    // Đặt vị trí camera tại (1200, 1500, 7000)
-    camera.position.set(7000, 1500, 0);
-});
-
-document.getElementById('right-view').addEventListener('click', function(e) {
-    // Đặt vị trí camera tại (1200, 1500, 7000)
-    camera.position.set(-7000, 1500, 0);
-});
-
-document.getElementById('top-view').addEventListener('click', function(e) {
-    // Đặt vị trí camera tại (1200, 1500, 7000)
-    camera.position.set(0, 8000, 0);
-});
-
-document.getElementById('ortho-view').addEventListener('click', function(e) {
-    // Đặt vị trí camera tại (1200, 1500, 7000)
-    camera.position.set(5000, 5000, 5000);
-});
-
-// const stats = new Stats()
-
-// window.addEventListener('click', () => {
-//     const cameraPosition = camera.position;
-//     const cameraInfoDiv = document.getElementById('cameraInfo');
-//     cameraInfoDiv.innerHTML = `Camera Position: x: ${cameraPosition.x.toFixed(2)}, y: ${cameraPosition.y.toFixed(2)}, z: ${cameraPosition.z.toFixed(2)}`;
-//     cameraInfoDiv.style.display = 'block'; // Hiển thị thông tin camera
-// });
-function animate() {
-    requestAnimationFrame(animate)
-
-    if(controls)
-        controls.update()
-
-    render()
-
-    // stats.update()
+// Nội suy tuyến tính
+function lerp(start, end, t) {
+    return start + (end - start) * t;
 }
+
+// Hàm chuyển camera
+function moveCamera(timestamp) {
+    if (!startTime) startTime = timestamp; // Gán thời gian bắt đầu nếu chưa có
+    const elapsedTime = (timestamp - startTime) / 1000; // Thời gian đã trôi qua (giây)
+
+    cmr_progress = Math.min(elapsedTime / duration, 1); // Tiến độ chuyển động (0-1)
+
+    // Tính vị trí camera
+    camera.position.x = lerp(startPosition.x, endPosition.x, cmr_progress);
+    camera.position.y = lerp(startPosition.y, endPosition.y, cmr_progress);
+    camera.position.z = lerp(startPosition.z, endPosition.z, cmr_progress);
+
+    camera.lookAt(0, 0, 0); // Camera luôn nhìn về tâm
+
+    // Tiếp tục nếu chưa hoàn thành
+    if (cmr_progress < 1) {
+        requestAnimationFrame(moveCamera);
+    }
+}
+
+
+
+// --- CAMERA ---
+const clock = new THREE.Clock();
+
+// FPS mong muốn (ví dụ: 30 FPS)
+const targetFPS = 30;
+const targetDeltaTime = 0.01 / targetFPS;
+
+let lastFrameTime = 0;
+
+
+// Gán sự kiện cho các góc nhìn
+function setView(targetPosition) {
+    startPosition = camera.position.clone(); // Sao chép vị trí hiện tại
+    endPosition = targetPosition;           // Vị trí mục tiêu
+    startTime = null;                        // Đặt lại thời gian bắt đầu
+    cmr_progress = 0;                        // Đặt lại tiến độ
+
+    requestAnimationFrame(moveCamera);
+}
+
+// Thêm sự kiện cho các góc nhìn
+document.getElementById('bottom-view').addEventListener('click', () => setView(new THREE.Vector3(0, -8000, 0)));
+document.getElementById('front-view').addEventListener('click', () => setView(new THREE.Vector3(0, 1500, 7000)));
+document.getElementById('left-view').addEventListener('click', () => setView(new THREE.Vector3(7000, 1500, 0)));
+document.getElementById('right-view').addEventListener('click', () => setView(new THREE.Vector3(-7000, 1500, 0)));
+document.getElementById('top-view').addEventListener('click', () => setView(new THREE.Vector3(0, 8000, 0)));
+document.getElementById('ortho-view').addEventListener('click', () => setView(new THREE.Vector3(5000, 5000, 5000)));
+document.getElementById('360').addEventListener('click', () => setView(new THREE.Vector3(-5000, 5000, -5000)));
+// Hàm render
 function render() {
-    if(renderer)
-        renderer.render(scene, camera)
+    if (renderer && scene && camera) {
+        renderer.render(scene, camera);
+    }
 }
-animate()
+
+// Vòng lặp animation
+function animate() {
+    const deltaTime = clock.getDelta(); // Thời gian giữa 2 khung hình
+
+    if (controls) {
+        controls.update(); // Cập nhật điều khiển nếu có
+    }
+
+    render(); // Render lại scene
+    requestAnimationFrame(animate); // Lặp vòng
+}
+
+animate();
+
+
+// --- CAMERA ---
+
+
+
+
+
+// Tạo container hiển thị thông tin
+const infoContainer = document.createElement('div');
+infoContainer.style.position = 'absolute';
+infoContainer.style.top = '100px';
+infoContainer.style.left = '100px';
+infoContainer.style.color = '#fff';
+infoContainer.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+infoContainer.style.padding = '10px';
+infoContainer.style.fontFamily = 'monospace';
+infoContainer.style.pointerEvents = 'none';
+infoContainer.style.zIndex = '99999';
+infoContainer.style.display = 'none';
+document.body.appendChild(infoContainer);
+
+function countSceneObjects(scene) {
+    let geometryCount = 0;
+    let lightCount = 0;
+
+    scene.children.forEach((object) => {
+        if (object.geometry) {
+            geometryCount++;
+        }
+        if (object.isLight) {
+            lightCount++;
+        }
+    });
+
+    let fbxCount = 0;
+
+    scene.traverse((object) => {
+        // Kiểm tra xem object có phải là Mesh hay Group từ FBX
+        if (object.isMesh) {
+            // Bạn có thể kiểm tra thêm các điều kiện khác để xác định là FBX, ví dụ: thông qua object.name hoặc thuộc tính khác.
+            fbxCount++;
+        }
+    });
+
+    return { geometryCount, lightCount, fbxCount };
+}
+
+export function showProgressBar() {
+    const progressBarContainer = document.getElementById('progressBarContainer');
+
+    if(progressBarContainer)
+        progressBarContainer.style.display = 'block';
+}
+
+export function hideProgressBar() {
+    const progressBarContainer = document.getElementById('progressBarContainer');
+
+    if(progressBarContainer)
+        progressBarContainer.style.display = 'none';
+}
+
+export function set_progress_bar(value) {
+    progressBar.value = value;  // Giả sử là khi canvas đã được tạo xong
+
+    setTimeout(() => {
+        progressBar.dispatchEvent(new Event('input'));
+    }, 0);  // 0ms
+}

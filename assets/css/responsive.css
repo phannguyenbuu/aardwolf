@@ -9,7 +9,7 @@
     }
 
     .image-3d{
-        display: none;
+        display: block;
     }
 
     .footer{
@@ -49,7 +49,7 @@
 
 }
 
-@media (min-width: 768px) {
+@media (min-width: 820px) {
     .content__left-list-answer--item {
         flex: 1 1 50%; /* Chia đều 2 cột trên desktop */
     }

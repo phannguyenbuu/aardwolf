@@ -7,12 +7,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/fonts/fontawesome/css/all.css">
-    <link rel="stylesheet" href="assets/css/reset.css">
+    <!-- <link rel="stylesheet" href="assets/css/reset.css"> -->
     <link rel="stylesheet" href="assets/css/page.css">
-    <link rel="stylesheet" href="assets/css/global.css">
+    <!-- <link rel="stylesheet" href="assets/css/global.css"> -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
     <link rel="stylesheet" href="assets/css/responsive.css">
     <title>Vacuum Lifter</title>
+    
     <script type="importmap">
         {
             "imports": {
@@ -20,73 +21,7 @@
             }
         }
     </script>
-    <style>
-        #threejs-container {
-            position:absolute;
-            top: 15vh;
-            left: 51vw;
-            border-radius: 10px;
-            overflow: hidden;
-            z-index: 999;
-            width: 35%;
-            height: 77vh;
-            display: flex;               /* Bật Flexbox */
-            justify-content: center;     /* Căn giữa theo chiều ngang */
-            align-items: center;         /* Căn giữa theo chiều dọc */
-        }
 
-        @media screen and (max-width:768px) {
-<<<<<<< main
-            #threejs-container {
-                display: none;
-                width: 100vw;
-                top: 17.2vh;
-                left: -4vw;
-                height: 100%;
-            }
-
-            #viewport-buttons {
-                margin-left: 83vw;
-                margin-top: -5vh;
-            }
-
-            .image-3d {
-                top: 5%;
-=======
-            .footer {
-                z-index: 997;
-            }
-
-            #threejs-container {
-                display: none;
-                width: 100vw;
-                top: 0;
-                left: 0;
-                min-height: 100%;
-                transform: translate(20px,-80px);
->>>>>>> local
-            }
-        }
-        
-        @media screen and (min-width: 1024px) and (max-width:1600px){
-            #threejs-container {
-                width: 35%;
-                top: 17.5vh;
-                left: 51vw;
-                height: 89%;
-            }
-
-            #viewport-buttons {
-                margin-left: 83vw;
-                margin-top: -5vh;
-            }
-
-            .image-3d {
-                top: 5%;
-            }
-        }
-
-    </style>
 </head>
 
 <body>
@@ -208,69 +143,26 @@
                         <div class="row content__left-list-answer" id="loadTypeList">
                             <div class="col-lg-6 col-md-6 col-12 content__left-list-answer--item item-1">
                                 <input type="radio" name="loadType" id="300max">
-<<<<<<< HEAD
-<<<<<<< main
-                                <label for="300max">small cartons (300x300 max)</label>
-                            </div>
-                            <div class="col-lg-6 col-md-6 col-12 content__left-list-answer--item">
-=======
-                                <label for="300max">Small cartons (300x300 max)</label>
+                                <label for="300max">Small cartons (<span id="load-type-small">300x300</span> max)</label>
                             </div>
                             <div class="col-lg-6 col-md-6 col-12 content__left-list-answer--item item-3">
->>>>>>> local
                                 <input type="radio" name="loadType" id="300-400medium">
-                                <label for="300-400medium">medium cartons (300 to 400)</label>
+                                <label for="300-400medium">Medium cartons (<span id="load-type-medium">300 to 400</span>)</label>
                             </div>
-<<<<<<< main
-                            <div class="col-lg-6 col-md-6 col-12 content__left-list-answer--item">
-                                <input type="radio" name="loadType" id="400large">
-                                <label for="400large">Large cartons (above 400)</label>
-                            </div>
-                            <div class="col-lg-6 col-md-6 col-12 content__left-list-answer--item">
-                                <input type="radio" name="loadType" id="highstack">
-                                <label for="highstack">High stack</label>
-                            </div>
-                            <div class="col-lg-6 col-md-6 col-12 content__left-list-answer--item">
-                                <input type="radio" name="loadType" id="bags">
-                                <label for="bags">Bags</label>
-                            </div>
-                            <div class="col-lg-6 col-md-6 col-12 content__left-list-answer--item">
-=======
                             <div class="col-lg-6 col-md-6 col-12 content__left-list-answer--item item-5">
                                 <input type="radio" name="loadType" id="400large">
-                                <label for="400large">Large cartons (above 400)</label>
+                                <label for="400large">Large cartons (above <span id="load-type-large">400</span>)</label>
                             </div>
                             
-=======
-                                <label for="300max">Small cartons (300x300 max)</label>
-                            </div>
-                            <div class="col-lg-6 col-md-6 col-12 content__left-list-answer--item item-2">
-                                <input type="radio" name="loadType" id="bags">
-                                <label for="bags">Bags</label>
-                            </div>
-                            <div class="col-lg-6 col-md-6 col-12 content__left-list-answer--item item-3">
-                                <input type="radio" name="loadType" id="300-400medium">
-                                <label for="300-400medium">Medium cartons (300 to 400)</label>
-                            </div>
->>>>>>> 7309194779d6eca56d5682159270d75692cc65da
                             <div class="col-lg-6 col-md-6 col-12 content__left-list-answer--item item-4">
                                 <input type="radio" name="loadType" id="highstack">
                                 <label for="highstack">High stack</label>
                             </div>
-<<<<<<< HEAD
                             <div class="col-lg-6 col-md-6 col-12 content__left-list-answer--item item-2">
                                 <input type="radio" name="loadType" id="bags">
                                 <label for="bags">Bags</label>
                             </div>
                            <div class="col-lg-6 col-md-6 col-12 content__left-list-answer--item item-6">
->>>>>>> local
-=======
-                            <div class="col-lg-6 col-md-6 col-12 content__left-list-answer--item item-5">
-                                <input type="radio" name="loadType" id="400large">
-                                <label for="400large">Large cartons (above 400)</label>
-                            </div>
-                            <div class="col-lg-6 col-md-6 col-12 content__left-list-answer--item item-6">
->>>>>>> 7309194779d6eca56d5682159270d75692cc65da
                                 <input type="radio" name="loadType" id="sheetmaterial">
                                 <label for="sheetmaterial">Sheet material</label>
                             </div>
@@ -281,30 +173,35 @@
             </div>
         </div>
         <div class="content__action">
-            <a href="" class="content__action--requote">Requote</a>
+            <a href="javascript:void(0)" class="content__action--requote">Requote</a>
             <a href="javascript:void(0)" id="quoteButton" class="content__action--quote">Quote</a>
         </div>
     </div>
 
-    <div id="threejs-container"></div>
+    <div id="progressBarContainer">
+        <progress id="progressBar" value="0" max="100"></progress>
+    </div>
+
+    <div id="threejs-container">
+        
+    </div>
 
     <div class="image-3d">
         <a style="background-color: none;" class="back" href="index.html">
             <img style="width: 8px;" src="assets/images/back.png" alt="back">
             <span>Back</span>
         </a>
-        <div id="viewport-buttons" class="d-flex">
-            <!-- <img style="width: 85%;" class="h-100" src="assets/images/image-1.png" alt=""> -->
-            <div class="d-flex flex-column icon-3d">
-                <img id='bottom-view' style="width: 40px;" src="assets/images/Icon (7).png" alt="">
-                <img id='front-view' style="width: 40px;" src="assets/images/Icon (1).png" alt="">
-                <img id='left-view' style="width: 40px;" src="assets/images/Icon (2).png" alt="">
-                <img id='right-view' style="width: 40px;" src="assets/images/Icon (3).png" alt="">
-                <img id='top-view' style="width: 40px;" src="assets/images/Icon (4).png" alt="">
-                <img id='ortho-view' style="width: 40px;" src="assets/images/Icon (5).png" alt="">
-                <img id='360' style="width: 40px;" src="assets/images/Icon (6).png" alt="">
-            </div>
+        
+        <div class="d-flex flex-column icon-3d">
+            <img id='bottom-view' style="width: 40px;" src="assets/images/Icon (7).png" alt="">
+            <img id='front-view' style="width: 40px;" src="assets/images/Icon (1).png" alt="">
+            <img id='left-view' style="width: 40px;" src="assets/images/Icon (2).png" alt="">
+            <img id='right-view' style="width: 40px;" src="assets/images/Icon (3).png" alt="">
+            <img id='top-view' style="width: 40px;" src="assets/images/Icon (4).png" alt="">
+            <img id='ortho-view' style="width: 40px;" src="assets/images/Icon (5).png" alt="">
+            <img id='360' style="width: 40px;" src="assets/images/Icon (6).png" alt="">
         </div>
+        
     </div>
 
     <div class="footer">
@@ -313,25 +210,105 @@
             <p class="m-0">View in 360°</p>
         </a>
     </div>
-<<<<<<< main
-=======
 
     <div id = 'price' style = 'display:none; z-index: 999; position:fixed;top: 200px; left: 60vw; font-size: 20px; color:red'>
 
     </div>
 
->>>>>>> local
-    <progress value="0" max="100" id="progressBar"></progress>
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
-    <script src="assets/js/data.js"></script>
     <script type="module" src="assets/js/sceneloader.js"></script>
-        
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stats.js/17/Stats.min.js"></script>
+    <script src="./assets/js/adjust_screen.js"></script>
+    <script src="./assets/js/radio_local_storage.js"></script>
+    <script src="./assets/js/user_login.js"></script>
+    <script src="./assets/js/crane_validate_action.js"></script>
+
     <script type="module">
-        $(document).ready(function() {
-            $('.action-mobile .menu-mobile-img').on('click', function() {
-                $('.menu-mobile').addClass('active');
+        import { _load_a_Scene, loadDefault, PreloadFBXCLS } from './assets/js/sceneloader.js';
+        
+        loadDefault();
+        window.preload = new PreloadFBXCLS([...ALL_SCENES, ...HEAD_STACKS, ...SUCTION_PACKS, ...PUMP_GROUPS, 
+                                    small_tube, big_tube, small_sm_tube, big_sm_tube]);
+
+        ['loadType','jibLength','craneType','workLoadLimit'].forEach(name => {
+            document.querySelectorAll(`input[name="${name}"]`).forEach((radio) => {
+                radio.addEventListener('change', function () {
+                    
+
+
+
+                    window.SettingObj.readUI();
+                    _load_a_Scene(window.SettingObj.get3DData());
+                    console.log(window.SettingObj.pdfContent);
+                });
             });
+        });
+        
+        document.getElementById("quoteButton").addEventListener("click", function (e) {
+            window.SettingObj.requote = false;
+            window.SettingObj.saveLocalStorage();
+
+            // window.preload.saveLocalStorage();
+            
+            const requiredFields = ['craneType','jibLength','workLoadLimit','loadType'];
+
+            let allSelected = true;
+
+            requiredFields.forEach(name => {
+                if (!document.querySelector(`input[name="${name}"]:checked`)) {
+                    allSelected = false;
+                }
+            });
+
+            if (allSelected) {
+                window.location.href = "page2.html";
+            } else {
+                alert("Please select all items before continuing.");
+            }
+        });
+        
+        const KG_TO_LBS = 2.20462;
+
+        function convertKgToLbs(data) {
+            const inchData = data.m.map((item) => {
+                const kgValue = parseFloat(item); // Lấy giá trị số từ chuỗi "45 kgs"
+                const lbsValue = kgValue * KG_TO_LBS; // Chuyển đổi sang lbs
+                return `${lbsValue.toFixed(0)} lbs`; // Làm tròn 2 chữ số thập phân và thêm đơn vị
+            });
+
+            return {
+                ...data, // Giữ nguyên dữ liệu cũ
+                Inch: inchData // Thêm dữ liệu Inch
+            };
+        }
+
+        // toggleOptions();
+
+        window.addEventListener('load', () => {
+            const navType = performance.navigation.type;
+
+            window.SettingObj = new AVLocalSetting();
+           
+            if (!document.referrer) 
+                window.SettingObj.resetAll();
+            else
+            {
+                window.SettingObj.loadFromLocalStorage();
+
+                if(window.SettingObj.requote)
+                    window.SettingObj.requoteHome();
+
+                
+            }
+
+            window.SettingObj.writeUI();
+            _update_user_bar();
+                    
+            // $('.action-mobile .menu-mobile-img').on('click', function() {
+            //     $('.menu-mobile').addClass('active');
+            // });
 
             $('.image-3d .back').on('click', function(event) {
                 event.preventDefault();
@@ -344,6 +321,13 @@
                 
                 $('html, body').animate({ scrollTop: 0 }, 'slow');
                 
+                if (window.innerWidth <= 820) { // Kiểm tra chế độ mobile
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth' // Cuộn mượt mà
+                    });
+                }
+                
                 $('.image-3d').fadeIn();
                 $('#threejs-container').fadeIn();
             });
@@ -352,74 +336,36 @@
                 $('.menu-mobile').removeClass('active');
             });
 
-            $("input[type=radio]").each(function() {
-            const id = $(this).attr("id");
-            if (localStorage.getItem(id) === "checked") {
-                $(this).prop("checked", true);
-            }
-        });
-
-        $("input[type=radio]").click(function() {
-            const name = $(this).attr("name");
-            $(`input[name=${name}]`).each(function() {
-                localStorage.removeItem($(this).attr("id"));
-            });
-            localStorage.setItem($(this).attr("id"), "checked");
-        });
-
-        const $craneTypeRadios = $('input[name="craneType"]');
-        const $jibOptions = $('.content__left-list--item:nth-child(2) .content__left-list-answer--item');
-        const $wllOptions = $('.content__left-list--item:nth-child(3) .content__left-list-answer--item');
-
-        function toggleOptions() {
-            const isMobileCrane = $craneTypeRadios.eq(1).is(':checked');
-            const isFloorMountedCrane = $craneTypeRadios.eq(0).is(':checked');
-            const isWallMountedCrane = $craneTypeRadios.eq(2).is(':checked');
-            const isFiveMeterSelected = $('input[name="jibLength"]:checked').attr('id') === '5m';
-
-            // Enable all options initially
-            $jibOptions.find('input[type="radio"]').prop('disabled', false);
-            $wllOptions.find('input[type="radio"]').prop('disabled', false);
-
-            // Apply specific disable rules
-            if (isMobileCrane) {
-                $jibOptions.eq(2).find('input[type="radio"]').prop('disabled', true);
-                $jibOptions.eq(3).find('input[type="radio"]').prop('disabled', true);
-            } else if (isFloorMountedCrane || isWallMountedCrane) {
-                if (isWallMountedCrane) {
-                    $jibOptions.eq(0).find('input[type="radio"]').prop('disabled', true);
-                }
-                // if (isFiveMeterSelected) {
-                //     $wllOptions.eq(4).find('input[type="radio"]').prop('disabled', true);
-                // }
-            }
-        }
-
-        $craneTypeRadios.add($jibOptions.find('input[type="radio"]')).on('change', toggleOptions);
-
-        toggleOptions();
-
-        $('.content__action--requote').click(function(event) {
-            event.preventDefault();
-            localStorage.clear();
-            $('input[type="radio"]').prop('checked', false);
             toggleOptions();
+            window.preload.waitForEnableX().then(() => {_load_a_Scene(window.SettingObj.get3DData())});
+            
+        });
+
+        
+
+        $('.content__action--requote').click(function(event) 
+        {
+            window.SettingObj.requoteHome();
+            _load_a_Scene(window.SettingObj.get3DData());
         });
 
         $('#unitSelect').change(function () {
-            const selectedUnit = $(this).val();
-            $('.unit-label').text(selectedUnit);
+            const selectedUnit = $(this).val(); 
+            $('.unit-label').text(selectedUnit === 'm'?' m':'');
 
             if(selectedUnit === 'Inch') {
-                $('#jib-length-25').text('98.43');
-                $('#jib-length-3').text('118.11');
-                $('#jib-length-4').text('157.48');
-                $('#jib-length-5').text('196.85');
-                $('.workLoadLimit-45').text('99.21 lbs');
-                $('.workLoadLimit-70').text('154.32 lbs');
-                $('.workLoadLimit-80').text('176.37 lbs');
-                $('.workLoadLimit-120').text('264.55 lbs');
-                $('.workLoadLimit-150').text('330.69 lbs');
+                $('#jib-length-25').text("8'2\"");
+                $('#jib-length-3').text("9'10\"");
+                $('#jib-length-4').text("13'1\"");
+                $('#jib-length-5').text("16'5\"");
+                $('.workLoadLimit-45').text('99 lbs');
+                $('.workLoadLimit-70').text('154 lbs');
+                $('.workLoadLimit-80').text('176 lbs');
+                $('.workLoadLimit-120').text('265 lbs');
+                $('.workLoadLimit-150').text('331 lbs');
+                $('#load-type-small').text("12\"x12\"");
+                $('#load-type-medium').text("12\" to 16\"");
+                $('#load-type-large').text("16\"");
             }else{
                 $('#jib-length-25').text('2.5');
                 $('#jib-length-3').text('3');
@@ -430,314 +376,28 @@
                 $('.workLoadLimit-80').text('80 kgs');
                 $('.workLoadLimit-120').text('120 kgs');
                 $('.workLoadLimit-150').text('150 kgs');
+                $('#load-type-small').text('300x300');
+                $('#load-type-medium').text("300 to 400");
+                $('#load-type-large').text("400");
             }
 
-            const workLoadLimits = {
-                Inch: ['99.21 lbs', '154.32 lbs', '176.37 lbs', '264.55 lbs', '330.69 lbs'],
+            var workLoadLimits = {
+                // Inch: ['99.21 lbs', '154.32 lbs', '176.37 lbs', '264.55 lbs', '330.69 lbs'],
                 m: ['45 kgs', '70 kgs', '80 kgs', '120 kgs', '150 kgs']
             };
+
+            // 1 kg = 2.20462 lbs
+            
+            workLoadLimits = convertKgToLbs(workLoadLimits);
 
             // Cập nhật Work Load Limit hiển thị
             workLoadLimits[selectedUnit].forEach((value, index) => {
                 $(`.workLoadLimit-${[45, 70, 80, 120, 150][index]}`).text(value);
             });
-
-            // Lưu lại đơn vị được chọn
-            localStorage.setItem('selectedUnit', selectedUnit);
-
-            // Cập nhật giá trị đã chọn dựa trên đơn vị mới
-            const selectedRadio = document.querySelector('input[name="workLoadLimit"]:checked');
-            if (selectedRadio) {
-                selectedRadio.dispatchEvent(new Event('change'));
-            }
         });
 
-    const storedUnit = localStorage.getItem('selectedUnit');
-    if (storedUnit) {
-        $('#unitSelect').val(storedUnit).change();  // Trigger change to update labels
-    }
-
-    });
-
-    const savedUsername = localStorage.getItem('user_name');
-    if (savedUsername) {
-        // Hiển thị thông tin người dùng nếu đã đăng nhập
-        $('.username, .password, .loginButton').hide();
-        $('.menu-mobile').removeClass('active');
-        $('.menu-mobile-img').hide();
-        $('.userInfo').show();
-        $('.userName').text(savedUsername);
-        $('.logoutButton').show();
-        $('.menu-mobile').removeClass('active');
-    } else {
-        // Hiển thị form đăng nhập nếu chưa đăng nhập
-        $('.username, .password, .loginButton').show();
-        $('.menu-mobile-img').show();
-        $('.userInfo, .logoutButton').hide();
-    }
-
-    $('.loginButton').click(function (e) {
-        e.preventDefault();
-    let username = '';
-    let password = '';
-
-    // Kiểm tra giao diện đang sử dụng: Desktop hay Mobile
-    if ($('.action-desktop').is(':visible')) {
-        username = $('.action-desktop .username').val().trim();
-        password = $('.action-desktop .password').val().trim();
-    } else if ($('.action-mobile').is(':visible')) {
-        username = $('.menu-mobile .username').val().trim();
-        password = $('.menu-mobile .password').val().trim();
-    }
-    // Kiểm tra nếu username hoặc password trống
-    if (!username || !password) {
-        alert('Please enter both username and password.');
-        return;
-    }
-
-    // Gửi yêu cầu AJAX
-    $.ajax({
-        url: 'https://www.aardwolf.com.au/api/get_price.php',
-        type: 'POST',
-        data: {
-            'txtUserName': username,
-            'txtPassword': password,
-            '_submit_login': 1
-        },
-        success: function (response) {
-            if (response && response.user && response.user.name) {
-                localStorage.setItem('user_name', response.user.name);
-
-                // Ẩn form đăng nhập và hiển thị thông tin người dùng
-                $('.username, .password, .loginButton').hide();
-                $('.menu-mobile-img').hide();
-                $('.menu-mobile').removeClass('active');
-                $('.userInfo').show();
-                $('.userName').text(response.user.name);
-                $('.logoutButton').show();
-
-            } else {
-                alert('Login failed! Invalid username or password.');
-            }
-        },
-        error: function (xhr, status, error) {
-            console.error('Login Failed:', error);
-            alert('Login failed! Please try again later.');
-        }
-    });
-});
-
-
-// Xử lý sự kiện đăng xuất
-$('.logoutButton').click(function () {
-    // Xóa username khỏi localStorage
-    localStorage.removeItem('user_name');
-    $('.menu-mobile-img').show();
-    $('.menu-mobile').removeClass('active');
-
-    // Hiển thị lại form đăng nhập, ẩn thông tin người dùng
-    $('.username, .password, .loginButton').show();
-    $('.userInfo, .logoutButton').hide();
-});
     </script>
 
-<script>
-    init_params();
-
-    function reorderItems() {
-    const container = document.getElementById('loadTypeList');
-    const items = Array.from(container.children);
-
-    // Clear existing order/
-    // container.innerHTML = '';
-
-    // if (window.innerWidth < 768) {
-    //     // Mobile order
-    //     const mobileOrder = [0, 2, 4, 1, 3, 5];
-    //     mobileOrder.forEach(index => container.appendChild(items[index]));
-    // } else {
-    //     // Desktop order (default order from the original HTML)
-    //     items.forEach(item => container.appendChild(item));
-    // }
-}
-
-// Run the function on load and resize
-window.addEventListener('load', reorderItems);
-window.addEventListener('resize', reorderItems);
-
-    
-    function init_params() {
-        var selectedOption = document.querySelector('input[name="loadType"]:checked');
-        localStorage.setItem('loadType', selectedOption ? selectedOption.id : "300max");
-
-        selectedOption = document.querySelector('input[name="jibLength"]:checked');
-        localStorage.setItem('jibLength', selectedOption ? selectedOption.id.match(/\d+/g).map(Number)[0] : 2.5);
-
-        selectedOption = document.querySelector('input[name="craneType"]:checked');
-        localStorage.setItem('craneType', selectedOption ? selectedOption.id : "floor");
-    }
-
-    document.getElementById("quoteButton").addEventListener("click", function (e) {
-        init_params();
-        
-
-
-        // Kiểm tra tất cả các câu hỏi
-        const requiredFields = [
-            'craneType',
-            'jibLength',
-            'workLoadLimit',
-            'loadType'
-        ];
-
-        let allSelected = true;
-
-        requiredFields.forEach(name => {
-            if (!document.querySelector(`input[name="${name}"]:checked`)) {
-                allSelected = false;
-            }
-        });
-
-        if (allSelected) {
-            window.location.href = "page2.html";
-        } else {
-            alert("Please select all items before continuing.");
-        }
-    });
-    document.querySelectorAll('input[name="workLoadLimit"]').forEach((radio) => {
-    radio.addEventListener('change', function () {
-        const selectedUnit = localStorage.getItem('selectedUnit') || 'm';
-
-        const data = {
-            '45kg': {
-                Inch: { 
-                    maxLiftingCapacity: '99.21 lbs', 
-                    minLiftingCapacity: '22.05', 
-                    liftTube17: '66.93 Inch', 
-                    liftTube29: '114.17 Inch', 
-                    liftTubeSize: '160', 
-                    liftTubePower: '3.3/3.8kw', 
-                    priceLiftTubeSize: 356, 
-                    priceLiftTubePower: 2.743 
-                },
-                m: { 
-                    maxLiftingCapacity: '45kg', 
-                    minLiftingCapacity: '10', 
-                    liftTube17: '1.7m', 
-                    liftTube29: '2.9m', 
-                    liftTubeSize: '160', 
-                    liftTubePower: '3.3/3.8kw', 
-                    priceLiftTubeSize: 356,
-                    priceLiftTubePower: 2.743 
-                }
-            },
-            '70kg': {
-                Inch: { 
-                    maxLiftingCapacity: '154.32 lbs', 
-                    minLiftingCapacity: '22.05', 
-                    liftTube17: '66.93 Inch', 
-                    liftTube29: '114.17 Inch', 
-                    liftTubeSize: '160', 
-                    liftTubePower: '4.0/4.6kw', 
-                    priceLiftTubeSize: 356, 
-                    priceLiftTubePower: 3.424 
-                },
-                m: { 
-                    maxLiftingCapacity: '70kg', 
-                    minLiftingCapacity: '10', 
-                    liftTube17: '1.7m', 
-                    liftTube29: '2.9m', 
-                    liftTubeSize: '160', 
-                    liftTubePower: '4.0/4.6kw', 
-                    priceLiftTubeSize: 356, 
-                    priceLiftTubePower: 3.424 
-                }
-            },
-            '80kg': {
-                Inch: { 
-                    maxLiftingCapacity: '176.37 lbs', 
-                    minLiftingCapacity: '22.05', 
-                    liftTube17: '66.93 Inch', 
-                    liftTube29: '114.17 Inch', 
-                    liftTubeSize: '180', 
-                    liftTubePower: '4.0/4.6kw', 
-                    priceLiftTubeSize: 469, 
-                    priceLiftTubePower: 3.424 
-                },
-                m: { 
-                    maxLiftingCapacity: '80kg',
-                    minLiftingCapacity: '10', 
-                    liftTube17: '1.7m', 
-                    liftTube29: '2.9m', 
-                    liftTubeSize: '180', 
-                    liftTubePower: '4.0/4.6kw',
-                    priceLiftTubeSize: 469, 
-                    priceLiftTubePower: 3.424 
-                }
-            },
-            '120kg': {
-                Inch: { 
-                    maxLiftingCapacity: '264.55 lbs', 
-                    minLiftingCapacity: '22.05', 
-                    liftTube17: '66.93 Inch', 
-                    liftTube29: '114.17 Inch', 
-                    liftTubeSize: '200', 
-                    liftTubePower: '5.7/6.6kw', 
-                    priceLiftTubeSize: 328, 
-                    priceLiftTubePower: 3.857 
-                },
-                m: { 
-                    maxLiftingCapacity: '120kg', 
-                    minLiftingCapacity: '10', 
-                    liftTube17: '1.7m', 
-                    liftTube29: '2.9m', 
-                    liftTubeSize: '200', 
-                    liftTubePower: '5.7/6.6kw', 
-                    priceLiftTubeSize: 328, 
-                    priceLiftTubePower: 3.857 
-                }
-            },
-            '150kg': {
-                Inch: { 
-                    maxLiftingCapacity: '330.69 lbs', 
-                    minLiftingCapacity: '22.05', 
-                    liftTube17: '66.93 Inch', 
-                    liftTube29: '114.17 Inch', 
-                    liftTubeSize: '250', 
-                    liftTubePower: '7.5/8.0kw', 
-                    priceLiftTubeSize: 376, 
-                    priceLiftTubePower: 5.033 
-                },
-                m: { 
-                    maxLiftingCapacity: '150kg', 
-                    minLiftingCapacity: '10', 
-                    liftTube17: '1.7m', 
-                    liftTube29: '2.9m', 
-                    liftTubeSize: '250', 
-                    liftTubePower: '7.5/8.0kw', 
-                    priceLiftTubeSize: 376, 
-                    priceLiftTubePower: 5.033 
-                }
-            }
-        };
-
-        // Lấy dữ liệu phù hợp với đơn vị
-        const selectedData = data[this.id][selectedUnit];
-
-        if (selectedData) {
-            // Lưu các giá trị tương ứng vào localStorage
-            localStorage.setItem('maxLiftingCapacity', selectedData.maxLiftingCapacity);
-            localStorage.setItem('minLiftingCapacity', selectedData.minLiftingCapacity);
-            localStorage.setItem('liftTube17', selectedData.liftTube17);
-            localStorage.setItem('liftTube29', selectedData.liftTube29);
-            localStorage.setItem('liftTubeSize', selectedData.liftTubeSize);
-            localStorage.setItem('liftTubePower', selectedData.liftTubePower);
-            localStorage.setItem('priceLiftTubeSize', selectedData.priceLiftTubeSize);
-            localStorage.setItem('priceLiftTubePower', selectedData.priceLiftTubePower);
-        }
-    });
-});
-</script>
 
 </body>
 </html>

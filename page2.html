@@ -7,14 +7,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/fonts/fontawesome/css/all.css">
-    <link rel="stylesheet" href="assets/css/reset.css">
+    <!-- <link rel="stylesheet" href="assets/css/reset.css"> -->
     <link rel="stylesheet" href="assets/css/page.css">
-    <link rel="stylesheet" href="assets/css/global.css">
+    <!-- <link rel="stylesheet" href="assets/css/global.css"> -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
     <link rel="stylesheet" href="assets/css/responsive.css">
+    
     <title>Vacuum Lifter</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
-
     <script type="importmap">
         {
             "imports": {
@@ -22,10 +21,8 @@
             }
         }
     </script>
+    
     <style>
-<<<<<<< HEAD
-<<<<<<< main
-=======
         .content__left--title-page3 {
             transform: translateY(0px);
         }
@@ -41,82 +38,26 @@
             max-height: 800px;
         }
 
-=======
-        svg 
-        {
-            scale:0.8;
-            transform: translateY(-75px);
-            max-height: 800px;
-        }
->>>>>>> 7309194779d6eca56d5682159270d75692cc65da
         polyline
         {
             fill:none;stroke:black;stroke-width:5
         }
-<<<<<<< HEAD
 
->>>>>>> local
-=======
->>>>>>> 7309194779d6eca56d5682159270d75692cc65da
-        #threejs-container {
-            position:absolute;
-            top: 12.2vh;
-            left: 51vw;
-            border-radius: 10px;
-            overflow: hidden;
-<<<<<<< main
-            z-index: 999;
-            width: 38vw;
-            height: 75vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-=======
-            z-index: 998;
-            width: 35%;
-            height: 50vh;
-            display: flex;               /* Bật Flexbox */
-            justify-content: center;     /* Căn giữa theo chiều ngang */
-            align-items: center;         /* Căn giữa theo chiều dọc */
->>>>>>> local
-        }
         @media screen and (max-width:768px) {
-            #threejs-container {
-                display: none;
-                width: 86vw;
-                top: 14vh;
-                left: -4vw;
-                height: 100%;
+            .content__left--title-page3 {
+                transform: translateY(0px);
             }
 
-            #viewport-buttons {
-                margin-left: 83vw;
-                margin-top: -5vh;
+            #pdf-content {
+                transform: translateY(-100px);
             }
 
-            .image-3d {
-                top: 5%;
+            svg 
+            {
+                transform: translateY(-20px);
             }
+
         }
-
-        @media screen and (min-width: 1024px) and (max-width:1600px){
-            #threejs-container {
-                width: 35%;
-                top: 13.5vh;
-                left: 51vw;
-                height: 84vh;
-            }
-
-            #viewport-buttons {
-                margin-left: 83vw;
-                margin-top: -5vh;
-            }
-
-            .image-3d {
-                top: 5%;
-            }
-        }
-
     </style>
 </head>
 
@@ -161,7 +102,7 @@
     <div class="container">
         <div class="row content py-2">
             <div class="col-lg-6 col-md-12 col-12 content__left">
-                <a class="back" href="index.html">
+                <a class="back backcontent" href="index.html">
                     <img src="assets/images/back.png" alt="back">
                     <span>Back</span>
                 </a>
@@ -171,7 +112,7 @@
                 </div>
 
                 <div class="content__left--content">
-                    <div class="row content__left--content--item m-0">
+                    <div class="row content__left--content--it`em m-0">
                         <div class="col-lg-6 col-md-6 col-6 content__left--content--item-1">Maximum lifting capacity</div>
                         <div class="col-lg-6 col-md-6 col-6 content__left--content--item-2 d-flex align-items-center">
                             <span id="maxLiftingCapacity">150kg</span>
@@ -187,7 +128,7 @@
                     <div class="row content__left--content--item m-0">
                         <div class="col-lg-6 col-md-6 col-6 content__left--content--item-1">Electrical vacuum pump</div>
                         <div class="col-lg-6 col-md-6 col-6 content__left--content--item-2 d-flex align-items-center">
-                            <span id="vacuumPump">380-480V</span>
+                            <span id="liftTubePower">380-480V</span>
                         </div>
                     </div>
                     <div class="row content__left--content--item m-0">
@@ -206,7 +147,7 @@
                         </div>
                     </div>
                     <div class="row content__left--content--item m-0">
-                        <div class="col-lg-6 col-md-6 col-6 content__left--content--item-1">Safety factor (suction force vs lifting force)</div>
+                        <div class="col-lg-6 col-md-6 col-6 content__left--content--item-1">Safety factor</div>
                         <div class="col-lg-6 col-md-6 col-6 content__left--content--item-2 d-flex align-items-center">
                             <span>2.5 minimum</span>
                         </div>
@@ -220,8 +161,8 @@
 
                 <div class="content__left-price--action text-center">
                     <a class="requote" href="">Requote</a>
-                    <a class="back" href="index.html">Back</a>
-                    <a href="javascript:void(0);" onclick="generatePDF()">Download & Print quotation</a>
+                    <a class="back backcontent" href="index.html">Back</a>
+                    <a href="javascript:void(0);" id="download">Download & Print quotation</a>
                 </div>
 
                 <div class="content__left-price-des pt-4">
@@ -232,122 +173,35 @@
         </div>
     </div>
 
-    <div id="threejs-container"></div>
+    
+    
+
+    <div id="threejs-container">
+        
+    </div>
 
     <div class="image-3d">
-        <a style="color: #333!important; text-decoration: none!important;" class="back" href="index.html">
-            <!-- <img style="width: 8px;" src="assets/images/back.png" alt="back"> -->
+        <a style="color: #333!important; text-decoration: none!important;" id ='back-index' class="back" href="index.html">
+            <img style="width: 8px;" src="assets/images/back.png" alt="back">
             <span>Back</span>
         </a>
-        <div class="d-flex">
-            <img style="width: 85%;" class="h-100" src="assets/images/image-1.png" alt="">
-            <div  class="d-flex flex-column icon-3d">
-                <img id='bottom-view' style="width: 40px;" src="assets/images/Icon (7).png" alt="">
-                <img id='front-view' style="width: 40px;" src="assets/images/Icon (1).png" alt="">
-                <img id='left-view' style="width: 40px;" src="assets/images/Icon (2).png" alt="">
-                <img id='right-view' style="width: 40px;" src="assets/images/Icon (3).png" alt="">
-                <img id='top-view' style="width: 40px;" src="assets/images/Icon (4).png" alt="">
-                <img id='ortho-view' style="width: 40px;" src="assets/images/Icon (5).png" alt="">
-                <img id='360' style="width: 40px;" src="assets/images/Icon (6).png" alt="">
-            </div>
+        
+        <div class="d-flex flex-column icon-3d">
+            <img id='bottom-view' style="width: 40px;" src="assets/images/Icon (7).png" alt="">
+            <img id='front-view' style="width: 40px;" src="assets/images/Icon (1).png" alt="">
+            <img id='left-view' style="width: 40px;" src="assets/images/Icon (2).png" alt="">
+            <img id='right-view' style="width: 40px;" src="assets/images/Icon (3).png" alt="">
+            <img id='top-view' style="width: 40px;" src="assets/images/Icon (4).png" alt="">
+            <img id='ortho-view' style="width: 40px;" src="assets/images/Icon (5).png" alt="">
+            <img id='360' style="width: 40px;" src="assets/images/Icon (6).png" alt="">
         </div>
     </div>
 
-<<<<<<< HEAD
-    <div id="content-page3" style="visibility: hidden; position: fixed; top: -99999px;">
-=======
-    <div id="content-page3" style=" width: 800px;
-    margin: 0 auto;
-    overflow: hidden;
-    position: absolute;
-    background: white;
-    visibility: hidden;
-    top: -100%;
-    "
-    >
->>>>>>> 7309194779d6eca56d5682159270d75692cc65da
-        <div class="container">
-            <div class="row content py-2">
-                <div class="col-lg-12 col-md-12 col-12 content__left">
-                    <div class="content__left--title-page3"> 
-                        <p>QUOTATION</p>
-                    </div>
-    
-                    <div id='pdf-2d' class="content__left--image-page3 text-center">
-                        <img src="assets/images/image-2.png" alt="">
-                    </div>
-    
-                    <div class="content__left--description-page3 pt-4">
-                        <span>1</span>
-                        <span>ITEM DESCRIPTION</span>
-                    </div>
-    
-                    <div class="content__left-content-page3 py-4">
-                        <p>Aardwolf Vacuum Tube Lifter</p>
-                        <p>The above drawing is based on information provided by the buyer. The Aardwolf vacuum tube lifter is combined with a crane, vacuum generator, suction supply hose, lift tube, control unit and suction head.</p>
-                        <p>Lifting capacity: <span id="MaximumLiftingCapacity">??</span>. (As per customer’s request). The Aardwolf Vacuum Tube Lifter is a classic design typically suited for loads between <span id="minRangeCapacity">10</span> - <span id="maxRangeCapacity">???</span>.</p>
-                    </div>
-                    <div class="content__left--description-page3">
-                        <span>2</span>
-                        <span>TECHNICAL DATA</span>
-                    </div>
-    
-                    <div class="content__left--content mt-4">
-                        <div class="row content__left--content--item m-0">
-                            <div class="col-lg-6 col-md-6 col-6 content__left--content--item-1">Maximum lifting capacity</div>
-                            <div class="col-lg-6 col-md-6 col-6 content__left--content--item-2 d-flex align-items-center">
-                                <span id="maxLiftingCapacity2">150kg</span>
-                            </div>
-                        </div>
-                        <div class="row content__left--content--item m-0">
-                            <div class="col-lg-6 col-md-6 col-6 content__left--content--item-1">Lift tube size</div>
-                            <div class="col-lg-6 col-md-6 col-6 content__left--content--item-2 d-flex align-items-center">
-                                <div class="d-flex align-items-center">
-                                    <img style="width: 20px;" src="assets/images/icon-1.png" alt="">
-                                    <span id="liftTubeSize2">100-200</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row content__left--content--item m-0">
-                            <div class="col-lg-6 col-md-6 col-6 content__left--content--item-1">Electrical vacuum pump</div>
-                            <div class="col-lg-6 col-md-6 col-6 content__left--content--item-2 d-flex align-items-center">
-                                <span id="vacuumPump2">380-480V</span>
-                            </div>
-                        </div>
-                        <div class="row content__left--content--item m-0">
-                            <div class="col-lg-12 col-md-12 col-12 content__left--content--item-3">Vertical movement (Stroke)</div>
-                        </div>
-                        <div class="row content__left--content--item m-0">
-                            <div class="col-lg-6 col-md-6 col-6 content__left--content--item-1">2.5m lift tube (standard)</div>
-                            <div class="col-lg-6 col-md-6 col-6 content__left--content--item-2 d-flex align-items-center">
-                                <span id="liftTube172">1.7m</span>
-                            </div>
-                        </div>
-                        <div class="row content__left--content--item m-0">
-                            <div class="col-lg-6 col-md-6 col-6 content__left--content--item-1">Installation height</div>
-                            <div class="col-lg-6 col-md-6 col-6 content__left--content--item-2 d-flex align-items-center">
-                                <span id="liftTube292">2.9m</span>
-                            </div>
-                        </div>
-                        <div class="row content__left--content--item m-0">
-                            <div class="col-lg-6 col-md-6 col-6 content__left--content--item-1">Safety factor (suction force vs lifting force)</div>
-                            <div class="col-lg-6 col-md-6 col-6 content__left--content--item-2 d-flex align-items-center">
-                                <span>2.5 minimum</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="content__left-note pt-4">
-                        <b>Note:</b>
-                        <span>It is recommended that the buyer purchase extra vacuum heads to cover all eventualities such as different carton sizes and the possibility of porous materials.</span>
-                    </div>
-                    <div class="content__left--price text-center py-4">
-                        <span>Quotation:</span>
-                        <span id="totalPrice2"></span>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div id="progressBarContainer">
+        <progress id="progressBar" value="0" max="100" title="Loading..."></progress>
     </div>
+
+    
 
     <div class="footer">
         <a href="">
@@ -355,468 +209,129 @@
             <p class="m-0">View in 360°</p>
         </a>
     </div>
-
-    <progress value="0" max="100" id="progressBar"></progress>
 </body>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
-<script src="assets/js/data.js"></script>
-<script type = 'module' src="assets/js/sceneloader.js"></script>
+<script src="https://unpkg.com/pdf-lib@1.4.0"></script>
+<script src="https://unpkg.com/@pdf-lib/fontkit@0.0.4"></script>
+<script src="https://unpkg.com/downloadjs@1.4.7"></script>
+<script src="./assets/js/adjust_screen.js"></script>
+<script src="./assets/js/radio_local_storage.js"></script>
+<script src="./assets/js/user_login.js"></script>
 
 <script type="module">
+    import { PdfSaverCls } from './assets/js/pdfsaver.js';
+    import { _load_a_Scene, PreloadFBXCLS } from './assets/js/sceneloader.js';
+
+    window.pdfSaver = new PdfSaverCls();
+    
+    document.getElementById('download').addEventListener('click', function() {
+        if(window.SettingObj.pdfContent)
+        {
+            pdfSaver.generatePDF(window.SettingObj);
+        }
+    });
+
+    function showPrice(){
+        _load_a_Scene(window.SettingObj.get3DData());
+
+        if(window.SettingObj.priceList && window.SettingObj.userName){
+            const totalPrice = window.SettingObj.totalPrice;
+            document.getElementById('totalPrice').textContent = totalPrice;
+            return true;
+        }else 
+            document.getElementById('totalPrice').textContent = "Login for price";
+        return false;
+
+    }
+    
+    const waitForPrice = (checkInterval = 100) => {
+        return new Promise((resolve) => {
+            const interval = setInterval(() => {
+                if(window.SettingObj.priceList)
+                {
+                    clearInterval(interval);
+                    resolve();
+                }
+            }, checkInterval);
+        });
+    };
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        window.SettingObj = new AVLocalSetting();
+        window.SettingObj.loadFromLocalStorage();
+        
+        if(window.SettingObj.data3D)
+        {
+            window.preload = new PreloadFBXCLS(window.SettingObj.data3D);
+            
+            window.preload.waitForEnableX().then(() => {
+                showPrice();
+            });
+        }
+
+        ['maxLiftingCapacity','liftTubeSize','liftTube17','liftTube29'].forEach(k => {
+            document.getElementById(k).textContent = window.SettingObj.getCurrentWorkload()[k];
+        });
+        
+        document.querySelectorAll('.backcontent').forEach(btn => {
+            window.SettingObj.fromBack = true;
+            window.SettingObj.saveLocalStorage();
+        });
+
+        _update_user_bar();
+
+        waitForPrice().then(() => {showPrice();});
+    });
+
+</script>
+
+<script>
     $(document).ready(function() {
-            
+        $('.requote').click(function(e) {
+            window.SettingObj.requote = true;
+            window.SettingObj.saveLocalStorage();
 
-
-            $('.action-mobile .menu-mobile-img').on('click', function() {
-                $('.menu-mobile').addClass('active');
-            });
-
-            $('.requote').click(function(e) {
-                e.preventDefault();
-                localStorage.clear();
-                window.location.href = 'index.html';
-            });
-
-            $('.image-3d .back').on('click', function(event) {
-                event.preventDefault();
-                $('.image-3d').fadeOut();
-                $('#threejs-container').fadeOut();
-            });
-
-            $('.footer a').on('click', function(event) {
-                event.preventDefault();
-                
-                ('html, body').animate({ scrollTop: 0 }, 'slow');
-                
-                $('.image-3d').fadeIn();
-                $('#threejs-container').fadeIn();
-            });
-            
-            $('.closes').on('click', function() {
-                $('.menu-mobile').removeClass('active');
-            });
-
-            $("input[type=radio]").each(function() {
-            const id = $(this).attr("id");
-            if (localStorage.getItem(id) === "checked") {
-                $(this).prop("checked", true);
-            }
+            e.preventDefault();
+            window.location.href = 'index.html';
         });
 
-        $("input[type=radio]").click(function() {
-            const name = $(this).attr("name");
-            $(`input[name=${name}]`).each(function() {
-                localStorage.removeItem($(this).attr("id"));
-            });
-            localStorage.setItem($(this).attr("id"), "checked");
-        });
-
-        const $craneTypeRadios = $('input[name="craneType"]');
-        const $jibOptions = $('.content__left-list--item:nth-child(2) .content__left-list-answer--item');
-        const $wllOptions = $('.content__left-list--item:nth-child(3) .content__left-list-answer--item');
-
-        function toggleOptions() {
-            const isMobileCrane = $craneTypeRadios.eq(1).is(':checked');
-            const isFloorMountedCrane = $craneTypeRadios.eq(0).is(':checked');
-            const isWallMountedCrane = $craneTypeRadios.eq(2).is(':checked');
-            const isFiveMeterSelected = $('input[name="jibLength"]:checked').attr('id') === '5m';
-
-            // Enable all options initially
-            $jibOptions.find('input[type="radio"]').prop('disabled', false);
-            $wllOptions.find('input[type="radio"]').prop('disabled', false);
-
-            // Apply specific disable rules
-            if (isMobileCrane) {
-                $jibOptions.eq(2).find('input[type="radio"]').prop('disabled', true);
-                $jibOptions.eq(3).find('input[type="radio"]').prop('disabled', true);
-            } else if (isFloorMountedCrane || isWallMountedCrane) {
-                if (isWallMountedCrane) {
-                    $jibOptions.eq(0).find('input[type="radio"]').prop('disabled', true);
-                }
-                if (isFiveMeterSelected) {
-                    $wllOptions.eq(4).find('input[type="radio"]').prop('disabled', true);
-                }
-            }
-        }
-
-        $craneTypeRadios.add($jibOptions.find('input[type="radio"]')).on('change', toggleOptions);
-
-        toggleOptions();
-
-        $('.content__action--requote').click(function(event) {
+        $('.image-3d .back').on('click', function(event) {
             event.preventDefault();
-            $('input[type="radio"]').prop('checked', false);
-            toggleOptions();
+            
+            $('.image-3d').fadeOut();
+            $('#threejs-container').fadeOut();
+            
         });
 
-
-        $('#unitSelect').change(function() {
-            const selectedUnit = $(this).val();
-            $('.unit-label').text(selectedUnit);
-        });
-
-    });
-</script>
-
-<script>
-    const maxLiftingCapacity = localStorage.getItem('maxLiftingCapacity');
-    const minLiftingCapacity = localStorage.getItem('minLiftingCapacity');
-    const liftTube17 = localStorage.getItem('liftTube17');
-    const liftTube29 = localStorage.getItem('liftTube29');
-    const liftTubeSize = localStorage.getItem('liftTubeSize');
-    const liftTubePower = localStorage.getItem('liftTubePower');
-
-    const priceLiftTubeSize = localStorage.getItem('priceLiftTubeSize') / 1000;
-    const priceLiftTubePower = localStorage.getItem('priceLiftTubePower');
-
-    const totalPrice = priceLiftTubeSize + parseFloat(priceLiftTubePower);
-
-    // Định dạng số thành dấu phẩy
-    function formatPrice(value) {
-        return value.toFixed(3).replace('.', ',') + "$";
-    }
-
-    // Hiển thị giá đã định dạng
-    if(localStorage.getItem('user_name')){
-        document.getElementById('totalPrice').textContent = formatPrice(totalPrice);
-        document.getElementById('totalPrice2').textContent = formatPrice(totalPrice);
-    }
-
-    
-    if (maxLiftingCapacity) {
-        document.getElementById('MaximumLiftingCapacity').textContent = maxLiftingCapacity;
-        document.getElementById('maxRangeCapacity').textContent = maxLiftingCapacity;
-    }
-
-    document.getElementById('minRangeCapacity').textContent = minLiftingCapacity;
-
-    if(liftTube17){
-        document.getElementById('liftTube17').textContent = liftTube17;
-    }
-
-    if(liftTube29){
-        document.getElementById('liftTube29').textContent = liftTube29;
-    }
-
-
-    if (maxLiftingCapacity && liftTubeSize && liftTubePower) {
-        document.querySelector('.content__left--content--item-2 span').textContent = maxLiftingCapacity;
-        document.querySelector('.content__left--content--item-2 span#maxLiftingCapacity2').textContent = maxLiftingCapacity;
-        document.querySelector('.content__left--content--item-2 span#liftTube172').textContent = liftTube17;
-        document.querySelector('.content__left--content--item-2 span#liftTube292').textContent = liftTube29;
-        document.querySelector('.content__left--content--item-2 span#liftTubeSize2').textContent = liftTubeSize;
-        document.querySelector('.content__left--content--item-2 span#vacuumPump2').textContent = liftTubePower;
-        const liftTubeSizeElements = document.querySelectorAll('.content__left--content--item-2 span')[1];
-        const liftTubePowerElements = document.querySelectorAll('.content__left--content--item-2 span')[2];
-
-        if (liftTubeSizeElements && liftTubePowerElements) {
-            liftTubeSizeElements.textContent = liftTubeSize;
-            liftTubePowerElements.textContent = liftTubePower;
-        }
-    }
-</script>
-
-<script>
-<<<<<<< HEAD
-<<<<<<< main
-    async function generatePDF() {
-        const elementHTML = document.getElementById('content-page3');
-
-        // Khởi tạo jsPDF
-        const { jsPDF } = window.jspdf || require("jspdf");
-        const doc = new jsPDF();
-
-        // Sử dụng jsPDF's html() để xuất nội dung HTML thành PDF
-        doc.html(elementHTML, {
-        callback: function (doc) {
-            // Sau khi HTML được render vào PDF, bạn có thể lưu nó
-            doc.save("output.pdf");
-=======
-   async function generatePDF() {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF(); // Initializes a standard A4-sized PDF document.
-
-    const elementHTML = document.getElementById('content-page3');
-
-    // Make sure the content is visible for capturing
-    elementHTML.style.visibility = 'visible';
-    // elementHTML.style.position = 'static';
-    
-
-    // return;
-
-    // Capture the content as a canvas using html2canvas
-    const canvas = await html2canvas(elementHTML, {
-        scale: 2, // Improves image quality
-        scrollX: 0,
-        scrollY: 0,
-        useCORS: true, // Handles external image sources
-    });
-
-    // Get the dimensions of the canvas
-    const canvasWidth = canvas.width;
-    const canvasHeight = canvas.height;
-
-    // Convert dimensions to mm for PDF scaling
-    const pageWidth = doc.internal.pageSize.getWidth();
-    const pageHeight = doc.internal.pageSize.getHeight();
-
-    // Calculate aspect ratio to fit full page
-    const widthRatio = pageWidth / canvasWidth;
-    const heightRatio = pageHeight / canvasHeight;
-    const scaleRatio = Math.min(widthRatio, heightRatio);
-
-    // Calculate the new width and height of the image
-    const imgWidth = canvasWidth * scaleRatio;
-    const imgHeight = canvasHeight * scaleRatio;
-
-    // Add image to PDF, centering it if needed
-    const xOffset = (pageWidth - imgWidth) / 2;
-    const yOffset = (pageHeight - imgHeight) / 2;
-
-    const imgData = canvas.toDataURL('image/png');
-    doc.addImage(imgData, 'PNG', xOffset, yOffset, imgWidth, imgHeight);
-
-    // Save the PDF file
-    doc.save('fullscreen_document.pdf');
-
-    // Restore original element styling
-    elementHTML.style.visibility = 'hidden';
-    elementHTML.style.position = 'absolute';
-}
-
-
-    const savedUsername = localStorage.getItem('username');
-    if (savedUsername) {
-        // Hiển thị thông tin người dùng nếu đã đăng nhập
-        $('.username, .password, .loginButton').hide();
-        $('.menu-mobile').removeClass('active');
-        $('.menu-mobile-img').hide();
-        $('.userInfo').show();
-        $('.userName').text(savedUsername);
-        $('.logoutButton').show();
-        $('.menu-mobile').removeClass('active');
-        document.getElementById('totalPrice').textContent = formatPrice(totalPrice);
-        document.getElementById('totalPrice2').textContent = formatPrice(totalPrice);
-    } else {
-        // Hiển thị form đăng nhập nếu chưa đăng nhập
-        $('.username, .password, .loginButton').show();
-        $('.menu-mobile-img').show();
-        $('.userInfo, .logoutButton').hide();
-    }
-
-    $('.loginButton').click(function () {
-    let username = '';
-    let password = '';
-
-    // Kiểm tra giao diện đang sử dụng: Desktop hay Mobile
-    if ($('.action-desktop').is(':visible')) {
-        username = $('.action-desktop .username').val().trim();
-        password = $('.action-desktop .password').val().trim();
-    } else if ($('.action-mobile').is(':visible')) {
-        username = $('.menu-mobile .username').val().trim();
-        password = $('.menu-mobile .password').val().trim();
-    }
-
-    // Kiểm tra nếu username hoặc password trống
-    if (!username || !password) {
-        alert('Please enter both username and password.');
-        return;
-    }
-
-    // Gửi yêu cầu AJAX
-    $.ajax({
-        url: 'https://www.aardwolf.com.au/api/get_price.php',
-        type: 'POST',
-        data: {
-            'txtUserName': username,
-            'txtPassword': password,
-            '_submit_login': 1
-        },
-        success: function (response) {
-            if (response && response.user && response.user.name) {
-                localStorage.setItem('username', response.user.name);
-
-                // Ẩn form đăng nhập và hiển thị thông tin người dùng
-                $('.username, .password, .loginButton').hide();
-                $('.menu-mobile-img').hide();
-                $('.menu-mobile').removeClass('active');
-                $('.userInfo').show();
-                $('.userName').text(response.user.name);
-                $('.logoutButton').show();
-                document.getElementById('totalPrice').textContent = formatPrice(totalPrice);
-                document.getElementById('totalPrice2').textContent = formatPrice(totalPrice);
-            } else {
-                alert('Login failed! Invalid username or password.');
+        $('.footer a').on('click', function(event) {
+            event.preventDefault();
+            
+            $('html, body').animate({ scrollTop: 0 }, 'slow');
+            if (window.innerWidth <= 820) { // Kiểm tra chế độ mobile
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth' // Cuộn mượt mà
+                });
             }
->>>>>>> local
-        },
-        x: 10, // Vị trí bắt đầu trên trục X
-        y: 10  // Vị trí bắt đầu trên trục Y
+            
+            $('.image-3d').fadeIn();
+            $('#threejs-container').fadeIn();
+        });
+            
+        $('.closes').on('click', function() {
+            $('.menu-mobile').removeClass('active');
         });
 
-        // Restore the original styles after PDF is generated
-        elementHTML.style.visibility = 'hidden';
-=======
-  async function generatePDF() {
-    const { jsPDF } = window.jspdf;
-
-    // Khởi tạo file PDF với kích thước A4
-    const doc = new jsPDF({
-        orientation: 'portrait',
-        unit: 'mm',
-        format: 'a4', // Định dạng A4
+        
     });
-
-    const elementHTML = document.getElementById('content-page3');
-
-    if(elementHTML){
-        elementHTML.style.visibility = 'visible';
->>>>>>> 7309194779d6eca56d5682159270d75692cc65da
-        elementHTML.style.position = 'absolute';
-        elementHTML.style.left = '-9999px'; // Đẩy ra ngoài màn hình
-        elementHTML.style.top = '0';
-    }
-
-    // Render nội dung HTML sang canvas với độ phân giải cao
-    const canvas = await html2canvas(elementHTML, {
-        scale: 3, // Tăng scale để đảm bảo độ nét
-        scrollX: 0,
-        scrollY: 0,
-        useCORS: true, // Hỗ trợ ảnh bên ngoài
-    });
-
-    // Chuyển canvas sang định dạng ảnh
-    const imgData = canvas.toDataURL('image/png');
-
-    // Lấy kích thước canvas gốc
-    const canvasWidth = canvas.width;
-    const canvasHeight = canvas.height;
-
-    // Kích thước A4 trong PDF (210mm x 297mm)
-    const pageWidth = 210; // Chiều rộng A4
-    const pageHeight = 297; // Chiều cao A4
-
-    // Tính tỷ lệ scale để bảo toàn tỷ lệ gốc của ảnh
-    const widthRatio = pageWidth / canvasWidth;
-    const heightRatio = pageHeight / canvasHeight;
-    const scaleRatio = Math.min(widthRatio, heightRatio);
-
-    // Kích thước ảnh sau khi scale
-    const imgWidth = 155;
-    const imgHeight = 290;
-
-    // Căn chỉnh hình ảnh vào giữa trang
-    const xOffset = (pageWidth - imgWidth) / 2; // Canh giữa theo chiều ngang
-    const yOffset = (pageHeight - imgHeight) / 2; // Canh giữa theo chiều dọc
-
-    // Chèn ảnh vào PDF
-    doc.addImage(imgData, 'PNG', xOffset, yOffset, imgWidth, imgHeight);
-
-    // Xuất file PDF
-    doc.save('full_page_a4.pdf');
-
-    // Khôi phục trạng thái ban đầu của phần tử HTML
-    elementHTML.style.visibility = 'hidden';
-    elementHTML.style.position = 'absolute';
-    elementHTML.style.left = '0'; // Đẩy ra ngoài màn hình
-    elementHTML.style.top = '-100%';
-}
-
-
-
-
-
-    const savedUsername = localStorage.getItem('user_name');
-    if (savedUsername) {
-        // Hiển thị thông tin người dùng nếu đã đăng nhập
-        $('.username, .password, .loginButton').hide();
-        $('.menu-mobile').removeClass('active');
-        $('.menu-mobile-img').hide();
-        $('.userInfo').show();
-        $('.userName').text(savedUsername);
-        $('.logoutButton').show();
-        $('.menu-mobile').removeClass('active');
-        document.getElementById('totalPrice').textContent = formatPrice(totalPrice);
-        document.getElementById('totalPrice2').textContent = formatPrice(totalPrice);
-    } else {
-        // Hiển thị form đăng nhập nếu chưa đăng nhập
-        $('.username, .password, .loginButton').show();
-        $('.menu-mobile-img').show();
-        $('.userInfo, .logoutButton').hide();
-    }
-
-    $('.loginButton').click(function (e) {
-        e.preventDefault();
-    let username = '';
-    let password = '';
-
-    // Kiểm tra giao diện đang sử dụng: Desktop hay Mobile
-    if ($('.action-desktop').is(':visible')) {
-        username = $('.action-desktop .username').val().trim();
-        password = $('.action-desktop .password').val().trim();
-    } else if ($('.action-mobile').is(':visible')) {
-        username = $('.menu-mobile .username').val().trim();
-        password = $('.menu-mobile .password').val().trim();
-    }
-
-    // Kiểm tra nếu username hoặc password trống
-    if (!username || !password) {
-        alert('Please enter both username and password.');
-        return;
-    }
-
-    // Gửi yêu cầu AJAX
-    $.ajax({
-        url: 'https://www.aardwolf.com.au/api/get_price.php',
-        type: 'POST',
-        data: {
-            'txtUserName': username,
-            'txtPassword': password,
-            '_submit_login': 1
-        },
-        success: function (response) {
-            if (response && response.user && response.user.name) {
-                localStorage.setItem('user_name', response.user.name);
-
-                // Ẩn form đăng nhập và hiển thị thông tin người dùng
-                $('.username, .password, .loginButton').hide();
-                $('.menu-mobile-img').hide();
-                $('.menu-mobile').removeClass('active');
-                $('.userInfo').show();
-                $('.userName').text(response.user.name);
-                $('.logoutButton').show();
-                document.getElementById('totalPrice').textContent = formatPrice(totalPrice);
-                document.getElementById('totalPrice2').textContent = formatPrice(totalPrice);
-            } else {
-                alert('Login failed! Invalid username or password.');
-            }
-        },
-        error: function (xhr, status, error) {
-            console.error('Login Failed:', error);
-            alert('Login failed! Please try again later.');
-        }
-    });
-});
-
-
-// Xử lý sự kiện đăng xuất
-$('.logoutButton').click(function () {
-    // Xóa username khỏi localStorage
-    localStorage.removeItem('user_name');
-    $('.menu-mobile-img').show();
-    $('.menu-mobile').removeClass('active');
-
-    // Hiển thị lại form đăng nhập, ẩn thông tin người dùng
-    $('.username, .password, .loginButton').show();
-    $('.userInfo, .logoutButton').hide();
-    window.location.reload();
-});
 </script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.4.2/purify.min.js"></script>
+
 
 
 </html>

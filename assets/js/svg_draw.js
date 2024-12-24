@@ -155,30 +155,41 @@ export class SvgDrawCls {
         
         let nx = 0;
 
-        
+        // git commit -m "Go intergrate"
         // else if(this.crane.path.includes('4m'))
         //     nx = 30;
         // else if(this.crane.path.includes('5m'))
         //     nx = 0;
         // else
         //     nx = 50;
+        let pad_y = this.tube.path.includes('SM') ? -15: (this.istyp('arti') ? 45 : 25);
 
-        console.log('w', this.pad.path);
-        let pad_y = window.SettingObj.posPad.z * this.sc /  this.drw;
+        if(this.istyp('4m') || this.istyp('5m'))
+            pad_y = 12;
 
-        if(pad_y > 10)
-        {
-            pad_y = pad_y - 10;
+        if(this.istyp('one') && this.istyp('mobile'))
+            pad_y = 45;
 
-            if(this.pad.path.toLowerCase().includes('multi'))
-                pad_y = pad_y + 20;
-        }
+        // if(this.tube.path.includes('SM'))
+        //     pad_y = -15;
+        // else
+        // {
+        //     pad_y = window.SettingObj.posPad.z * this.sc /  this.drw;
+        //     console.log(pad_y);
+        //     // if(pad_y > 10)
+        //     {
+        //         // pad_y += 10 * this.drw;
+
+        //         if(this.pad.path.toLowerCase().includes('multi'))
+        //             pad_y = pad_y + 5 * this.drw;
+        //     }
+        // }
 
         this.drawPls(pls, nx);
 
         this.page.drawText('A', {
-            x: nx + this.x + this.head.x * this.sc - this.dimfz, 
-            y: this.y + (pad_y > 20 ?  pad_y - 8 : - 15),
+            x: nx + this.x + this.head.x * this.sc - this.dimfz / 2, 
+            y: this.y + pad_y,
             size: this.dimfz * 2, font: this.font_open_sans, color: rgb(0, 0, 0), textAlign: 'center',});
         
         this.drawZoom(this.font_open_sans);
@@ -240,7 +251,7 @@ export class SvgDrawCls {
         // let bb = this.calculateGlobalBounds(this.zoom_objs);
         
         let bx = this.drw * 105;
-        let by = this.y + 65;
+        let by = this.y + 60;
 
         this.drawPls(this.zoom_objs, bx + _zoom_x - this.x, by + _zoom_y - this.y);
         
@@ -250,7 +261,7 @@ export class SvgDrawCls {
         });
     
         this.page.drawText('A', {
-            x: bx , y: this.y - 15,
+            x: bx - this.dimfz , y: this.y - 15,
             size: this.dimfz * 2, font: font, color: rgb(0, 0, 0), textAlign: 'center',});
     }
     

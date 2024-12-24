@@ -198,6 +198,27 @@ export class PreloadFBXCLS {
                 if (result.status === 'fulfilled') {
                     let obj = result.value.object;
                     obj.name = sceneobj.name;
+
+                    obj.traverse((child) => {
+
+                        if (child.isMesh && child.material) {
+                            // Kiểm tra nếu vật liệu có texture map
+                            
+                            // const material = Array.isArray(child.material) ? child.material : [child.material];
+                            
+                            if (child.name.includes('bounding')) {
+                                const material = Array.isArray(child.material) ? child.material : [child.material];
+                                console.log('Mtl', child.material, child.name);
+                                // Nếu texture là concrete.jpg, tăng độ sáng
+                                material.forEach(mat => {
+                                    mat.emissive = new THREE.Color(0x333333); // Màu phát sáng nhẹ
+                                    mat.emissiveIntensity = 2.5;              // Tăng cường độ phát sáng
+                                    // mat.shininess = Math.min(mat.shininess + 50, 200); // Tăng độ bóng
+                                });
+                            }
+                        }
+                    });
+
                     this.loadedObjects.push(obj);
                     console.log(`Loaded: ${obj.name}`);
 
@@ -244,7 +265,7 @@ export class PreloadFBXCLS {
             
             if(obj)
             {
-                console.log('Found', obj, name);
+                // console.log('Found', obj, name);
                 obj.position.set(pos.x, pos.z, pos.y);
                 scene.add(obj);
             }else
@@ -324,7 +345,7 @@ export async function _load_a_Scene(src_data)
             // console.log('pad_y', pad.z);
 
             window.SettingObj.pdfContent = [{path:_crane.name, x:0 + mv_x, y:0},
-                {path:_pump_group.name,x:mv_x + p1.x, y:-p1.z},
+                {path:_pump_group.name,x:mv_x + p1.x, y:-pump_z},
                 {path:_tube.name,x:mv_x + p2.x, y:-p2.z},
                 {path:_head_stack.name,x:mv_x + pad.x, y: - pad.z},
                 {path:_suction_pack.name,x:mv_x + pad.x, y: - pad.z}]

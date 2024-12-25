@@ -53,7 +53,7 @@ export class SvgDrawCls {
         return Array.from(svgDocument.querySelectorAll('polyline'));
     }
 
-    calculateGlobalBounds(lsOfLsObjs) {
+    getBB(lsOfLsObjs) {
         if (lsOfLsObjs.length === 0) {
             return null; // Không có danh sách nào
         }
@@ -128,68 +128,29 @@ export class SvgDrawCls {
             }
         }
 
-        let bb = this.calculateGlobalBounds(pls);
+        let bb = this.getBB(pls);
         let m = 5 * this.drw;
-        // this.sc = Math.min(this.w * this.drw/ (bb.width + 2 * m), this.h * this.drw/ (bb.height + m));
-
-        // if(this.istyp('arti'))
-        //     this.sc = 0.065;
-        // else if(this.istyp('4m'))
-        //     this.sc = 0.058;
-        // else if(this.istyp('5m'))
-        //     this.sc = this.w / (bb.width + 2 * m);
-        // else
-        //     this.sc = 0.09;
-
+        
         let rw = bb.width + (this.istyp('5m') ? 400 : 0);
         let rh = bb.height + 20 * m;
         this.sc = Math.min(this.w / rw, this.h / rh);
 
         this.x = (210 * this.drw - (dx[0] + dx[1] + dx[2]) * this.sc) / 2;
 
-        // if(this.istyp('arti')) this.x += 20;
+        let letterAy = this.sc  * (- this.svgFiles[4].y + this.getBB(this.zoom_objs).yMin) - 20;
 
-        console.log('sc',this.x, bb.width, this.w);
+        if(letterAy < 10)
+            letterAy = -15;
         
         this.scalePls(pls, this.sc);
         
         let nx = 0;
 
-        // git commit -m "Go intergrate"
-        // else if(this.crane.path.includes('4m'))
-        //     nx = 30;
-        // else if(this.crane.path.includes('5m'))
-        //     nx = 0;
-        // else
-        //     nx = 50;
-        let pad_y = this.tube.path.includes('SM') ? -15: (this.istyp('arti') ? 45 : 25);
-
-        if(this.istyp('4m') || this.istyp('5m'))
-            pad_y = 12;
-
-        if(this.istyp('one') && this.istyp('mobile'))
-            pad_y = 45;
-
-        // if(this.tube.path.includes('SM'))
-        //     pad_y = -15;
-        // else
-        // {
-        //     pad_y = window.SettingObj.posPad.z * this.sc /  this.drw;
-        //     console.log(pad_y);
-        //     // if(pad_y > 10)
-        //     {
-        //         // pad_y += 10 * this.drw;
-
-        //         if(this.pad.path.toLowerCase().includes('multi'))
-        //             pad_y = pad_y + 5 * this.drw;
-        //     }
-        // }
-
         this.drawPls(pls, nx);
 
         this.page.drawText('A', {
             x: nx + this.x + this.head.x * this.sc - this.dimfz / 2, 
-            y: this.y + pad_y,
+            y: this.y + letterAy,
             size: this.dimfz * 2, font: this.font_open_sans, color: rgb(0, 0, 0), textAlign: 'center',});
         
         this.drawZoom(this.font_open_sans);
@@ -248,7 +209,7 @@ export class SvgDrawCls {
 
         this.scalePls(this.zoom_objs, window.SettingObj.zoomft.scale,  window.SettingObj.zoomft.x);
             
-        // let bb = this.calculateGlobalBounds(this.zoom_objs);
+        // let bb = this.getBB(this.zoom_objs);
         
         let bx = this.drw * 105;
         let by = this.y + 60;

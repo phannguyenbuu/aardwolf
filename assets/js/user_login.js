@@ -71,9 +71,16 @@ $('.loginButton').click(function (e) {
                     $('.logoutButton').show();
                     // document.getElementById('totalPrice').textContent = '';//formatPrice(totalPrice);
                     // document.getElementById('totalPrice2').textContent = '';//formatPrice(totalPrice);
-                    window.location.reload();
-                } else {
-                    alert('Login failed! Invalid username or password.');
+                    // window.location.reload();
+
+
+                    if(window.SettingObj.priceList && window.SettingObj.userName) {
+                        const totalPrice = document.getElementById('totalPrice');
+                        if(totalPrice)
+                            totalPrice.textContent =  window.SettingObj.totalPrice;
+                    } else {
+                        alert('Login failed! Invalid username or password.');
+                    }
                 }
             },
             error: function (xhr, status, error) {

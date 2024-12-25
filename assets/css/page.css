@@ -381,6 +381,11 @@ canvas {
     position: absolute;
 }
 
+
+.username, .password, .loginButton {
+    display: none;
+}
+
 @media screen and (max-width:820px) {
     #threejs-container {
         display: none;

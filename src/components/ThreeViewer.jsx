@@ -1,8 +1,9 @@
-import React, { useEffect, useRef, useCallback } from 'react';
+import React, { useEffect, useRef, useCallback, useState } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js';
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
+import download from 'downloadjs';
 import { useConfigurator } from '../context/ConfiguratorContext.jsx';
 import { ALL_PRELOAD_ITEMS, mmToInch } from '../constants/data.js';
 
@@ -68,8 +69,18 @@ export default function ThreeViewer() {
         setCameraPresetTrigger,
         takeSnapshotRef,
         show3DModal,
-        setShow3DModal
+        setShow3DModal,
+        viewportMode,
+        setViewportMode,
+        studioTheme,
+        setStudioTheme,
+        workLoadLimit,
+        craneType
     } = useConfigurator();
+
+    const [showSpecsHUD, setShowSpecsHUD] = useState(true);
+    const [isExporting, setIsExporting] = useState(false);
+    const [isTurntableActive, setIsTurntableActive] = useState(false);
 
     const sceneRef = useRef(null);
     const cameraRef = useRef(null);
@@ -82,6 +93,11 @@ export default function ThreeViewer() {
     const currentCenterRef = useRef(DEFAULT_CENTER.clone());
     const currentSizeRef = useRef(new THREE.Vector3(3300, 2600, 1000));
     const lightTargetRef = useRef(null);
+    const edgeLineMatRef = useRef(null);
+    const keyLightRef = useRef(null);
+    const ambientLightRef = useRef(null);
+    const fillLightRef = useRef(null);
+    const rimLightRef = useRef(null);
 
     // Camera animation refs
     const cameraAnimRef = useRef({
@@ -152,6 +168,7 @@ export default function ThreeViewer() {
         // 1. Ambient baseline
         const ambientLight = new THREE.AmbientLight(0xffffff, 0.75);
         scene.add(ambientLight);
+        ambientLightRef.current = ambientLight;
 
         // 2. Key light with realistic diffused contact shadow
         const keyLight = new THREE.DirectionalLight(0xfffbf2, 2.4);
@@ -161,6 +178,7 @@ export default function ThreeViewer() {
         scene.add(lightTarget);
         keyLight.target = lightTarget;
         lightTargetRef.current = lightTarget;
+        keyLightRef.current = keyLight;
 
         keyLight.castShadow = true;
         keyLight.shadow.mapSize.width = 4096;
@@ -180,11 +198,13 @@ export default function ThreeViewer() {
         const fillLight = new THREE.DirectionalLight(0xe8f0fc, 1.2);
         fillLight.position.set(-3500, 3500, -2000);
         scene.add(fillLight);
+        fillLightRef.current = fillLight;
 
         // 4. Warm rim light to accent structural bevels and edges
         const rimLight = new THREE.DirectionalLight(0xfffaea, 1.4);
         rimLight.position.set(1200, 3800, -4800);
         scene.add(rimLight);
+        rimLightRef.current = rimLight;
 
         // 5. Gentle upward bounce light from studio floor
         const bounceLight = new THREE.DirectionalLight(0xf0f4f8, 0.5);
@@ -396,6 +416,7 @@ export default function ThreeViewer() {
             transparent: true,
             opacity: 0.35
         });
+        edgeLineMatRef.current = edgeLineMat;
 
         const preloadPromises = ALL_PRELOAD_ITEMS.map((item) => {
             const fileName = `/models/aardwolf_all_part_${item.name}.fbx`;
@@ -725,19 +746,268 @@ export default function ThreeViewer() {
         return () => clearTimeout(timer);
     }, [show3DModal]);
 
+    // Dynamic lighting & CAD contour theme updates
+    useEffect(() => {
+        if (!sceneRef.current) return;
+
+        if (studioTheme === 'blueprint') {
+            if (edgeLineMatRef.current) {
+                edgeLineMatRef.current.color.setHex(0x38bdf8);
+                edgeLineMatRef.current.opacity = 0.85;
+            }
+            if (ambientLightRef.current) {
+                ambientLightRef.current.color.setHex(0x8bc0ff);
+                ambientLightRef.current.intensity = 0.85;
+            }
+            if (keyLightRef.current) {
+                keyLightRef.current.color.setHex(0x38bdf8);
+                keyLightRef.current.intensity = 2.0;
+            }
+        } else if (studioTheme === 'workshop') {
+            if (edgeLineMatRef.current) {
+                edgeLineMatRef.current.color.setHex(0x15181d);
+                edgeLineMatRef.current.opacity = 0.45;
+            }
+            if (ambientLightRef.current) {
+                ambientLightRef.current.color.setHex(0xffffff);
+                ambientLightRef.current.intensity = 0.7;
+            }
+            if (keyLightRef.current) {
+                keyLightRef.current.color.setHex(0xffecd1);
+                keyLightRef.current.intensity = 2.5;
+            }
+        } else {
+            // Clean Showroom Studio
+            if (edgeLineMatRef.current) {
+                edgeLineMatRef.current.color.setHex(0x1e2228);
+                edgeLineMatRef.current.opacity = 0.35;
+            }
+            if (ambientLightRef.current) {
+                ambientLightRef.current.color.setHex(0xffffff);
+                ambientLightRef.current.intensity = 0.75;
+            }
+            if (keyLightRef.current) {
+                keyLightRef.current.color.setHex(0xfffbf2);
+                keyLightRef.current.intensity = 2.4;
+            }
+        }
+    }, [studioTheme]);
+
+    // Handle high-resolution 4K Studio Render export
+    const handleExportRender = useCallback(() => {
+        if (!rendererRef.current || !sceneRef.current || !cameraRef.current || !containerRef.current) return;
+        setIsExporting(true);
+
+        try {
+            const renderer = rendererRef.current;
+            const camera = cameraRef.current;
+            const scene = sceneRef.current;
+            const container = containerRef.current;
+
+            const originalWidth = container.clientWidth;
+            const originalHeight = container.clientHeight;
+            const originalPixelRatio = renderer.getPixelRatio();
+
+            // Render at true 4K resolution (3840 x 2160)
+            const targetWidth = 3840;
+            const targetHeight = 2160;
+
+            renderer.setPixelRatio(1);
+            renderer.setSize(targetWidth, targetHeight, false);
+            camera.aspect = targetWidth / targetHeight;
+            camera.updateProjectionMatrix();
+
+            renderer.render(scene, camera);
+            const dataUrl = renderer.domElement.toDataURL('image/png', 1.0);
+            download(dataUrl, `Aardwolf_Vacuum_Lifter_Studio_Render_4K_${Date.now()}.png`, 'image/png');
+
+            // Restore original viewport dimensions and pixel ratio
+            renderer.setPixelRatio(originalPixelRatio);
+            renderer.setSize(originalWidth, originalHeight, true);
+            camera.aspect = originalWidth / originalHeight;
+            camera.updateProjectionMatrix();
+            renderer.render(scene, camera);
+        } catch (e) {
+            console.error('Export render error:', e);
+        } finally {
+            setTimeout(() => setIsExporting(false), 600);
+        }
+    }, []);
+
+    // Toggle 360 Turntable rotation
+    const toggleTurntable = useCallback(() => {
+        if (!controlsRef.current) return;
+        controlsRef.current.autoRotate = !controlsRef.current.autoRotate;
+        setIsTurntableActive(controlsRef.current.autoRotate);
+    }, []);
+
+    // Focus camera on workpiece and suction head
+    const handleFocusWorkpiece = useCallback(() => {
+        if (!cameraRef.current || !controlsRef.current) return;
+        const center = currentCenterRef.current;
+        const p2Match = config3D?.crane?.name ? extractPoint3(config3D.crane.name)[1] : null;
+        const padX = p2Match ? p2Match.x : center.x;
+        const targetPos = new THREE.Vector3(padX, 350, 0);
+        const camPos = new THREE.Vector3(padX + 900, 750, 1600);
+
+        cameraAnimRef.current = {
+            active: true,
+            startPos: cameraRef.current.position.clone(),
+            endPos: camPos,
+            startTarget: controlsRef.current.target.clone(),
+            endTarget: targetPos,
+            startTime: null,
+            duration: 0.8
+        };
+    }, [config3D]);
+
     return (
-        <div className="three-viewport-wrapper">
+        <div className={`three-viewport-wrapper theme-${studioTheme} mode-${viewportMode}`}>
             {/* Live Interactive Three.js WebGL Container */}
             <div
                 id="threejs-container"
                 ref={containerRef}
             />
 
-            {/* Subtle Viewport Badge */}
-            <div className="viewport-status-badge">
-                <span className="live-dot" />
-                <span>3D Live View</span>
+            {/* Viewport Top Header Toolbar */}
+            <div className="viewport-top-header">
+                {/* Mode Switcher Pill */}
+                <div className="viewport-mode-switcher">
+                    <button
+                        type="button"
+                        className={`mode-btn ${viewportMode === 'interactive' ? 'active' : ''}`}
+                        onClick={() => setViewportMode('interactive')}
+                        title="Switch to 3D Interactive WebGL View"
+                    >
+                        <span className="mode-icon">🎮</span>
+                        <span className="mode-text">3D Interactive</span>
+                    </button>
+                    <button
+                        type="button"
+                        className={`mode-btn ${viewportMode === 'studio-render' ? 'active' : ''}`}
+                        onClick={() => {
+                            setViewportMode('studio-render');
+                            setCameraPresetTrigger('ortho-view');
+                        }}
+                        title="Switch to High-Definition Studio Render"
+                    >
+                        <span className="mode-icon">📸</span>
+                        <span className="mode-text">Studio HD Render</span>
+                        <span className="mode-badge-hd">PRO</span>
+                    </button>
+                </div>
+
+                {/* Studio Theme Switcher */}
+                <div className="studio-theme-switcher">
+                    <button
+                        type="button"
+                        className={`theme-pill-btn ${studioTheme === 'studio' ? 'active' : ''}`}
+                        onClick={() => setStudioTheme('studio')}
+                        title="Clean Studio Showroom Environment"
+                    >
+                        <span className="theme-dot dot-studio" />
+                        <span>Studio</span>
+                    </button>
+                    <button
+                        type="button"
+                        className={`theme-pill-btn ${studioTheme === 'workshop' ? 'active' : ''}`}
+                        onClick={() => setStudioTheme('workshop')}
+                        title="Industrial Workshop Environment"
+                    >
+                        <span className="theme-dot dot-workshop" />
+                        <span>Workshop</span>
+                    </button>
+                    <button
+                        type="button"
+                        className={`theme-pill-btn ${studioTheme === 'blueprint' ? 'active' : ''}`}
+                        onClick={() => setStudioTheme('blueprint')}
+                        title="Technical Engineering CAD Blueprint"
+                    >
+                        <span className="theme-dot dot-blueprint" />
+                        <span>Blueprint</span>
+                    </button>
+                </div>
             </div>
+
+            {/* Studio Render HUD & Controls Overlay (When in studio-render mode) */}
+            {viewportMode === 'studio-render' && (
+                <>
+                    {/* Floating Technical Specs HUD */}
+                    {showSpecsHUD && (
+                        <div className="studio-specs-hud">
+                            <div className="specs-hud-header">
+                                <span className="specs-brand">AARDWOLF VACUUM LIFTER</span>
+                                <span className="specs-status">STUDIO HD</span>
+                            </div>
+                            <div className="specs-hud-body">
+                                <div className="specs-item">
+                                    <span className="specs-lbl">Configuration:</span>
+                                    <span className="specs-val">{config3D.crane ? config3D.crane.name.split('@')[0] : 'Jib Crane'}</span>
+                                </div>
+                                <div className="specs-item">
+                                    <span className="specs-lbl">Capacity:</span>
+                                    <span className="specs-val font-weight-bold">{workLoadLimit.toUpperCase()}</span>
+                                </div>
+                                <div className="specs-item">
+                                    <span className="specs-lbl">Workpiece:</span>
+                                    <span className="specs-val">{actualLoad.length} × {actualLoad.width} × {actualLoad.height} mm ({actualLoad.weight} kg)</span>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Studio Render Quick Actions Bar */}
+                    <div className="studio-actions-bar">
+                        <button
+                            type="button"
+                            className="studio-act-btn btn-export"
+                            onClick={handleExportRender}
+                            disabled={isExporting}
+                            title="Download high-resolution studio render image"
+                        >
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="mr-1">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3" />
+                            </svg>
+                            <span>{isExporting ? 'Exporting...' : 'Export 4K Render'}</span>
+                        </button>
+
+                        <button
+                            type="button"
+                            className={`studio-act-btn ${isTurntableActive ? 'active' : ''}`}
+                            onClick={toggleTurntable}
+                            title="Toggle smooth 360° showroom turntable animation"
+                        >
+                            <span>{isTurntableActive ? '⏸ Pause 360°' : '🔄 360° Turntable'}</span>
+                        </button>
+
+                        <button
+                            type="button"
+                            className="studio-act-btn"
+                            onClick={handleFocusWorkpiece}
+                            title="Focus camera on workpiece and suction head"
+                        >
+                            <span>🔍 Focus Suction</span>
+                        </button>
+
+                        <button
+                            type="button"
+                            className={`studio-act-btn btn-icon ${showSpecsHUD ? 'active' : ''}`}
+                            onClick={() => setShowSpecsHUD(!showSpecsHUD)}
+                            title="Toggle technical spec overlay callout"
+                        >
+                            <span>📋 Specs</span>
+                        </button>
+                    </div>
+                </>
+            )}
+
+            {/* Subtle Live Status Indicator (in interactive mode) */}
+            {viewportMode === 'interactive' && (
+                <div className="viewport-status-badge">
+                    <span className="live-dot" />
+                    <span>3D Live Interactive</span>
+                </div>
+            )}
         </div>
     );
 }

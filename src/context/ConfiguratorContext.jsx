@@ -58,6 +58,10 @@ export function ConfiguratorProvider({ children }) {
     // Camera preset view trigger
     const [cameraPresetTrigger, setCameraPresetTrigger] = useState(null);
 
+    // Viewport render mode: 'interactive' or 'studio-render'
+    const [viewportMode, setViewportMode] = useState('studio-render'); // Default to stunning studio render mode
+    const [studioTheme, setStudioTheme] = useState('studio'); // 'studio', 'workshop', 'blueprint'
+
     // Canvas snapshot for PDF report
     const [canvasSnapshot, setCanvasSnapshot] = useState(null);
     const takeSnapshotRef = useRef(null);
@@ -312,6 +316,10 @@ export function ConfiguratorProvider({ children }) {
         setLoadingProgress,
         cameraPresetTrigger,
         setCameraPresetTrigger,
+        viewportMode,
+        setViewportMode,
+        studioTheme,
+        setStudioTheme,
         login,
         logout,
         requote,

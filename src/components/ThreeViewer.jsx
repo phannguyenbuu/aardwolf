@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useCallback } from 'react';
+import React, { useEffect, useRef, useCallback, useState } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js';
@@ -21,13 +21,16 @@ function extractPoint3(inputString) {
 const TUBE_HEIGHT = 1918.86;
 const TUBE_OFFSET = 25.5;
 
+// Equipment center for camera targeting
+const EQUIPMENT_CENTER = new THREE.Vector3(1130, 1150, 0);
+
 function createDimensionSprite(text) {
     const canvas = document.createElement('canvas');
     canvas.width = 256;
     canvas.height = 64;
     const ctx = canvas.getContext('2d');
 
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+    ctx.fillStyle = 'rgba(20, 20, 20, 0.85)';
     ctx.roundRect(0, 0, 256, 64, 12);
     ctx.fill();
 
@@ -56,9 +59,12 @@ export default function ThreeViewer() {
         setLoadingProgress,
         cameraPresetTrigger,
         setCameraPresetTrigger,
-        takeSnapshotRef
+        takeSnapshotRef,
+        show3DModal,
+        setShow3DModal
     } = useConfigurator();
 
+    const [viewMode, setViewMode] = useState('3d'); // '3d' or 'photo'
     const sceneRef = useRef(null);
     const cameraRef = useRef(null);
     const rendererRef = useRef(null);
@@ -66,14 +72,17 @@ export default function ThreeViewer() {
     const loadedObjectsMapRef = useRef(new Map());
     const isReadyRef = useRef(false);
     const workpieceGroupRef = useRef(null);
+    const texturesRef = useRef({});
 
     // Camera animation refs
     const cameraAnimRef = useRef({
         active: false,
         startPos: new THREE.Vector3(),
         endPos: new THREE.Vector3(),
+        startTarget: new THREE.Vector3(),
+        endTarget: new THREE.Vector3(),
         startTime: null,
-        duration: 1.0
+        duration: 0.8
     });
 
     // Hook snapshot method for PDF generation
@@ -81,7 +90,7 @@ export default function ThreeViewer() {
         takeSnapshotRef.current = () => {
             return new Promise((resolve) => {
                 if (!rendererRef.current || !sceneRef.current || !cameraRef.current) {
-                    resolve(null);
+                    resolve('/assets/images/image-1.png');
                     return;
                 }
                 rendererRef.current.render(sceneRef.current, cameraRef.current);
@@ -101,29 +110,45 @@ export default function ThreeViewer() {
 
         const scene = new THREE.Scene();
         sceneRef.current = scene;
+        window.THREE = THREE;
+        window.__threeScene = scene;
 
-        const axesHelper = new THREE.AxesHelper(5);
-        axesHelper.isAxesHelper = true;
-        scene.add(axesHelper);
-
-        const ambientLight = new THREE.AmbientLight(0x909090);
+        // Realistic studio lighting
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
         scene.add(ambientLight);
 
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 1.2);
-        directionalLight.position.set(232, 380, 336);
-        scene.add(directionalLight);
+        // Key light
+        const keyLight = new THREE.DirectionalLight(0xffffff, 1.5);
+        keyLight.position.set(2500, 3500, 3000);
+        scene.add(keyLight);
 
-        const fillLight = new THREE.DirectionalLight(0xdadada, 0.6);
-        fillLight.position.set(-232, 200, -336);
+        // Fill light
+        const fillLight = new THREE.DirectionalLight(0xd0e0ff, 0.7);
+        fillLight.position.set(-2500, 2000, -2000);
         scene.add(fillLight);
 
-        const camera = new THREE.PerspectiveCamera(75, w / h, 0.1, 100000);
-        camera.position.set(window.innerWidth <= 820 ? 800 : 2000, 1500, 8000);
-        cameraRef.current = camera;
+        // Rim / Back light
+        const rimLight = new THREE.DirectionalLight(0xfffaed, 0.6);
+        rimLight.position.set(1000, 3000, -3500);
+        scene.add(rimLight);
 
-        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
+        // Camera with natural studio lens (FOV 40)
+        const camera = new THREE.PerspectiveCamera(40, w / h, 10, 100000);
+        camera.position.set(2400, 1700, 4400);
+        cameraRef.current = camera;
+        window.__threeCamera = cameraRef;
+
+        const renderer = new THREE.WebGLRenderer({
+            antialias: true,
+            alpha: true,
+            preserveDrawingBuffer: true,
+            powerPreference: 'high-performance'
+        });
         renderer.setSize(w, h);
-        renderer.setClearColor(window.innerWidth <= 820 ? 0xe6e6e6 : 0xd1d2d3);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 1.15;
+        renderer.setClearColor(0xd1d2d3, 1);
         rendererRef.current = renderer;
 
         container.innerHTML = '';
@@ -132,13 +157,48 @@ export default function ThreeViewer() {
         const controls = new OrbitControls(camera, renderer.domElement);
         controls.enablePan = true;
         controls.panSpeed = 1.0;
-        controls.minDistance = 0;
-        controls.maxDistance = 10000;
+        controls.minDistance = 500;
+        controls.maxDistance = 15000;
         controls.enableDamping = true;
-        controls.target.set(window.innerWidth <= 820 ? 800 : 2000, 1500, 0);
+        controls.dampingFactor = 0.05;
+        controls.target.copy(EQUIPMENT_CENTER);
         controlsRef.current = controls;
+        window.__threeControls = controlsRef;
 
-        // Two-finger touch panning
+        // Ground contact shadow
+        const shadowCanvas = document.createElement('canvas');
+        shadowCanvas.width = 512;
+        shadowCanvas.height = 512;
+        const sctx = shadowCanvas.getContext('2d');
+        const grad = sctx.createRadialGradient(256, 256, 40, 256, 256, 250);
+        grad.addColorStop(0, 'rgba(30, 30, 30, 0.45)');
+        grad.addColorStop(0.5, 'rgba(60, 60, 60, 0.18)');
+        grad.addColorStop(1, 'rgba(209, 210, 211, 0)');
+        sctx.fillStyle = grad;
+        sctx.fillRect(0, 0, 512, 512);
+
+        const shadowTex = new THREE.CanvasTexture(shadowCanvas);
+        const shadowGeo = new THREE.PlaneGeometry(3800, 3800);
+        const shadowMat = new THREE.MeshBasicMaterial({
+            map: shadowTex,
+            transparent: true,
+            depthWrite: false
+        });
+        const groundShadow = new THREE.Mesh(shadowGeo, shadowMat);
+        groundShadow.rotation.x = -Math.PI / 2;
+        groundShadow.position.set(1130, 2, 0);
+        groundShadow.isGroundShadow = true;
+        scene.add(groundShadow);
+
+        // Load textures
+        const texLoader = new THREE.TextureLoader();
+        const tubeTex = texLoader.load('/models/logo_tube.jpg');
+        tubeTex.colorSpace = THREE.SRGBColorSpace;
+        const craneTex = texLoader.load('/models/logo_crane.jpg');
+        craneTex.colorSpace = THREE.SRGBColorSpace;
+        texturesRef.current = { tubeTex, craneTex };
+
+        // Two-finger touch panning for mobile
         let isPanning = false;
         let lastTouchPos = null;
 
@@ -186,9 +246,10 @@ export default function ThreeViewer() {
                 if (!anim.startTime) anim.startTime = timestamp;
                 const elapsed = (timestamp - anim.startTime) / 1000;
                 const progress = Math.min(elapsed / anim.duration, 1);
+                const ease = 0.5 - Math.cos(progress * Math.PI) / 2; // easeInOutSine
 
-                camera.position.lerpVectors(anim.startPos, anim.endPos, progress);
-                camera.lookAt(0, 0, 0);
+                camera.position.lerpVectors(anim.startPos, anim.endPos, ease);
+                controls.target.lerpVectors(anim.startTarget, anim.endTarget, ease);
 
                 if (progress >= 1) {
                     anim.active = false;
@@ -211,7 +272,6 @@ export default function ThreeViewer() {
             cameraRef.current.aspect = newW / newH;
             cameraRef.current.updateProjectionMatrix();
             rendererRef.current.setSize(newW, newH);
-            rendererRef.current.setClearColor(window.innerWidth <= 820 ? 0xe6e6e6 : 0xd1d2d3);
         };
         window.addEventListener('resize', onResize);
 
@@ -223,6 +283,32 @@ export default function ThreeViewer() {
         setIs3DLoading(true);
         setLoadingProgress(0);
 
+        const steelMat = new THREE.MeshStandardMaterial({
+            color: 0xdedfe2,
+            roughness: 0.4,
+            metalness: 0.3
+        });
+        const yellowMat = new THREE.MeshStandardMaterial({
+            color: 0xf5b400,
+            roughness: 0.35,
+            metalness: 0.1
+        });
+        const darkSteelMat = new THREE.MeshStandardMaterial({
+            color: 0x33373d,
+            roughness: 0.5,
+            metalness: 0.4
+        });
+        const tubeMat = new THREE.MeshStandardMaterial({
+            map: tubeTex,
+            roughness: 0.3,
+            metalness: 0.05
+        });
+        const edgeLineMat = new THREE.LineBasicMaterial({
+            color: 0x222222,
+            transparent: true,
+            opacity: 0.45
+        });
+
         const preloadPromises = ALL_PRELOAD_ITEMS.map((item) => {
             const fileName = `/models/aardwolf_all_part_${item.name}.fbx`;
             return new Promise((resolve) => {
@@ -230,17 +316,39 @@ export default function ThreeViewer() {
                     fileName,
                     (fbx) => {
                         fbx.name = item.name;
+                        const isTube = item.name.toLowerCase().includes('tube lift');
+                        const isPump = item.name.toLowerCase().includes('pump');
+                        const isCrane = item.name.toLowerCase().includes('crane') || item.name.toLowerCase().includes('arm');
+
                         fbx.traverse((child) => {
-                            if (child.isMesh && child.material) {
-                                if (child.name.includes('bounding')) {
-                                    const mats = Array.isArray(child.material) ? child.material : [child.material];
-                                    mats.forEach((mat) => {
-                                        mat.emissive = new THREE.Color(0x333333);
-                                        mat.emissiveIntensity = 2.5;
-                                    });
+                            if (child.isMesh) {
+                                const mname = child.name.toLowerCase();
+
+                                // Apply custom high-quality materials matching DeWalt & CAD renders
+                                if (isTube) {
+                                    child.material = tubeMat;
+                                } else if (isPump) {
+                                    if (mname.includes('shape') || mname.includes('box') || mname.includes('161')) {
+                                        child.material = yellowMat;
+                                    } else {
+                                        child.material = darkSteelMat;
+                                    }
+                                } else if (isCrane) {
+                                    child.material = steelMat;
+                                }
+
+                                // Apply CAD technical illustration edge outlines
+                                if (child.geometry && !child.userData.hasEdges && (isCrane || isPump)) {
+                                    child.userData.hasEdges = true;
+                                    try {
+                                        const edges = new THREE.EdgesGeometry(child.geometry, 28);
+                                        const line = new THREE.LineSegments(edges, edgeLineMat);
+                                        child.add(line);
+                                    } catch (e) {}
                                 }
                             }
                         });
+
                         loadedObjectsMapRef.current.set(item.name, fbx);
                         loadedCount++;
                         setLoadingProgress(Math.round((loadedCount / totalItems) * 100));
@@ -286,10 +394,10 @@ export default function ThreeViewer() {
         const scene = sceneRef.current;
         if (!scene || !isReadyRef.current) return;
 
-        // Clear existing models
+        // Clear existing models except lights and ground shadow
         for (let i = scene.children.length - 1; i >= 0; i--) {
             const child = scene.children[i];
-            if (!child.isLight && !child.isAxesHelper) {
+            if (!child.isLight && !child.isAxesHelper && !child.isGroundShadow) {
                 scene.remove(child);
             }
         }
@@ -338,9 +446,8 @@ export default function ThreeViewer() {
                 const w = Math.max(50, actualLoad.width);
                 const h = Math.max(20, actualLoad.height);
 
-                // Geometry: box representation
                 const boxGeo = new THREE.BoxGeometry(l, h, w);
-                let boxMatColor = 0xc2a67e; // Cardboard kraft color by default
+                let boxMatColor = 0xc2a67e;
                 if (surfaceType === 'sheet_metal') boxMatColor = 0x8899aa;
                 if (surfaceType === 'bag_woven') boxMatColor = 0xd5ceb8;
 
@@ -351,20 +458,16 @@ export default function ThreeViewer() {
                 });
                 const workpieceMesh = new THREE.Mesh(boxGeo, boxMat);
 
-                // Position right underneath suction pad
-                // In Three.js coordinates: pos.x -> X, pos.z -> Y (elevation), pos.y -> Z (depth)
                 const workpieceCenterY = pad.z - (h / 2);
                 workpieceMesh.position.set(pad.x, workpieceCenterY, pad.y);
                 workpieceGroup.add(workpieceMesh);
 
-                // Edge wireframe highlight
                 const edgesGeo = new THREE.EdgesGeometry(boxGeo);
                 const edgesMat = new THREE.LineBasicMaterial({ color: 0x333333, linewidth: 2 });
                 const wireframe = new THREE.LineSegments(edgesGeo, edgesMat);
                 wireframe.position.copy(workpieceMesh.position);
                 workpieceGroup.add(wireframe);
 
-                // 3D Dimension label sprite
                 const dimText = unit === 'Inch'
                     ? `${Math.round(mmToInch(l))}" × ${Math.round(mmToInch(w))}"`
                     : `${l} × ${w} mm`;
@@ -395,26 +498,28 @@ export default function ThreeViewer() {
 
     // Handle Camera Presets trigger
     useEffect(() => {
-        if (!cameraPresetTrigger || !cameraRef.current) return;
+        if (!cameraPresetTrigger || !cameraRef.current || !controlsRef.current) return;
 
         const presets = {
-            'bottom-view': new THREE.Vector3(0, -8000, 0),
-            'front-view': new THREE.Vector3(0, 1500, 7000),
-            'left-view': new THREE.Vector3(7000, 1500, 0),
-            'right-view': new THREE.Vector3(-7000, 1500, 0),
-            'top-view': new THREE.Vector3(0, 8000, 0),
-            'ortho-view': new THREE.Vector3(5000, 5000, 5000),
-            '360': new THREE.Vector3(-5000, 5000, -5000)
+            'bottom-view': { pos: new THREE.Vector3(1130, -3500, 0), target: EQUIPMENT_CENTER },
+            'front-view': { pos: new THREE.Vector3(1130, 1150, 4800), target: EQUIPMENT_CENTER },
+            'left-view': { pos: new THREE.Vector3(5600, 1150, 0), target: EQUIPMENT_CENTER },
+            'right-view': { pos: new THREE.Vector3(-3400, 1150, 0), target: EQUIPMENT_CENTER },
+            'top-view': { pos: new THREE.Vector3(1130, 5600, 0), target: EQUIPMENT_CENTER },
+            'ortho-view': { pos: new THREE.Vector3(3600, 3200, 3600), target: EQUIPMENT_CENTER },
+            '360': { pos: new THREE.Vector3(2400, 1700, 4400), target: EQUIPMENT_CENTER }
         };
 
-        const targetPos = presets[cameraPresetTrigger];
-        if (targetPos) {
+        const targetConfig = presets[cameraPresetTrigger];
+        if (targetConfig) {
             cameraAnimRef.current = {
                 active: true,
                 startPos: cameraRef.current.position.clone(),
-                endPos: targetPos,
+                endPos: targetConfig.pos,
+                startTarget: controlsRef.current.target.clone(),
+                endTarget: targetConfig.target,
                 startTime: null,
-                duration: 1.0
+                duration: 0.8
             };
         }
 
@@ -422,6 +527,55 @@ export default function ThreeViewer() {
     }, [cameraPresetTrigger, setCameraPresetTrigger]);
 
     return (
-        <div id="threejs-container" ref={containerRef} />
+        <div className="three-viewport-wrapper">
+            {/* View Mode Switcher Header Pill */}
+            <div className="viewport-mode-switcher">
+                <button
+                    className={`mode-btn ${viewMode === '3d' ? 'active' : ''}`}
+                    onClick={() => setViewMode('3d')}
+                    title="Interactive 3D Viewport with Orbit / Zoom"
+                >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="mr-1">
+                        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                        <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                        <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                    </svg>
+                    3D Interactive
+                </button>
+                <button
+                    className={`mode-btn ${viewMode === 'photo' ? 'active' : ''}`}
+                    onClick={() => setViewMode('photo')}
+                    title="High-definition Studio Render"
+                >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="mr-1">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                        <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                        <polyline points="21 15 16 10 5 21"></polyline>
+                    </svg>
+                    Studio Render
+                </button>
+            </div>
+
+            {/* Static High-definition Studio Render view */}
+            {viewMode === 'photo' && (
+                <div className="photo-render-view">
+                    <img
+                        src="/assets/images/image-1.png"
+                        alt="Aardwolf Vacuum Tube Lifter 3D Render"
+                        className="photo-render-img"
+                    />
+                    <div className="photo-render-caption">
+                        <span>Aardwolf Lifter • High Precision 3D Render</span>
+                    </div>
+                </div>
+            )}
+
+            {/* Interactive Three.js WebGL Container */}
+            <div
+                id="threejs-container"
+                ref={containerRef}
+                style={{ display: viewMode === '3d' ? 'flex' : 'none' }}
+            />
+        </div>
     );
 }

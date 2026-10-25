@@ -3,22 +3,22 @@
     {
       "id": "floor-mounted-crane",
       "name": "Floor-Mounted Crane",
-      "description": "Cẩu trục gắn sàn chịu lực cao, xoay 360 độ linh hoạt",
+      "description": "Heavy-duty floor-mounted pillar jib crane with full 360° slewing range",
       "allowedJibs": ["2.5m", "3m", "4m", "5m"]
     },
     {
       "id": "mobile-crane",
       "name": "Mobile Crane",
-      "description": "Cẩu trục di động bánh xe có đối trọng, dễ dàng di chuyển trong nhà xưởng",
+      "description": "Counterbalanced mobile crane on wheels, easily relocated throughout the facility",
       "allowedJibs": ["2.5m", "3m"],
-      "disabledJibsTooltip": "Cẩu di động chỉ an toàn với tay cần tối đa 3m để đảm bảo độ ổn định đối trọng."
+      "disabledJibsTooltip": "Mobile crane is only certified for jib lengths up to 3m to maintain counterweight stability."
     },
     {
       "id": "wall-mounted-crane",
       "name": "Wall-Mounted Crane",
-      "description": "Cẩu trục áp tường tiết kiệm diện tích sàn nhà xưởng",
+      "description": "Wall bracket mounted jib crane maximizing available workshop floor space",
       "allowedJibs": ["3m", "4m", "5m"],
-      "disabledJibsTooltip": "Cẩu áp tường yêu cầu chiều dài tối thiểu 3m cho khoảng vươn tiêu chuẩn."
+      "disabledJibsTooltip": "Wall-mounted crane requires a minimum 3m reach for standard mounting bracket clearance."
     }
   ],
   "jibs": [
@@ -156,21 +156,21 @@
     }
   ],
   "environments": [
-    { "id": "clean", "name": "Môi trường tiêu chuẩn / Không bụi", "en": "Clean / Non-dusty environment" },
-    { "id": "dusty", "name": "Môi trường nhiều bụi / Công nghiệp", "en": "Dusty / Heavy industrial environment", "requireFilter": "zfp300" }
+    { "id": "clean", "name": "Standard / Clean environment", "en": "Clean / Non-dusty environment" },
+    { "id": "dusty", "name": "Dusty / Heavy industrial environment", "en": "Dusty / Heavy industrial environment", "requireFilter": "zfp300" }
   ],
   "surfaceTypes": [
-    { "id": "carton_smooth", "name": "Thùng carton / Hộp giấy (Cartons)", "recommendedHead": "round_single" },
-    { "id": "sheet_metal", "name": "Tấm kim loại / Kính / Nhẵn kín khí (Sheet metal / Glass)", "recommendedHead": "multi_pad" },
-    { "id": "porous_rough", "name": "Bề mặt xốp / Gỗ / Nhám thoát khí (Porous / Wood / Rough)", "recommendedHead": "foam_pad" },
-    { "id": "bag_woven", "name": "Bao tải hạt / Bao dệt / Bao xi măng (Bags / Sacks)", "recommendedHead": "bag_suction" },
-    { "id": "high_stack", "name": "Xếp chồng cao / Pallet cao (High stack loading)", "recommendedHead": "high_stack" },
-    { "id": "swivel_90", "name": "Lật nghiêng / Xoay góc 90° (90° Swivel & Tilt)", "recommendedHead": "swivel_90" }
+    { "id": "carton_smooth", "name": "Carton boxes / Paper packaging", "recommendedHead": "round_single" },
+    { "id": "sheet_metal", "name": "Sheet metal / Glass / Smooth airtight", "recommendedHead": "multi_pad" },
+    { "id": "porous_rough", "name": "Porous / Wood / Textured breathing", "recommendedHead": "foam_pad" },
+    { "id": "bag_woven", "name": "Woven sacks / Cement bags / Bulk grains", "recommendedHead": "bag_suction" },
+    { "id": "high_stack", "name": "High stack loading / High palletization", "recommendedHead": "high_stack" },
+    { "id": "swivel_90", "name": "90° Swivel & Tilt rotation", "recommendedHead": "swivel_90" }
   ],
   "suctionHeads": [
     {
       "id": "round_single",
-      "name": "Đầu hút tròn đơn (Single Bellow)",
+      "name": "Single Bellow Round Suction Head",
       "type": "round",
       "headKey": "single_control_head",
       "padKey": "bellow_250",
@@ -180,7 +180,7 @@
     },
     {
       "id": "rectangular_double",
-      "name": "Đầu hút chữ nhật đôi (Double Bellows)",
+      "name": "Double Bellows Rectangular Suction Head",
       "type": "rectangular",
       "headKey": "single_control_head",
       "padKey": "double_bellow_125",
@@ -190,7 +190,7 @@
     },
     {
       "id": "four_bellow",
-      "name": "Đầu hút 4 điểm (Four Bellows Pad)",
+      "name": "Four Bellows Multi-Point Suction Head",
       "type": "multi",
       "headKey": "comfort_control_head",
       "padKey": "four_bellow_125",
@@ -200,7 +200,7 @@
     },
     {
       "id": "foam_pad",
-      "name": "Đầu hút đệm xốp (Oval Foam Pad)",
+      "name": "Oval Foam Seal Suction Head",
       "type": "foam",
       "headKey": "comfort_control_head",
       "padKey": "oval_foam_suction_380_220",
@@ -210,7 +210,7 @@
     },
     {
       "id": "bag_suction",
-      "name": "Đầu hút chuyên dụng cho bao tải (Bag Gripper)",
+      "name": "Heavy-Duty Bag Gripper Suction Head",
       "type": "bag",
       "headKey": "comfort_control_head",
       "padKey": "oval_foam_suction_380_220",
@@ -220,7 +220,7 @@
     },
     {
       "id": "multi_pad",
-      "name": "Cụm hút đa điểm cho tấm lớn (Multi-Pad Lifter)",
+      "name": "Multi-Pad Sheet Lifter Suction Head",
       "type": "sheet",
       "headKey": "extra_hand",
       "padKey": "sheet_metal_pad",
@@ -230,7 +230,7 @@
     },
     {
       "id": "high_stack",
-      "name": "Đầu hút tay vươn cao (High Stack Arm)",
+      "name": "Extended Reach High Stack Arm",
       "type": "arm",
       "headKey": "hight_stack",
       "padKey": "four_bellow_125",
@@ -240,7 +240,7 @@
     },
     {
       "id": "swivel_90",
-      "name": "Đầu hút xoay lật 90° (90° Swivel & Tilt)",
+      "name": "90° Swivel & Tilt Manipulator Head",
       "type": "swivel",
       "headKey": "comfort_control_head",
       "padKey": "four_bellow_125",

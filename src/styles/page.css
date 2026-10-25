@@ -382,7 +382,7 @@ canvas {
         width: 32px !important;
     }
 
-    /* Nút Quote ghim đáy (Sticky bottom) */
+    /* Sticky bottom Quote action bar on mobile */
     .sticky-mobile-action {
         position: fixed !important;
         bottom: 0 !important;

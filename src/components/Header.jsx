@@ -36,14 +36,14 @@ export default function Header() {
                                 <input
                                     type="text"
                                     className="username mr-2"
-                                    placeholder="username"
+                                    placeholder="Username"
                                     value={desktopUsername}
                                     onChange={(e) => setDesktopUsername(e.target.value)}
                                 />
                                 <input
                                     type="password"
                                     className="password mr-2"
-                                    placeholder="password"
+                                    placeholder="Password"
                                     value={desktopPassword}
                                     onChange={(e) => setDesktopPassword(e.target.value)}
                                 />
@@ -57,7 +57,7 @@ export default function Header() {
                                     Welcome, <span className="userName font-weight-bold">{userName}</span>!
                                 </p>
                                 <button type="button" className="logoutButton" onClick={logout}>
-                                    Đăng xuất
+                                    Logout
                                 </button>
                             </div>
                         )}
@@ -78,7 +78,7 @@ export default function Header() {
                                     Welcome, <span className="userName font-weight-bold">{userName}</span>!
                                 </p>
                                 <button type="button" className="logoutButton" onClick={logout}>
-                                    Đăng xuất
+                                    Logout
                                 </button>
                             </div>
                         )}
@@ -94,7 +94,7 @@ export default function Header() {
                                 <input
                                     type="text"
                                     className="username mb-2"
-                                    placeholder="username"
+                                    placeholder="Username"
                                     value={mobileUsername}
                                     onChange={(e) => setMobileUsername(e.target.value)}
                                 />
@@ -104,7 +104,7 @@ export default function Header() {
                                 <input
                                     type="password"
                                     className="password mb-2"
-                                    placeholder="password"
+                                    placeholder="Password"
                                     value={mobilePassword}
                                     onChange={(e) => setMobilePassword(e.target.value)}
                                 />

@@ -177,7 +177,7 @@ export function ConfiguratorProvider({ children }) {
     const quote = useCallback(async () => {
         if (capacityStatus.status === 'OVERLOAD') {
             const confirmed = window.confirm(
-                `Cảnh báo: Tải trọng thực tế (${actualLoad.weight} kg) đang vượt quá định mức WLL (${capacityStatus.capacity} kg)!\n\nBạn có muốn tự động nâng mức WLL lên ${capacityStatus.suggestedCapacity} kg và tiếp tục không?`
+                `Warning: Actual load (${actualLoad.weight} kg) exceeds current rated WLL (${capacityStatus.capacity} kg)!\n\nWould you like to automatically upgrade the WLL rating to ${capacityStatus.suggestedCapacity} kg and continue?`
             );
             if (confirmed) {
                 applySuggestedWll();
@@ -192,7 +192,7 @@ export function ConfiguratorProvider({ children }) {
                 const dataUrl = await takeSnapshotRef.current();
                 setCanvasSnapshot(dataUrl);
             } catch (err) {
-                console.warn('Could not take snapshot:', err);
+                console.warn('Could not capture 3D snapshot:', err);
             }
         }
 

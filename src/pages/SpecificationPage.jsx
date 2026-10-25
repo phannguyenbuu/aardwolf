@@ -49,7 +49,7 @@ export default function SpecificationPage() {
                 zoomft: config3D.zoomft,
                 actualLoad,
                 surfaceType: surfaceObj?.name,
-                environment: environment === 'dusty' ? 'Bụi / Công nghiệp' : 'Tiêu chuẩn',
+                environment: environment === 'dusty' ? 'Dusty / Industrial' : 'Standard / Clean',
                 canvasSnapshot,
                 onProgress: (p) => setLoadingProgress(p)
             });
@@ -83,14 +83,14 @@ export default function SpecificationPage() {
                     {/* Summary cards of configured 5 steps */}
                     <div className="card mb-3 shadow-sm border-0 bg-white">
                         <div className="card-body p-3">
-                            <h6 className="font-weight-bold text-danger mb-2">Thông tin thiết bị đã chọn:</h6>
+                            <h6 className="font-weight-bold text-danger mb-2">Configured Equipment Summary:</h6>
                             <ul className="list-unstyled mb-0" style={{ fontSize: 13, lineHeight: '1.8' }}>
-                                <li><strong>1. Cẩu trục:</strong> {craneObj?.name} (Vươn {jibLength})</li>
-                                <li><strong>2. Định mức WLL:</strong> {currentWorkload?.maxLiftingCapacity}</li>
-                                <li><strong>3. Môi trường:</strong> {environment === 'dusty' ? 'Công nghiệp nhiều bụi (Yêu cầu lọc ZFP300)' : 'Tiêu chuẩn / Sạch'}</li>
-                                <li><strong>4. Vật nâng:</strong> {surfaceObj?.name} {customNotes && `(${customNotes})`}</li>
-                                <li><strong>5. Kích thước thực tế:</strong> {actualLoad.length} × {actualLoad.width} × {actualLoad.height} mm (Tải thực: {actualLoad.weight} kg / {kgToLbs(actualLoad.weight)} lbs)</li>
-                                <li><strong>6. Đầu hút đề xuất:</strong> {headObj?.name} (Định mức tối đa: {headObj?.maxKg} kg)</li>
+                                <li><strong>1. Crane Type:</strong> {craneObj?.name} (Reach: {jibLength})</li>
+                                <li><strong>2. Rated WLL:</strong> {currentWorkload?.maxLiftingCapacity}</li>
+                                <li><strong>3. Environment:</strong> {environment === 'dusty' ? 'Heavy Industrial / Dusty (Requires ZFP300 Filter)' : 'Standard / Clean'}</li>
+                                <li><strong>4. Workpiece Surface:</strong> {surfaceObj?.name} {customNotes && `(${customNotes})`}</li>
+                                <li><strong>5. Actual Dimensions:</strong> {actualLoad.length} × {actualLoad.width} × {actualLoad.height} mm (Actual Load: {actualLoad.weight} kg / {kgToLbs(actualLoad.weight)} lbs)</li>
+                                <li><strong>6. Recommended Suction Head:</strong> {headObj?.name} (Max Rated: {headObj?.maxKg} kg)</li>
                             </ul>
                         </div>
                     </div>
@@ -108,7 +108,7 @@ export default function SpecificationPage() {
 
                         <div className="row content__left--content--item m-0">
                             <div className="col-6 content__left--content--item-1">
-                                Lift tube size (Đường kính ống)
+                                Lift tube size (Diameter)
                             </div>
                             <div className="col-6 content__left--content--item-2 d-flex align-items-center">
                                 <img src="/assets/images/icon-1.png" alt="icon" className="mr-1" />
@@ -118,7 +118,7 @@ export default function SpecificationPage() {
 
                         <div className="row content__left--content--item m-0">
                             <div className="col-6 content__left--content--item-1">
-                                Electrical vacuum pump (Động cơ bơm)
+                                Electrical vacuum pump (Motor)
                             </div>
                             <div className="col-6 content__left--content--item-2 d-flex align-items-center">
                                 <span>{currentWorkload?.liftTubePower}</span>
@@ -127,7 +127,7 @@ export default function SpecificationPage() {
 
                         <div className="row content__left--content--item m-0">
                             <div className="col-12 content__left--content--item-3 bg-light">
-                                Vertical movement (Hành trình nâng)
+                                Vertical movement (Stroke)
                             </div>
                         </div>
 
@@ -142,7 +142,7 @@ export default function SpecificationPage() {
 
                         <div className="row content__left--content--item m-0">
                             <div className="col-6 content__left--content--item-1">
-                                Installation height (Chiều cao lắp đặt)
+                                Installation height
                             </div>
                             <div className="col-6 content__left--content--item-2 d-flex align-items-center">
                                 <span>{currentWorkload?.liftTube29 || '2.9m'}</span>
@@ -151,10 +151,10 @@ export default function SpecificationPage() {
 
                         <div className="row content__left--content--item m-0">
                             <div className="col-6 content__left--content--item-1">
-                                Safety factor (Hệ số an toàn)
+                                Safety factor
                             </div>
                             <div className="col-6 content__left--content--item-2 d-flex align-items-center">
-                                <span className="font-weight-bold">2.5 minimum (Tiêu chuẩn CE)</span>
+                                <span className="font-weight-bold">2.5 minimum (CE Standard)</span>
                             </div>
                         </div>
                     </div>
@@ -162,7 +162,7 @@ export default function SpecificationPage() {
                     {/* 3D Snapshot thumbnail preview if available */}
                     {canvasSnapshot && (
                         <div className="card mb-3 p-2 bg-white text-center">
-                            <small className="text-muted d-block mb-1">Ảnh thực tế 3D đính kèm báo giá:</small>
+                            <small className="text-muted d-block mb-1">3D visual configuration snapshot:</small>
                             <img
                                 src={canvasSnapshot}
                                 alt="3D Snapshot"
@@ -172,7 +172,7 @@ export default function SpecificationPage() {
                     )}
 
                     <div className="content__left--price text-center py-3 bg-white rounded shadow-sm mb-3">
-                        <span className="h5 mb-0 mr-2">Tổng giá trị tham khảo:</span>
+                        <span className="h5 mb-0 mr-2">Estimated Quotation Price:</span>
                         <span id="totalPrice" className="h4 text-danger font-weight-bold mb-0">
                             {userName ? (totalPrice || 'Calculating...') : 'Login for price'}
                         </span>
@@ -199,7 +199,7 @@ export default function SpecificationPage() {
                             className="btn btn-danger font-weight-bold"
                             onClick={(e) => { e.preventDefault(); handleDownloadPDF(); }}
                         >
-                            {isDownloading ? 'Đang xuất PDF...' : '📄 Download & Print Quotation PDF'}
+                            {isDownloading ? 'Generating PDF...' : '📄 Download & Print Quotation PDF'}
                         </a>
                     </div>
 

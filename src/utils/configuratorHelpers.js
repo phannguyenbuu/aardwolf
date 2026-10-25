@@ -30,7 +30,6 @@ export function validateJibForCrane(craneType, currentJib) {
 export function getRecommendedSuctionHead(surfaceType, weightKg, lengthMm, widthMm) {
     const heads = RULES.suctionHeads;
 
-    // Check if high stack or 90 swivel requested
     if (surfaceType === 'high_stack') {
         return heads.find(h => h.id === 'high_stack') || heads[0];
     }
@@ -44,7 +43,6 @@ export function getRecommendedSuctionHead(surfaceType, weightKg, lengthMm, width
         return heads.find(h => h.id === 'foam_pad') || heads[0];
     }
 
-    // If large dimensions (length > 1000mm or width > 600mm) or heavy weight (> 100kg)
     if (lengthMm > 1000 || widthMm > 600 || weightKg > 100 || surfaceType === 'sheet_metal') {
         return heads.find(h => h.id === 'multi_pad') || heads[0];
     }
@@ -69,7 +67,6 @@ export function checkCapacityStatus(wllId, weightKg) {
     const capacity = currentWll.capacityKg;
 
     if (weightKg > capacity) {
-        // Find smallest WLL >= weightKg
         const sorted = [...RULES.wllLevels].sort((a, b) => a.capacityKg - b.capacityKg);
         const suitable = sorted.find(w => w.capacityKg >= weightKg);
         return {
@@ -78,11 +75,10 @@ export function checkCapacityStatus(wllId, weightKg) {
             weightKg,
             suggestedWll: suitable ? suitable.id : sorted[sorted.length - 1].id,
             suggestedCapacity: suitable ? suitable.capacityKg : sorted[sorted.length - 1].capacityKg,
-            message: `Tải trọng thực tế (${weightKg} kg) vượt quá định mức WLL (${capacity} kg)!`
+            message: `Actual weight (${weightKg} kg) exceeds rated WLL limit (${capacity} kg)!`
         };
     }
 
-    // Check underload (if weight is less than 35% of capacity, suggest a more economical WLL)
     if (weightKg < capacity * 0.35) {
         const sorted = [...RULES.wllLevels].sort((a, b) => a.capacityKg - b.capacityKg);
         const suitable = sorted.filter(w => w.capacityKg >= weightKg).shift();
@@ -93,7 +89,7 @@ export function checkCapacityStatus(wllId, weightKg) {
                 weightKg,
                 suggestedWll: suitable.id,
                 suggestedCapacity: suitable.capacityKg,
-                message: `Tải trọng thực tế (${weightKg} kg) nhỏ hơn nhiều so với WLL (${capacity} kg). Bạn có thể tối ưu chi phí bằng mức nhỏ hơn.`
+                message: `Actual weight (${weightKg} kg) is significantly below rated WLL (${capacity} kg). An optimized lower rating is available.`
             };
         }
     }
@@ -103,7 +99,7 @@ export function checkCapacityStatus(wllId, weightKg) {
         capacity,
         weightKg,
         suggestedWll: null,
-        message: `Tải trọng phù hợp hoàn hảo với định mức WLL ${capacity} kg.`
+        message: `Workload is well-balanced within rated WLL capacity (${capacity} kg).`
     };
 }
 
@@ -155,7 +151,6 @@ export function get3DConfiguration(craneType, jibLengthStr, workLoadLimit, sucti
         _pump_group = undefined;
     }
 
-    // Resolve suction head from id
     const headObj = RULES.suctionHeads.find(h => h.id === suctionHeadId) || RULES.suctionHeads[0];
     _head_stack = HEAD_STACKS.find(hs => hs.key === headObj.headKey) || HEAD_STACKS[0];
     _suction_pack = SUCTION_PACKS.find(sp => sp.key === headObj.padKey) || SUCTION_PACKS[0];
@@ -225,7 +220,6 @@ export function calculateTotalPrice(priceList, workLoadLimit, crane, headStack, 
         total += priceList['crane'][crane.key];
     }
 
-    // Filter rule: dusty environment or large motor requires heavy filter
     const filterKey = (environment === 'dusty' || motor === '8kw' || motor === '9.2kw' || motor === '12.5kw') 
         ? "zfp300" 
         : "zfp120";

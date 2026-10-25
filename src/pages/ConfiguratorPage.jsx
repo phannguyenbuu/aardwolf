@@ -81,10 +81,10 @@ export default function ConfiguratorPage() {
                 <div className="col-lg-6 col-md-12 col-12 content__left">
                     <div className="content__left-list">
 
-                        {/* BƯỚC 1: CRANE TYPE */}
+                        {/* STEP 1: CRANE TYPE */}
                         <div className="content__left-list--item mb-4">
                             <p className="step-title">
-                                <span className="step-badge">1</span> Loại cẩu trục (Crane Type)
+                                <span className="step-badge">1</span> What crane type do you require?
                             </p>
                             <div className="row content__left-list-answer">
                                 {RULES.cranes.map((c) => (
@@ -105,10 +105,10 @@ export default function ConfiguratorPage() {
                             </div>
                         </div>
 
-                        {/* BƯỚC 2: JIB LENGTH */}
+                        {/* STEP 2: JIB LENGTH */}
                         <div className="content__left-list--item mb-4">
                             <p className="step-title">
-                                <span className="step-badge">2</span> Chiều dài tay cần (Jib Length)
+                                <span className="step-badge">2</span> What jib length do you require?
                             </p>
                             <div className="row content__left-list-answer">
                                 {RULES.jibs.map((j) => {
@@ -117,7 +117,7 @@ export default function ConfiguratorPage() {
                                         <div
                                             key={j.id}
                                             className="col-lg-6 col-md-6 col-12 content__left-list-answer--item position-relative"
-                                            title={disabled ? (craneConfig.disabledJibsTooltip || 'Tùy chọn không khả dụng') : ''}
+                                            title={disabled ? (craneConfig.disabledJibsTooltip || 'Option unavailable') : ''}
                                         >
                                             <input
                                                 type="radio"
@@ -131,7 +131,7 @@ export default function ConfiguratorPage() {
                                                 {jibLabels[j.id]}
                                             </label>
                                             {disabled && (
-                                                <span className="badge badge-secondary ml-1" style={{ fontSize: 10 }}>Khóa</span>
+                                                <span className="badge badge-secondary ml-1" style={{ fontSize: 10 }}>Locked</span>
                                             )}
                                         </div>
                                     );
@@ -139,16 +139,16 @@ export default function ConfiguratorPage() {
                             </div>
                         </div>
 
-                        {/* BƯỚC 3: WORK LOAD LIMIT (9 LEVELS) */}
+                        {/* STEP 3: WORK LOAD LIMIT (9 LEVELS) */}
                         <div className="content__left-list--item mb-4">
                             <p className="step-title">
-                                <span className="step-badge">3</span> Định mức tải trọng nâng (Work Load Limit - WLL)
+                                <span className="step-badge">3</span> What work load limit (WLL) do you require?
                             </p>
                             <div className="row content__left-list-answer">
                                 {RULES.wllLevels.map((wll) => {
                                     const wllText = unit === 'Inch'
                                         ? `${kgToLbs(wll.capacityKg)} lbs`
-                                        : `${wll.capacityKg} kg`;
+                                        : `${wll.capacityKg} kgs`;
                                     return (
                                         <div key={wll.id} className="col-lg-4 col-md-4 col-6 content__left-list-answer--item py-1">
                                             <input
@@ -167,15 +167,15 @@ export default function ConfiguratorPage() {
                             </div>
                         </div>
 
-                        {/* BƯỚC 4: VẬT LIỆU & BỀ MẶT */}
+                        {/* STEP 4: ENVIRONMENT & WORKPIECE SURFACE */}
                         <div className="content__left-list--item mb-4">
                             <p className="step-title">
-                                <span className="step-badge">4</span> Đặc tính môi trường & Bề mặt vật nâng
+                                <span className="step-badge">4</span> Operating environment & workpiece surface
                             </p>
                             
-                            {/* Môi trường */}
+                            {/* Environment */}
                             <div className="mb-2">
-                                <span className="font-weight-bold" style={{ fontSize: 13 }}>Môi trường làm việc:</span>
+                                <span className="font-weight-bold" style={{ fontSize: 13 }}>Working Environment:</span>
                                 <div className="d-flex flex-wrap mt-1">
                                     {RULES.environments.map(env => (
                                         <div key={env.id} className="mr-3 d-flex align-items-center">
@@ -194,7 +194,7 @@ export default function ConfiguratorPage() {
                                 </div>
                             </div>
 
-                            {/* Phân loại bề mặt */}
+                            {/* Surface Types */}
                             <div className="row content__left-list-answer mt-2">
                                 {RULES.surfaceTypes.map(surf => (
                                     <div key={surf.id} className="col-lg-6 col-12 content__left-list-answer--item py-1">
@@ -212,12 +212,12 @@ export default function ConfiguratorPage() {
                                 ))}
                             </div>
 
-                            {/* Custom text */}
+                            {/* Custom notes */}
                             <div className="mt-2">
                                 <input
                                     type="text"
                                     className="form-control form-control-sm"
-                                    placeholder="Ghi chú thêm về vật nâng (vd: nhiệt độ, hóa chất, độ nhám đặc biệt...)"
+                                    placeholder="Additional workpiece notes (e.g., surface porosity, temperature, special shape...)"
                                     value={customNotes}
                                     onChange={(e) => setCustomNotes(e.target.value)}
                                     style={{ fontSize: 13, background: '#fff' }}
@@ -225,15 +225,15 @@ export default function ConfiguratorPage() {
                             </div>
                         </div>
 
-                        {/* BƯỚC 5: KÍCH THƯỚC & TẢI TRỌNG THỰC TẾ */}
+                        {/* STEP 5: ACTUAL LOAD WEIGHT & DIMENSIONS */}
                         <div className="content__left-list--item mb-4">
                             <p className="step-title">
-                                <span className="step-badge">5</span> Kích thước & Khối lượng thực tế
+                                <span className="step-badge">5</span> Actual workpiece dimensions & weight
                             </p>
                             <div className="bg-white p-3 rounded" style={{ border: '1px solid #e0e0e0' }}>
                                 <div className="row">
                                     <div className="col-6 col-md-3 mb-2">
-                                        <label className="font-weight-bold" style={{ fontSize: 12 }}>Tải trọng ({weightUnit}):</label>
+                                        <label className="font-weight-bold" style={{ fontSize: 12 }}>Load Weight ({weightUnit}):</label>
                                         <input
                                             type="number"
                                             className="form-control form-control-sm font-weight-bold text-danger"
@@ -244,7 +244,7 @@ export default function ConfiguratorPage() {
                                         />
                                     </div>
                                     <div className="col-6 col-md-3 mb-2">
-                                        <label className="font-weight-bold" style={{ fontSize: 12 }}>Chiều dài ({lengthUnit}):</label>
+                                        <label className="font-weight-bold" style={{ fontSize: 12 }}>Length ({lengthUnit}):</label>
                                         <input
                                             type="number"
                                             className="form-control form-control-sm font-weight-bold"
@@ -255,7 +255,7 @@ export default function ConfiguratorPage() {
                                         />
                                     </div>
                                     <div className="col-6 col-md-3 mb-2">
-                                        <label className="font-weight-bold" style={{ fontSize: 12 }}>Chiều rộng ({lengthUnit}):</label>
+                                        <label className="font-weight-bold" style={{ fontSize: 12 }}>Width ({lengthUnit}):</label>
                                         <input
                                             type="number"
                                             className="form-control form-control-sm font-weight-bold"
@@ -266,7 +266,7 @@ export default function ConfiguratorPage() {
                                         />
                                     </div>
                                     <div className="col-6 col-md-3 mb-2">
-                                        <label className="font-weight-bold" style={{ fontSize: 12 }}>Chiều cao ({lengthUnit}):</label>
+                                        <label className="font-weight-bold" style={{ fontSize: 12 }}>Height ({lengthUnit}):</label>
                                         <input
                                             type="number"
                                             className="form-control form-control-sm font-weight-bold"
@@ -278,46 +278,46 @@ export default function ConfiguratorPage() {
                                     </div>
                                 </div>
 
-                                {/* Banner cảnh báo tải trọng */}
+                                {/* Capacity Verification Banner */}
                                 {capacityStatus.status === 'OVERLOAD' && (
                                     <div className="alert alert-danger mt-2 mb-0 p-2 d-flex align-items-center justify-content-between flex-wrap" style={{ fontSize: 13 }}>
-                                        <span>⚠️ <strong>Quá tải:</strong> {capacityStatus.message}</span>
+                                        <span>⚠️ <strong>Overload:</strong> {capacityStatus.message}</span>
                                         <button
                                             type="button"
-                                            className="btn btn-sm btn-danger ml-auto mt-1"
+                                            className="btn btn-sm btn-danger ml-auto mt-1 font-weight-bold"
                                             onClick={applySuggestedWll}
                                         >
-                                            Chuyển sang WLL {capacityStatus.suggestedCapacity} kg
+                                            Switch to WLL {capacityStatus.suggestedCapacity} kg
                                         </button>
                                     </div>
                                 )}
 
                                 {capacityStatus.status === 'UNDERLOAD' && (
                                     <div className="alert alert-warning mt-2 mb-0 p-2 d-flex align-items-center justify-content-between flex-wrap" style={{ fontSize: 13 }}>
-                                        <span>💡 <strong>Tối ưu:</strong> {capacityStatus.message}</span>
+                                        <span>💡 <strong>Optimization:</strong> {capacityStatus.message}</span>
                                         <button
                                             type="button"
                                             className="btn btn-sm btn-warning ml-auto mt-1 font-weight-bold"
                                             onClick={applySuggestedWll}
                                         >
-                                            Hạ WLL về {capacityStatus.suggestedCapacity} kg
+                                            Lower WLL to {capacityStatus.suggestedCapacity} kg
                                         </button>
                                     </div>
                                 )}
 
                                 {capacityStatus.status === 'OPTIMAL' && (
                                     <div className="alert alert-success mt-2 mb-0 p-2" style={{ fontSize: 13 }}>
-                                        ✅ <strong>Đạt chuẩn an toàn:</strong> {capacityStatus.message}
+                                        ✅ <strong>Safety Verified:</strong> {capacityStatus.message}
                                     </div>
                                 )}
                             </div>
                         </div>
 
-                        {/* THƯ VIỆN ĐẦU HÚT THÔNG MINH */}
+                        {/* SMART SUCTION HEAD LIBRARY */}
                         <div className="content__left-list--item mb-4">
                             <p className="step-title d-flex justify-content-between align-items-center">
-                                <span><span className="step-badge">★</span> Thư viện đầu hút thông minh</span>
-                                <small className="text-muted">Tự động đề xuất theo vật liệu & kích thước</small>
+                                <span><span className="step-badge">★</span> Smart Suction Head Library</span>
+                                <small className="text-muted">Auto-recommended by material & dimensions</small>
                             </p>
 
                             <div className="row">
@@ -349,11 +349,11 @@ export default function ConfiguratorPage() {
                                                             {head.name}
                                                         </span>
                                                         {isRecommended && (
-                                                            <span className="badge badge-success ml-2" style={{ fontSize: 9 }}>Đề xuất</span>
+                                                            <span className="badge badge-success ml-2" style={{ fontSize: 9 }}>Recommended</span>
                                                         )}
                                                     </div>
                                                     <small className="text-muted d-block">
-                                                        Tải tối đa: {unit === 'Inch' ? `${kgToLbs(head.maxKg)} lbs` : `${head.maxKg} kg`}
+                                                        Max Capacity: {unit === 'Inch' ? `${kgToLbs(head.maxKg)} lbs` : `${head.maxKg} kg`}
                                                     </small>
                                                 </div>
                                                 <input
@@ -374,7 +374,7 @@ export default function ConfiguratorPage() {
                 </div>
             </div>
 
-            {/* ACTION BUTTONS (Ghim đáy trên Mobile theo yêu cầu Mục 01) */}
+            {/* ACTION BUTTONS (Sticky bottom on mobile) */}
             <div className="content__action sticky-mobile-action">
                 <a href="#requote" className="content__action--requote" onClick={(e) => { e.preventDefault(); requote(); }}>
                     Requote

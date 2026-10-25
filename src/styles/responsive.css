@@ -1,0 +1,96 @@
+/* Desktop */
+@media (min-width: 1024px) {
+    .action-mobile {
+        display: none;
+    }
+
+    .menu-mobile {
+        display: none;
+    }
+
+    .image-3d {
+        display: block;
+    }
+
+    .footer {
+        display: none;
+    }
+}
+
+/* Tablet */
+@media (min-width: 740px) and (max-width: 1023px) {
+    .action-desktop {
+        display: none !important;
+    }
+
+    .content__action {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        margin-right: 0;
+    }
+
+    .content__action a {
+        margin: 5px 0px;
+        padding: 10px 0px;
+        font-weight: bold;
+    }
+
+    .content__left--content--item {
+        font-size: 15px;
+    }
+}
+
+@media (min-width: 820px) {
+    .content__left-list-answer--item {
+        flex: 1 1 50%;
+    }
+
+    .item-1 { order: 0; }
+    .item-2 { order: 1; }
+    .item-3 { order: 2; }
+    .item-4 { order: 3; }
+    .item-5 { order: 4; }
+    .item-6 { order: 5; }
+}
+
+@media (max-width: 767px) {
+    .item-1 { order: 0; }
+    .item-3 { order: 1; }
+    .item-5 { order: 2; }
+    .item-2 { order: 3; }
+    .item-4 { order: 4; }
+    .item-6 { order: 5; }
+}
+
+/* Mobile */
+@media (max-width: 739px) {
+    .action-desktop {
+        display: none !important;
+    }
+
+    .content__action {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        margin-right: 0;
+    }
+
+    .content__left-list-answer {
+        flex-direction: column;
+    }
+
+    .content__left-list-answer--item {
+        width: 100%;
+    }
+
+    .content__action a {
+        margin: 5px 0px;
+        padding: 10px 0px;
+        font-weight: bold;
+    }
+
+    .content__left--content--item {
+        font-size: 18px;
+    }
+}

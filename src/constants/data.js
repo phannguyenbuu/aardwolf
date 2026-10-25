@@ -1,7 +1,11 @@
+import rulesData from './rules.json';
+
 // Unit conversion helpers
 export const kgToLbs = (kg) => (kg * 2.20462).toFixed(0);
+export const lbsToKg = (lbs) => (lbs / 2.20462).toFixed(1);
 export const mToInch = (m) => m * 39.3701;
 export const mmToInch = (mm) => mm / 25.4;
+export const inchToMm = (inch) => Math.round(inch * 25.4);
 
 export const inchToFeetInch = (inches) => {
     const feet = Math.floor(inches / 12);
@@ -42,7 +46,7 @@ export function generateInchData(data) {
 
         const inchData = {
             maxLiftingCapacity: `${kgToLbs(parseFloat(metricData.maxLiftingCapacity.split(' ')[0]))} lbs`,
-            minLiftingCapacity: `${kgToLbs(parseFloat(metricData.minLiftingCapacity))}`,
+            minLiftingCapacity: `${kgToLbs(parseFloat(metricData.minLiftingCapacity))} lbs`,
             liftTube17: inchToFeetInch(mToInch(parseFloat(metricData.liftTube17.split(' ')[0]))),
             liftTube29: inchToFeetInch(mToInch(parseFloat(metricData.liftTube29.split(' ')[0]))),
             liftTubeSize: `${inchToFeetInch(mmToInch(parseFloat(metricData.liftTubeSize.split(' ')[0])))}`,
@@ -60,70 +64,16 @@ export function generateInchData(data) {
     return convertedData;
 }
 
-const RAW_WORKLOAD_DATA = {
-    '45kg': {
-        m: { 
-            maxLiftingCapacity: '45 kg', 
-            minLiftingCapacity: '10', 
-            liftTube17: '1.7 m', 
-            liftTube29: '2.9 m', 
-            liftTubeSize: '160 mm', 
-            liftTubePower: '3.3/3.8 kw', 
-            priceLiftTubeSize: 356,
-            priceLiftTubePower: 2.743 
-        }
-    },
-    '70kg': {
-        m: { 
-            maxLiftingCapacity: '70 kg', 
-            minLiftingCapacity: '10', 
-            liftTube17: '1.7 m', 
-            liftTube29: '2.9 m', 
-            liftTubeSize: '160 mm', 
-            liftTubePower: '4.0/4.6 kw', 
-            priceLiftTubeSize: 356, 
-            priceLiftTubePower: 3.424 
-        }
-    },
-    '80kg': {
-        m: { 
-            maxLiftingCapacity: '80 kg',
-            minLiftingCapacity: '10', 
-            liftTube17: '1.7 m', 
-            liftTube29: '2.9 m', 
-            liftTubeSize: '180 mm', 
-            liftTubePower: '4.0/4.6 kw',
-            priceLiftTubeSize: 469, 
-            priceLiftTubePower: 3.424 
-        }
-    },
-    '120kg': {
-        m: { 
-            maxLiftingCapacity: '120 kg', 
-            minLiftingCapacity: '10', 
-            liftTube17: '1.7 m', 
-            liftTube29: '2.9 m', 
-            liftTubeSize: '200 mm', 
-            liftTubePower: '5.7/6.6 kw', 
-            priceLiftTubeSize: 328, 
-            priceLiftTubePower: 3.857 
-        }
-    },
-    '150kg': {
-        m: { 
-            maxLiftingCapacity: '150 kg', 
-            minLiftingCapacity: '10', 
-            liftTube17: '1.7 m', 
-            liftTube29: '2.9 m', 
-            liftTubeSize: '250 mm', 
-            liftTubePower: '7.5/8.0 kw', 
-            priceLiftTubeSize: 376, 
-            priceLiftTubePower: 5.033 
-        }
-    }
-};
+// Convert rulesData.wllLevels into dictionary format
+const RAW_WORKLOAD_DICT = {};
+rulesData.wllLevels.forEach(wll => {
+    RAW_WORKLOAD_DICT[wll.id] = {
+        capacityKg: wll.capacityKg,
+        m: wll.m
+    };
+});
 
-export const WORKLOAD_DATA = generateInchData(RAW_WORKLOAD_DATA);
+export const WORKLOAD_DATA = generateInchData(RAW_WORKLOAD_DICT);
 
 export const ALL_SCENES = [
     {
@@ -208,3 +158,5 @@ export const ALL_PRELOAD_ITEMS = [
     small_sm_tube,
     big_sm_tube
 ];
+
+export const RULES = rulesData;

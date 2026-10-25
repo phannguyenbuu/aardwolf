@@ -1,9 +1,11 @@
-import React, { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react';
-import { WORKLOAD_DATA } from '../constants/data.js';
+import React, { createContext, useContext, useState, useEffect, useMemo, useCallback, useRef } from 'react';
+import { WORKLOAD_DATA, RULES, kgToLbs, lbsToKg } from '../constants/data.js';
 import {
     validateJibForCrane,
     get3DConfiguration,
-    calculateTotalPrice
+    calculateTotalPrice,
+    getRecommendedSuctionHead,
+    checkCapacityStatus
 } from '../utils/configuratorHelpers.js';
 
 const STORAGE_KEY = 'AarwolfVacumn';
@@ -11,25 +13,70 @@ const STORAGE_KEY = 'AarwolfVacumn';
 const ConfiguratorContext = createContext(null);
 
 export function ConfiguratorProvider({ children }) {
+    // Unit system: 'm' (metric: mm, m, kg) or 'Inch' (imperial: in, ft-in, lbs)
     const [unit, setUnitState] = useState('m');
-    const [craneType, setCraneTypeState] = useState('floor-mounted-crane');
-    const [jibLength, setJibLengthState] = useState('2.5m');
-    const [workLoadLimit, setWorkLoadLimitState] = useState(null);
-    const [loadType, setLoadTypeState] = useState(null);
 
+    // Step 1: Crane Type
+    const [craneType, setCraneTypeState] = useState('floor-mounted-crane');
+
+    // Step 2: Jib Length
+    const [jibLength, setJibLengthState] = useState('2.5m');
+
+    // Step 3: Work Load Limit (WLL) - 9 levels
+    const [workLoadLimit, setWorkLoadLimitState] = useState('45kg');
+
+    // Step 4: Material Environment & Surface Type
+    const [environment, setEnvironmentState] = useState('clean'); // 'clean' or 'dusty'
+    const [surfaceType, setSurfaceTypeState] = useState('carton_smooth');
+    const [customNotes, setCustomNotesState] = useState('');
+
+    // Step 5: Actual Load & Dimensions
+    const [actualLoad, setActualLoadState] = useState({
+        weight: 35, // in kg
+        length: 400, // in mm
+        width: 300,  // in mm
+        height: 250  // in mm
+    });
+
+    // Selected or Recommended Suction Head
+    const [suctionHeadId, setSuctionHeadIdState] = useState('round_single');
+
+    // User authentication
     const [userName, setUserName] = useState(null);
     const [priceList, setPriceList] = useState(null);
 
-    const [currentPage, setCurrentPage] = useState('configurator'); // 'configurator' or 'specification'
-    const [show3DModal, setShow3DModal] = useState(false); // Mobile 3D view toggle
+    // Page navigation: 'configurator' or 'specification'
+    const [currentPage, setCurrentPage] = useState('configurator');
+
+    // Mobile 3D view modal toggle
+    const [show3DModal, setShow3DModal] = useState(false);
+
+    // 3D Loading state & Progress
     const [is3DLoading, setIs3DLoading] = useState(false);
     const [loadingProgress, setLoadingProgress] = useState(0);
 
-    // Camera preset view target trigger
+    // Camera preset view trigger
     const [cameraPresetTrigger, setCameraPresetTrigger] = useState(null);
 
-    // 2D SVG content calculated for PDF
+    // Canvas snapshot for PDF report
+    const [canvasSnapshot, setCanvasSnapshot] = useState(null);
+    const takeSnapshotRef = useRef(null);
+
+    // 2D SVG position content calculated for PDF
     const [pdfContent, setPdfContent] = useState(null);
+
+    // Auto-update recommended suction head when surface or dimensions change
+    useEffect(() => {
+        const rec = getRecommendedSuctionHead(
+            surfaceType,
+            actualLoad.weight,
+            actualLoad.length,
+            actualLoad.width
+        );
+        if (rec) {
+            setSuctionHeadIdState(rec.id);
+        }
+    }, [surfaceType, actualLoad.weight, actualLoad.length, actualLoad.width]);
 
     // Load initial state from LocalStorage
     useEffect(() => {
@@ -41,100 +88,125 @@ export function ConfiguratorProvider({ children }) {
                 if (data.craneType) setCraneTypeState(data.craneType);
                 if (data.jibLength) setJibLengthState(data.jibLength);
                 if (data.workLoadLimit) setWorkLoadLimitState(data.workLoadLimit);
-                if (data.loadType) setLoadTypeState(data.loadType);
+                if (data.environment) setEnvironmentState(data.environment);
+                if (data.surfaceType) setSurfaceTypeState(data.surfaceType);
+                if (data.customNotes) setCustomNotesState(data.customNotes);
+                if (data.actualLoad) setActualLoadState(data.actualLoad);
+                if (data.suctionHeadId) setSuctionHeadIdState(data.suctionHeadId);
                 if (data.userName) setUserName(data.userName);
                 if (data.priceList) setPriceList(data.priceList);
-                if (data.requote) {
-                    // If requote flag was set, reset options to defaults
-                    setWorkLoadLimitState(null);
-                    setLoadTypeState(null);
-                    setCraneTypeState('floor-mounted-crane');
-                    setJibLengthState('2.5m');
-                }
             }
         } catch (e) {
             console.error('Failed to load settings from localStorage:', e);
         }
     }, []);
 
-    // Save to LocalStorage whenever key settings change
+    // Save to LocalStorage
     const saveToLocalStorage = useCallback((overrides = {}) => {
         try {
             const currentObj = {
-                fromBack: overrides.fromBack ?? false,
-                pdfContent: overrides.pdfContent ?? pdfContent,
-                outputFile: overrides.outputFile ?? null,
-                loadType: overrides.loadType ?? loadType,
                 craneType: overrides.craneType ?? craneType,
                 jibLength: overrides.jibLength ?? jibLength,
                 workLoadLimit: overrides.workLoadLimit ?? workLoadLimit,
-                userName: overrides.userName ?? userName,
+                environment: overrides.environment ?? environment,
+                surfaceType: overrides.surfaceType ?? surfaceType,
+                customNotes: overrides.customNotes ?? customNotes,
+                actualLoad: overrides.actualLoad ?? actualLoad,
+                suctionHeadId: overrides.suctionHeadId ?? suctionHeadId,
                 selectedUnit: overrides.unit ?? unit,
-                priceList: overrides.priceList ?? priceList,
-                requote: overrides.requote ?? false
+                userName: overrides.userName ?? userName,
+                priceList: overrides.priceList ?? priceList
             };
             localStorage.setItem(STORAGE_KEY, JSON.stringify(currentObj));
         } catch (e) {
             console.error('Failed to save to localStorage:', e);
         }
-    }, [pdfContent, loadType, craneType, jibLength, workLoadLimit, userName, unit, priceList]);
+    }, [craneType, jibLength, workLoadLimit, environment, surfaceType, customNotes, actualLoad, suctionHeadId, unit, userName, priceList]);
 
-    // Handle Crane type change
+    // Setters
     const setCraneType = useCallback((newType) => {
         setCraneTypeState(newType);
         setJibLengthState((prevJib) => validateJibForCrane(newType, prevJib));
     }, []);
 
-    const setJibLength = useCallback((newJib) => {
-        setJibLengthState(newJib);
+    const setJibLength = useCallback((newJib) => setJibLengthState(newJib), []);
+    const setWorkLoadLimit = useCallback((newWll) => setWorkLoadLimitState(newWll), []);
+    const setEnvironment = useCallback((newEnv) => setEnvironmentState(newEnv), []);
+    const setSurfaceType = useCallback((newSurf) => setSurfaceTypeState(newSurf), []);
+    const setCustomNotes = useCallback((notes) => setCustomNotesState(notes), []);
+    const setSuctionHeadId = useCallback((id) => setSuctionHeadIdState(id), []);
+    const setUnit = useCallback((newUnit) => setUnitState(newUnit), []);
+
+    const updateActualLoad = useCallback((updates) => {
+        setActualLoadState((prev) => ({ ...prev, ...updates }));
     }, []);
 
-    const setWorkLoadLimit = useCallback((newWll) => {
-        setWorkLoadLimitState(newWll);
-    }, []);
+    // Capacity status (Overload / Underload / Optimal)
+    const capacityStatus = useMemo(() => {
+        return checkCapacityStatus(workLoadLimit, actualLoad.weight);
+    }, [workLoadLimit, actualLoad.weight]);
 
-    const setLoadType = useCallback((newLoadType) => {
-        setLoadTypeState(newLoadType);
-    }, []);
+    // 1-Click switch to suggested WLL
+    const applySuggestedWll = useCallback(() => {
+        if (capacityStatus.suggestedWll) {
+            setWorkLoadLimitState(capacityStatus.suggestedWll);
+        }
+    }, [capacityStatus]);
 
-    const setUnit = useCallback((newUnit) => {
-        setUnitState(newUnit);
-    }, []);
-
-    // Requote action
+    // Requote action: reset to defaults
     const requote = useCallback(() => {
-        setWorkLoadLimitState(null);
-        setLoadTypeState(null);
         setCraneTypeState('floor-mounted-crane');
         setJibLengthState('2.5m');
+        setWorkLoadLimitState('45kg');
+        setEnvironmentState('clean');
+        setSurfaceTypeState('carton_smooth');
+        setCustomNotes('');
+        setActualLoadState({ weight: 35, length: 400, width: 300, height: 250 });
+        setSuctionHeadIdState('round_single');
         setCurrentPage('configurator');
         saveToLocalStorage({
-            workLoadLimit: null,
-            loadType: null,
             craneType: 'floor-mounted-crane',
             jibLength: '2.5m',
-            requote: false
+            workLoadLimit: '45kg',
+            environment: 'clean',
+            surfaceType: 'carton_smooth'
         });
     }, [saveToLocalStorage]);
 
-    // Quote button action
-    const quote = useCallback(() => {
-        if (!craneType || !jibLength || !workLoadLimit || !loadType) {
-            alert("Please select all items before continuing.");
-            return false;
+    // Quote action: validate and proceed to specification page
+    const quote = useCallback(async () => {
+        if (capacityStatus.status === 'OVERLOAD') {
+            const confirmed = window.confirm(
+                `Cảnh báo: Tải trọng thực tế (${actualLoad.weight} kg) đang vượt quá định mức WLL (${capacityStatus.capacity} kg)!\n\nBạn có muốn tự động nâng mức WLL lên ${capacityStatus.suggestedCapacity} kg và tiếp tục không?`
+            );
+            if (confirmed) {
+                applySuggestedWll();
+            } else {
+                return false;
+            }
         }
-        saveToLocalStorage({ requote: false });
+
+        // Take snapshot from 3D canvas if available
+        if (takeSnapshotRef.current) {
+            try {
+                const dataUrl = await takeSnapshotRef.current();
+                setCanvasSnapshot(dataUrl);
+            } catch (err) {
+                console.warn('Could not take snapshot:', err);
+            }
+        }
+
+        saveToLocalStorage();
         setCurrentPage('specification');
         return true;
-    }, [craneType, jibLength, workLoadLimit, loadType, saveToLocalStorage]);
+    }, [capacityStatus, actualLoad.weight, applySuggestedWll, saveToLocalStorage]);
 
-    // Back button from specification
     const backToConfigurator = useCallback(() => {
-        saveToLocalStorage({ fromBack: true });
+        saveToLocalStorage();
         setCurrentPage('configurator');
     }, [saveToLocalStorage]);
 
-    // Login API action
+    // Login API
     const login = useCallback(async (username, password) => {
         if (!username || !password) {
             alert('Please enter both username and password.');
@@ -148,9 +220,7 @@ export function ConfiguratorProvider({ children }) {
 
             const res = await fetch('https://www.aardwolf.com.au/api/get_price.php', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: formData
             });
 
@@ -158,11 +228,7 @@ export function ConfiguratorProvider({ children }) {
             if (response && response.user && response.user.name) {
                 setPriceList(response.price);
                 setUserName(response.user.name);
-                saveToLocalStorage({
-                    userName: response.user.name,
-                    priceList: response.price,
-                    fromBack: true
-                });
+                saveToLocalStorage({ userName: response.user.name, priceList: response.price });
                 return true;
             } else {
                 alert('Login failed! Invalid username or password.');
@@ -175,7 +241,6 @@ export function ConfiguratorProvider({ children }) {
         }
     }, [saveToLocalStorage]);
 
-    // Logout action
     const logout = useCallback(() => {
         setUserName(null);
         saveToLocalStorage({ userName: null });
@@ -183,10 +248,10 @@ export function ConfiguratorProvider({ children }) {
 
     // Calculated 3D configuration
     const config3D = useMemo(() => {
-        return get3DConfiguration(craneType, jibLength, workLoadLimit, loadType, unit);
-    }, [craneType, jibLength, workLoadLimit, loadType, unit]);
+        return get3DConfiguration(craneType, jibLength, workLoadLimit, suctionHeadId, unit);
+    }, [craneType, jibLength, workLoadLimit, suctionHeadId, unit]);
 
-    // Calculated price
+    // Calculated Total Price
     const totalPrice = useMemo(() => {
         if (!userName || !priceList) return null;
         return calculateTotalPrice(
@@ -195,9 +260,10 @@ export function ConfiguratorProvider({ children }) {
             config3D.crane,
             config3D.headStack,
             config3D.suctionPack,
+            environment,
             unit
         );
-    }, [userName, priceList, workLoadLimit, config3D, unit]);
+    }, [userName, priceList, workLoadLimit, config3D, environment, unit]);
 
     // Current Workload item for specifications
     const currentWorkload = useMemo(() => {
@@ -214,8 +280,18 @@ export function ConfiguratorProvider({ children }) {
         setJibLength,
         workLoadLimit,
         setWorkLoadLimit,
-        loadType,
-        setLoadType,
+        environment,
+        setEnvironment,
+        surfaceType,
+        setSurfaceType,
+        customNotes,
+        setCustomNotes,
+        actualLoad,
+        updateActualLoad,
+        suctionHeadId,
+        setSuctionHeadId,
+        capacityStatus,
+        applySuggestedWll,
         userName,
         priceList,
         totalPrice,
@@ -223,6 +299,9 @@ export function ConfiguratorProvider({ children }) {
         config3D,
         pdfContent,
         setPdfContent,
+        canvasSnapshot,
+        setCanvasSnapshot,
+        takeSnapshotRef,
         currentPage,
         setCurrentPage,
         show3DModal,

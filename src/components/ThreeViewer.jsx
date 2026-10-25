@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js';
 import { useConfigurator } from '../context/ConfiguratorContext.jsx';
-import { ALL_PRELOAD_ITEMS } from '../constants/data.js';
+import { ALL_PRELOAD_ITEMS, mmToInch } from '../constants/data.js';
 
 function extractPoint3(inputString) {
     const p1Match = inputString.match(/p1_(-?\d+)_(-?\d+)_(-?\d+)/);
@@ -21,15 +21,42 @@ function extractPoint3(inputString) {
 const TUBE_HEIGHT = 1918.86;
 const TUBE_OFFSET = 25.5;
 
+function createDimensionSprite(text) {
+    const canvas = document.createElement('canvas');
+    canvas.width = 256;
+    canvas.height = 64;
+    const ctx = canvas.getContext('2d');
+
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+    ctx.roundRect(0, 0, 256, 64, 12);
+    ctx.fill();
+
+    ctx.fillStyle = '#FFFFFF';
+    ctx.font = 'bold 24px Open Sans, Arial';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(text, 128, 32);
+
+    const texture = new THREE.CanvasTexture(canvas);
+    const material = new THREE.SpriteMaterial({ map: texture, depthTest: false });
+    const sprite = new THREE.Sprite(material);
+    sprite.scale.set(400, 100, 1);
+    return sprite;
+}
+
 export default function ThreeViewer() {
     const containerRef = useRef(null);
     const {
         config3D,
+        actualLoad,
+        unit,
+        surfaceType,
         setPdfContent,
         setIs3DLoading,
         setLoadingProgress,
         cameraPresetTrigger,
-        setCameraPresetTrigger
+        setCameraPresetTrigger,
+        takeSnapshotRef
     } = useConfigurator();
 
     const sceneRef = useRef(null);
@@ -38,6 +65,7 @@ export default function ThreeViewer() {
     const controlsRef = useRef(null);
     const loadedObjectsMapRef = useRef(new Map());
     const isReadyRef = useRef(false);
+    const workpieceGroupRef = useRef(null);
 
     // Camera animation refs
     const cameraAnimRef = useRef({
@@ -47,6 +75,21 @@ export default function ThreeViewer() {
         startTime: null,
         duration: 1.0
     });
+
+    // Hook snapshot method for PDF generation
+    useEffect(() => {
+        takeSnapshotRef.current = () => {
+            return new Promise((resolve) => {
+                if (!rendererRef.current || !sceneRef.current || !cameraRef.current) {
+                    resolve(null);
+                    return;
+                }
+                rendererRef.current.render(sceneRef.current, cameraRef.current);
+                const dataUrl = rendererRef.current.domElement.toDataURL('image/png');
+                resolve(dataUrl);
+            });
+        };
+    }, [takeSnapshotRef]);
 
     // Initialize Three.js scene
     useEffect(() => {
@@ -63,23 +106,26 @@ export default function ThreeViewer() {
         axesHelper.isAxesHelper = true;
         scene.add(axesHelper);
 
-        const ambientLight = new THREE.AmbientLight(0x808080);
+        const ambientLight = new THREE.AmbientLight(0x909090);
         scene.add(ambientLight);
 
-        const directionalLight = new THREE.DirectionalLight(0xdadada, 1);
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 1.2);
         directionalLight.position.set(232, 380, 336);
         scene.add(directionalLight);
+
+        const fillLight = new THREE.DirectionalLight(0xdadada, 0.6);
+        fillLight.position.set(-232, 200, -336);
+        scene.add(fillLight);
 
         const camera = new THREE.PerspectiveCamera(75, w / h, 0.1, 100000);
         camera.position.set(window.innerWidth <= 820 ? 800 : 2000, 1500, 8000);
         cameraRef.current = camera;
 
-        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
         renderer.setSize(w, h);
         renderer.setClearColor(window.innerWidth <= 820 ? 0xe6e6e6 : 0xd1d2d3);
         rendererRef.current = renderer;
 
-        // Clear container and append canvas
         container.innerHTML = '';
         container.appendChild(renderer.domElement);
 
@@ -92,7 +138,7 @@ export default function ThreeViewer() {
         controls.target.set(window.innerWidth <= 820 ? 800 : 2000, 1500, 0);
         controlsRef.current = controls;
 
-        // Two-finger panning on touch devices
+        // Two-finger touch panning
         let isPanning = false;
         let lastTouchPos = null;
 
@@ -135,7 +181,6 @@ export default function ThreeViewer() {
         const animate = (timestamp) => {
             animationFrameId = requestAnimationFrame(animate);
 
-            // Handle smooth camera movement
             const anim = cameraAnimRef.current;
             if (anim.active) {
                 if (!anim.startTime) anim.startTime = timestamp;
@@ -159,7 +204,6 @@ export default function ThreeViewer() {
         };
         animate();
 
-        // Window resize handler
         const onResize = () => {
             if (!containerRef.current || !rendererRef.current || !cameraRef.current) return;
             const newW = containerRef.current.clientWidth || window.innerWidth;
@@ -203,8 +247,7 @@ export default function ThreeViewer() {
                         resolve({ name: item.name, success: true });
                     },
                     undefined,
-                    (error) => {
-                        console.warn(`Failed to preload ${fileName}:`, error);
+                    () => {
                         loadedCount++;
                         setLoadingProgress(Math.round((loadedCount / totalItems) * 100));
                         resolve({ name: item.name, success: false });
@@ -230,23 +273,20 @@ export default function ThreeViewer() {
         };
     }, []);
 
-    // Function to add objects to scene at coordinates
     const addToScene = useCallback((scene, modelName, pos) => {
         const obj = loadedObjectsMapRef.current.get(modelName);
         if (obj) {
             obj.position.set(pos.x, pos.z, pos.y);
             scene.add(obj);
-        } else {
-            console.warn('Model not found in preloaded cache:', modelName);
         }
     }, []);
 
-    // Update scene models whenever config3D changes
+    // Update 3D Scene models & create scaled real-world workpiece
     const update3DScene = useCallback(() => {
         const scene = sceneRef.current;
         if (!scene || !isReadyRef.current) return;
 
-        // Clear previous models (preserve lights and axes helper)
+        // Clear existing models
         for (let i = scene.children.length - 1; i >= 0; i--) {
             const child = scene.children[i];
             if (!child.isLight && !child.isAxesHelper) {
@@ -261,10 +301,10 @@ export default function ThreeViewer() {
         const [p1, p2] = extractPoint3(craneName);
         let tubeHeight = TUBE_HEIGHT;
 
-        // 1. Add Crane at (0, 0, 0)
+        // 1. Add Crane
         addToScene(scene, craneName, { x: 0, y: 0, z: 0 });
 
-        // 2. Add Pump & Tube if available
+        // 2. Add Pump & Tube
         if (tube && pumpGroup) {
             let pump_z = p1.z;
             if (craneName.toLowerCase().includes("mobile")) {
@@ -279,7 +319,7 @@ export default function ThreeViewer() {
 
             addToScene(scene, tube.name, { x: p2.x, y: p2.y, z: p2.z });
 
-            // 3. Add Head stack & Suction pack if available
+            // 3. Add Head stack & Suction pack
             if (headStack && suctionPack) {
                 const pad = {
                     x: p2.x - TUBE_OFFSET,
@@ -290,6 +330,51 @@ export default function ThreeViewer() {
                 addToScene(scene, headStack.name, pad);
                 addToScene(scene, suctionPack.name, pad);
 
+                // 4. Create Real-world Workpiece 3D Mesh (scaled according to actualLoad)
+                const workpieceGroup = new THREE.Group();
+                workpieceGroupRef.current = workpieceGroup;
+
+                const l = Math.max(50, actualLoad.length);
+                const w = Math.max(50, actualLoad.width);
+                const h = Math.max(20, actualLoad.height);
+
+                // Geometry: box representation
+                const boxGeo = new THREE.BoxGeometry(l, h, w);
+                let boxMatColor = 0xc2a67e; // Cardboard kraft color by default
+                if (surfaceType === 'sheet_metal') boxMatColor = 0x8899aa;
+                if (surfaceType === 'bag_woven') boxMatColor = 0xd5ceb8;
+
+                const boxMat = new THREE.MeshStandardMaterial({
+                    color: boxMatColor,
+                    roughness: 0.7,
+                    metalness: surfaceType === 'sheet_metal' ? 0.6 : 0.1
+                });
+                const workpieceMesh = new THREE.Mesh(boxGeo, boxMat);
+
+                // Position right underneath suction pad
+                // In Three.js coordinates: pos.x -> X, pos.z -> Y (elevation), pos.y -> Z (depth)
+                const workpieceCenterY = pad.z - (h / 2);
+                workpieceMesh.position.set(pad.x, workpieceCenterY, pad.y);
+                workpieceGroup.add(workpieceMesh);
+
+                // Edge wireframe highlight
+                const edgesGeo = new THREE.EdgesGeometry(boxGeo);
+                const edgesMat = new THREE.LineBasicMaterial({ color: 0x333333, linewidth: 2 });
+                const wireframe = new THREE.LineSegments(edgesGeo, edgesMat);
+                wireframe.position.copy(workpieceMesh.position);
+                workpieceGroup.add(wireframe);
+
+                // 3D Dimension label sprite
+                const dimText = unit === 'Inch'
+                    ? `${Math.round(mmToInch(l))}" × ${Math.round(mmToInch(w))}"`
+                    : `${l} × ${w} mm`;
+                const sprite = createDimensionSprite(dimText);
+                sprite.position.set(pad.x, workpieceCenterY - (h / 2) - 80, pad.y);
+                workpieceGroup.add(sprite);
+
+                scene.add(workpieceGroup);
+
+                // PDF content coordinate sync
                 const mv_x = 0;
                 setPdfContent([
                     { path: crane.name, x: 0 + mv_x, y: 0 },
@@ -300,13 +385,13 @@ export default function ThreeViewer() {
                 ]);
             }
         }
-    }, [config3D, addToScene, setPdfContent]);
+    }, [config3D, actualLoad, unit, surfaceType, addToScene, setPdfContent]);
 
     useEffect(() => {
         if (isReadyRef.current) {
             update3DScene();
         }
-    }, [config3D, update3DScene]);
+    }, [config3D, actualLoad, update3DScene]);
 
     // Handle Camera Presets trigger
     useEffect(() => {

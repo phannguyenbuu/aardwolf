@@ -1,7 +1,8 @@
 import React from 'react';
 import { useConfigurator } from '../context/ConfiguratorContext.jsx';
 import UnitSelector from '../components/UnitSelector.jsx';
-import { isJibDisabled } from '../utils/configuratorHelpers.js';
+import { RULES, kgToLbs, lbsToKg, mmToInch, inchToMm } from '../constants/data.js';
+import { isJibDisabled, getCraneConfig } from '../utils/configuratorHelpers.js';
 
 export default function ConfiguratorPage() {
     const {
@@ -12,22 +13,25 @@ export default function ConfiguratorPage() {
         setJibLength,
         workLoadLimit,
         setWorkLoadLimit,
-        loadType,
-        setLoadType,
+        environment,
+        setEnvironment,
+        surfaceType,
+        setSurfaceType,
+        customNotes,
+        setCustomNotes,
+        actualLoad,
+        updateActualLoad,
+        suctionHeadId,
+        setSuctionHeadId,
+        capacityStatus,
+        applySuggestedWll,
         requote,
         quote
     } = useConfigurator();
 
-    // Work Load Limit values by unit
-    const wllLabels = {
-        '45kg': unit === 'Inch' ? '99 lbs' : '45 kgs',
-        '70kg': unit === 'Inch' ? '154 lbs' : '70 kgs',
-        '80kg': unit === 'Inch' ? '176 lbs' : '80 kgs',
-        '120kg': unit === 'Inch' ? '265 lbs' : '120 kgs',
-        '150kg': unit === 'Inch' ? '331 lbs' : '150 kgs'
-    };
+    const craneConfig = getCraneConfig(craneType);
 
-    // Jib length labels
+    // Jib labels
     const jibLabels = {
         '2.5m': unit === 'Inch' ? `8'2" (articulated jib crane)` : '2.5 m (articulated jib crane)',
         '3m': unit === 'Inch' ? `9'10"` : '3 m',
@@ -35,77 +39,127 @@ export default function ConfiguratorPage() {
         '5m': unit === 'Inch' ? `16'5"` : '5 m'
     };
 
-    // Carton size labels for Load Type
-    const cartonLabels = {
-        small: unit === 'Inch' ? '12"x12"' : '300x300',
-        medium: unit === 'Inch' ? '12" to 16"' : '300 to 400',
-        large: unit === 'Inch' ? '16"' : '400'
+    // Dimension unit labels
+    const lengthUnit = unit === 'Inch' ? 'in' : 'mm';
+    const weightUnit = unit === 'Inch' ? 'lbs' : 'kg';
+
+    // Handle dimension changes with unit conversion
+    const handleWeightChange = (val) => {
+        const num = parseFloat(val) || 0;
+        const weightKg = unit === 'Inch' ? parseFloat(lbsToKg(num)) : num;
+        updateActualLoad({ weight: Math.max(0, weightKg) });
     };
 
-    const isLoadTypeDisabled = !workLoadLimit;
+    const handleLengthChange = (val) => {
+        const num = parseFloat(val) || 0;
+        const lengthMm = unit === 'Inch' ? inchToMm(num) : num;
+        updateActualLoad({ length: Math.max(0, lengthMm) });
+    };
+
+    const handleWidthChange = (val) => {
+        const num = parseFloat(val) || 0;
+        const widthMm = unit === 'Inch' ? inchToMm(num) : num;
+        updateActualLoad({ width: Math.max(0, widthMm) });
+    };
+
+    const handleHeightChange = (val) => {
+        const num = parseFloat(val) || 0;
+        const heightMm = unit === 'Inch' ? inchToMm(num) : num;
+        updateActualLoad({ height: Math.max(0, heightMm) });
+    };
+
+    const displayWeight = unit === 'Inch' ? kgToLbs(actualLoad.weight) : actualLoad.weight;
+    const displayLength = unit === 'Inch' ? Math.round(mmToInch(actualLoad.length)) : actualLoad.length;
+    const displayWidth = unit === 'Inch' ? Math.round(mmToInch(actualLoad.width)) : actualLoad.width;
+    const displayHeight = unit === 'Inch' ? Math.round(mmToInch(actualLoad.height)) : actualLoad.height;
 
     return (
-        <div className="container">
+        <div className="container pb-5">
             <UnitSelector />
 
             <div className="row content py-2">
                 <div className="col-lg-6 col-md-12 col-12 content__left">
                     <div className="content__left-list">
-                        {/* Question 1: Crane Type */}
-                        <div className="content__left-list--item">
-                            <p>1. What crane type do you require?</p>
+
+                        {/* BƯỚC 1: CRANE TYPE */}
+                        <div className="content__left-list--item mb-4">
+                            <p className="step-title">
+                                <span className="step-badge">1</span> Loại cẩu trục (Crane Type)
+                            </p>
                             <div className="row content__left-list-answer">
-                                <div className="col-lg-6 col-md-6 col-12 content__left-list-answer--item">
-                                    <input
-                                        type="radio"
-                                        name="craneType"
-                                        id="floor-mounted-crane"
-                                        checked={craneType === 'floor-mounted-crane'}
-                                        onChange={() => setCraneType('floor-mounted-crane')}
-                                    />
-                                    <label htmlFor="floor-mounted-crane">Floor-Mounted Crane</label>
-                                </div>
-                                <div className="col-lg-6 col-md-6 col-12 content__left-list-answer--item">
-                                    <input
-                                        type="radio"
-                                        name="craneType"
-                                        id="mobile-crane"
-                                        checked={craneType === 'mobile-crane'}
-                                        onChange={() => setCraneType('mobile-crane')}
-                                    />
-                                    <label htmlFor="mobile-crane">Mobile Crane</label>
-                                </div>
-                                <div className="col-lg-6 col-md-6 col-12 content__left-list-answer--item">
-                                    <input
-                                        type="radio"
-                                        name="craneType"
-                                        id="wall-mounted-crane"
-                                        checked={craneType === 'wall-mounted-crane'}
-                                        onChange={() => setCraneType('wall-mounted-crane')}
-                                    />
-                                    <label htmlFor="wall-mounted-crane">Wall-Mounted Crane</label>
-                                </div>
+                                {RULES.cranes.map((c) => (
+                                    <div key={c.id} className="col-lg-12 col-12 content__left-list-answer--item mb-1">
+                                        <input
+                                            type="radio"
+                                            name="craneType"
+                                            id={c.id}
+                                            checked={craneType === c.id}
+                                            onChange={() => setCraneType(c.id)}
+                                        />
+                                        <label htmlFor={c.id} className="d-flex flex-column ml-2">
+                                            <span className="font-weight-bold">{c.name}</span>
+                                            <small className="text-muted">{c.description}</small>
+                                        </label>
+                                    </div>
+                                ))}
                             </div>
                         </div>
 
-                        {/* Question 2: Jib Length */}
-                        <div className="content__left-list--item">
-                            <p>2. What jib length do you require?</p>
+                        {/* BƯỚC 2: JIB LENGTH */}
+                        <div className="content__left-list--item mb-4">
+                            <p className="step-title">
+                                <span className="step-badge">2</span> Chiều dài tay cần (Jib Length)
+                            </p>
                             <div className="row content__left-list-answer">
-                                {['2.5m', '3m', '4m', '5m'].map((j) => {
-                                    const disabled = isJibDisabled(craneType, j);
+                                {RULES.jibs.map((j) => {
+                                    const disabled = isJibDisabled(craneType, j.id);
                                     return (
-                                        <div key={j} className="col-lg-6 col-md-6 col-12 content__left-list-answer--item">
+                                        <div
+                                            key={j.id}
+                                            className="col-lg-6 col-md-6 col-12 content__left-list-answer--item position-relative"
+                                            title={disabled ? (craneConfig.disabledJibsTooltip || 'Tùy chọn không khả dụng') : ''}
+                                        >
                                             <input
                                                 type="radio"
                                                 name="jibLength"
-                                                id={j}
-                                                checked={jibLength === j}
+                                                id={j.id}
+                                                checked={jibLength === j.id}
                                                 disabled={disabled}
-                                                onChange={() => setJibLength(j)}
+                                                onChange={() => setJibLength(j.id)}
                                             />
-                                            <label htmlFor={j} className="jib-label">
-                                                {jibLabels[j]}
+                                            <label htmlFor={j.id} className="jib-label ml-1">
+                                                {jibLabels[j.id]}
+                                            </label>
+                                            {disabled && (
+                                                <span className="badge badge-secondary ml-1" style={{ fontSize: 10 }}>Khóa</span>
+                                            )}
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
+
+                        {/* BƯỚC 3: WORK LOAD LIMIT (9 LEVELS) */}
+                        <div className="content__left-list--item mb-4">
+                            <p className="step-title">
+                                <span className="step-badge">3</span> Định mức tải trọng nâng (Work Load Limit - WLL)
+                            </p>
+                            <div className="row content__left-list-answer">
+                                {RULES.wllLevels.map((wll) => {
+                                    const wllText = unit === 'Inch'
+                                        ? `${kgToLbs(wll.capacityKg)} lbs`
+                                        : `${wll.capacityKg} kg`;
+                                    return (
+                                        <div key={wll.id} className="col-lg-4 col-md-4 col-6 content__left-list-answer--item py-1">
+                                            <input
+                                                type="radio"
+                                                name="workLoadLimit"
+                                                id={wll.id}
+                                                checked={workLoadLimit === wll.id}
+                                                onChange={() => setWorkLoadLimit(wll.id)}
+                                            />
+                                            <label htmlFor={wll.id} className="ml-1 font-weight-bold">
+                                                WLL {wllText}
                                             </label>
                                         </div>
                                     );
@@ -113,110 +167,215 @@ export default function ConfiguratorPage() {
                             </div>
                         </div>
 
-                        {/* Question 3: Work Load Limit */}
-                        <div className="content__left-list--item">
-                            <p>3. What work load limit do you require?</p>
-                            <div className="row content__left-list-answer">
-                                {['45kg', '70kg', '80kg', '120kg', '150kg'].map((wll) => (
-                                    <div key={wll} className="col-lg-6 col-md-6 col-12 content__left-list-answer--item">
+                        {/* BƯỚC 4: VẬT LIỆU & BỀ MẶT */}
+                        <div className="content__left-list--item mb-4">
+                            <p className="step-title">
+                                <span className="step-badge">4</span> Đặc tính môi trường & Bề mặt vật nâng
+                            </p>
+                            
+                            {/* Môi trường */}
+                            <div className="mb-2">
+                                <span className="font-weight-bold" style={{ fontSize: 13 }}>Môi trường làm việc:</span>
+                                <div className="d-flex flex-wrap mt-1">
+                                    {RULES.environments.map(env => (
+                                        <div key={env.id} className="mr-3 d-flex align-items-center">
+                                            <input
+                                                type="radio"
+                                                name="environment"
+                                                id={env.id}
+                                                checked={environment === env.id}
+                                                onChange={() => setEnvironment(env.id)}
+                                            />
+                                            <label htmlFor={env.id} className="ml-1 mb-0" style={{ cursor: 'pointer', fontSize: 13 }}>
+                                                {env.name}
+                                            </label>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Phân loại bề mặt */}
+                            <div className="row content__left-list-answer mt-2">
+                                {RULES.surfaceTypes.map(surf => (
+                                    <div key={surf.id} className="col-lg-6 col-12 content__left-list-answer--item py-1">
                                         <input
                                             type="radio"
-                                            name="workLoadLimit"
-                                            id={wll}
-                                            checked={workLoadLimit === wll}
-                                            onChange={() => setWorkLoadLimit(wll)}
+                                            name="surfaceType"
+                                            id={surf.id}
+                                            checked={surfaceType === surf.id}
+                                            onChange={() => setSurfaceType(surf.id)}
                                         />
-                                        <label htmlFor={wll}>
-                                            WLL <span className={`workLoadLimit-${wll.replace('kg', '')}`}>{wllLabels[wll]}</span>
+                                        <label htmlFor={surf.id} className="ml-1 font-weight-bold" style={{ fontSize: 13 }}>
+                                            {surf.name}
                                         </label>
                                     </div>
                                 ))}
                             </div>
-                        </div>
 
-                        {/* Question 4: Load Type */}
-                        <div className="content__left-list--item">
-                            <p>4. What type of load are you lifting?</p>
-                            <div className="row content__left-list-answer" id="loadTypeList">
-                                <div className="col-lg-6 col-md-6 col-12 content__left-list-answer--item item-1">
-                                    <input
-                                        type="radio"
-                                        name="loadType"
-                                        id="300max"
-                                        disabled={isLoadTypeDisabled}
-                                        checked={loadType === '300max'}
-                                        onChange={() => setLoadType('300max')}
-                                    />
-                                    <label htmlFor="300max">
-                                        Small cartons ({cartonLabels.small} max)
-                                    </label>
-                                </div>
-                                <div className="col-lg-6 col-md-6 col-12 content__left-list-answer--item item-3">
-                                    <input
-                                        type="radio"
-                                        name="loadType"
-                                        id="300-400medium"
-                                        disabled={isLoadTypeDisabled}
-                                        checked={loadType === '300-400medium'}
-                                        onChange={() => setLoadType('300-400medium')}
-                                    />
-                                    <label htmlFor="300-400medium">
-                                        Medium cartons ({cartonLabels.medium})
-                                    </label>
-                                </div>
-                                <div className="col-lg-6 col-md-6 col-12 content__left-list-answer--item item-5">
-                                    <input
-                                        type="radio"
-                                        name="loadType"
-                                        id="400large"
-                                        disabled={isLoadTypeDisabled}
-                                        checked={loadType === '400large'}
-                                        onChange={() => setLoadType('400large')}
-                                    />
-                                    <label htmlFor="400large">
-                                        Large cartons (above {cartonLabels.large})
-                                    </label>
-                                </div>
-                                <div className="col-lg-6 col-md-6 col-12 content__left-list-answer--item item-4">
-                                    <input
-                                        type="radio"
-                                        name="loadType"
-                                        id="highstack"
-                                        disabled={isLoadTypeDisabled}
-                                        checked={loadType === 'highstack'}
-                                        onChange={() => setLoadType('highstack')}
-                                    />
-                                    <label htmlFor="highstack">High stack</label>
-                                </div>
-                                <div className="col-lg-6 col-md-6 col-12 content__left-list-answer--item item-2">
-                                    <input
-                                        type="radio"
-                                        name="loadType"
-                                        id="bags"
-                                        disabled={isLoadTypeDisabled}
-                                        checked={loadType === 'bags'}
-                                        onChange={() => setLoadType('bags')}
-                                    />
-                                    <label htmlFor="bags">Bags</label>
-                                </div>
-                                <div className="col-lg-6 col-md-6 col-12 content__left-list-answer--item item-6">
-                                    <input
-                                        type="radio"
-                                        name="loadType"
-                                        id="sheetmaterial"
-                                        disabled={isLoadTypeDisabled}
-                                        checked={loadType === 'sheetmaterial'}
-                                        onChange={() => setLoadType('sheetmaterial')}
-                                    />
-                                    <label htmlFor="sheetmaterial">Sheet material</label>
-                                </div>
+                            {/* Custom text */}
+                            <div className="mt-2">
+                                <input
+                                    type="text"
+                                    className="form-control form-control-sm"
+                                    placeholder="Ghi chú thêm về vật nâng (vd: nhiệt độ, hóa chất, độ nhám đặc biệt...)"
+                                    value={customNotes}
+                                    onChange={(e) => setCustomNotes(e.target.value)}
+                                    style={{ fontSize: 13, background: '#fff' }}
+                                />
                             </div>
                         </div>
+
+                        {/* BƯỚC 5: KÍCH THƯỚC & TẢI TRỌNG THỰC TẾ */}
+                        <div className="content__left-list--item mb-4">
+                            <p className="step-title">
+                                <span className="step-badge">5</span> Kích thước & Khối lượng thực tế
+                            </p>
+                            <div className="bg-white p-3 rounded" style={{ border: '1px solid #e0e0e0' }}>
+                                <div className="row">
+                                    <div className="col-6 col-md-3 mb-2">
+                                        <label className="font-weight-bold" style={{ fontSize: 12 }}>Tải trọng ({weightUnit}):</label>
+                                        <input
+                                            type="number"
+                                            className="form-control form-control-sm font-weight-bold text-danger"
+                                            value={displayWeight}
+                                            onChange={(e) => handleWeightChange(e.target.value)}
+                                            min="1"
+                                            step="1"
+                                        />
+                                    </div>
+                                    <div className="col-6 col-md-3 mb-2">
+                                        <label className="font-weight-bold" style={{ fontSize: 12 }}>Chiều dài ({lengthUnit}):</label>
+                                        <input
+                                            type="number"
+                                            className="form-control form-control-sm font-weight-bold"
+                                            value={displayLength}
+                                            onChange={(e) => handleLengthChange(e.target.value)}
+                                            min="50"
+                                            step="10"
+                                        />
+                                    </div>
+                                    <div className="col-6 col-md-3 mb-2">
+                                        <label className="font-weight-bold" style={{ fontSize: 12 }}>Chiều rộng ({lengthUnit}):</label>
+                                        <input
+                                            type="number"
+                                            className="form-control form-control-sm font-weight-bold"
+                                            value={displayWidth}
+                                            onChange={(e) => handleWidthChange(e.target.value)}
+                                            min="50"
+                                            step="10"
+                                        />
+                                    </div>
+                                    <div className="col-6 col-md-3 mb-2">
+                                        <label className="font-weight-bold" style={{ fontSize: 12 }}>Chiều cao ({lengthUnit}):</label>
+                                        <input
+                                            type="number"
+                                            className="form-control form-control-sm font-weight-bold"
+                                            value={displayHeight}
+                                            onChange={(e) => handleHeightChange(e.target.value)}
+                                            min="20"
+                                            step="10"
+                                        />
+                                    </div>
+                                </div>
+
+                                {/* Banner cảnh báo tải trọng */}
+                                {capacityStatus.status === 'OVERLOAD' && (
+                                    <div className="alert alert-danger mt-2 mb-0 p-2 d-flex align-items-center justify-content-between flex-wrap" style={{ fontSize: 13 }}>
+                                        <span>⚠️ <strong>Quá tải:</strong> {capacityStatus.message}</span>
+                                        <button
+                                            type="button"
+                                            className="btn btn-sm btn-danger ml-auto mt-1"
+                                            onClick={applySuggestedWll}
+                                        >
+                                            Chuyển sang WLL {capacityStatus.suggestedCapacity} kg
+                                        </button>
+                                    </div>
+                                )}
+
+                                {capacityStatus.status === 'UNDERLOAD' && (
+                                    <div className="alert alert-warning mt-2 mb-0 p-2 d-flex align-items-center justify-content-between flex-wrap" style={{ fontSize: 13 }}>
+                                        <span>💡 <strong>Tối ưu:</strong> {capacityStatus.message}</span>
+                                        <button
+                                            type="button"
+                                            className="btn btn-sm btn-warning ml-auto mt-1 font-weight-bold"
+                                            onClick={applySuggestedWll}
+                                        >
+                                            Hạ WLL về {capacityStatus.suggestedCapacity} kg
+                                        </button>
+                                    </div>
+                                )}
+
+                                {capacityStatus.status === 'OPTIMAL' && (
+                                    <div className="alert alert-success mt-2 mb-0 p-2" style={{ fontSize: 13 }}>
+                                        ✅ <strong>Đạt chuẩn an toàn:</strong> {capacityStatus.message}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* THƯ VIỆN ĐẦU HÚT THÔNG MINH */}
+                        <div className="content__left-list--item mb-4">
+                            <p className="step-title d-flex justify-content-between align-items-center">
+                                <span><span className="step-badge">★</span> Thư viện đầu hút thông minh</span>
+                                <small className="text-muted">Tự động đề xuất theo vật liệu & kích thước</small>
+                            </p>
+
+                            <div className="row">
+                                {RULES.suctionHeads.map((head) => {
+                                    const isSelected = suctionHeadId === head.id;
+                                    const isRecommended = RULES.surfaceTypes.find(s => s.id === surfaceType)?.recommendedHead === head.id;
+
+                                    return (
+                                        <div key={head.id} className="col-lg-6 col-12 mb-2">
+                                            <div
+                                                className={`p-2 rounded cursor-pointer position-relative d-flex align-items-center ${
+                                                    isSelected ? 'border-primary shadow-sm bg-light' : 'bg-white'
+                                                }`}
+                                                style={{
+                                                    border: isSelected ? '2px solid #CC2200' : '1px solid #ddd',
+                                                    cursor: 'pointer'
+                                                }}
+                                                onClick={() => setSuctionHeadId(head.id)}
+                                            >
+                                                <img
+                                                    src={head.icon}
+                                                    alt={head.name}
+                                                    style={{ width: 34, height: 34, objectFit: 'contain' }}
+                                                    className="mr-2"
+                                                />
+                                                <div style={{ flex: 1 }}>
+                                                    <div className="d-flex align-items-center">
+                                                        <span className="font-weight-bold" style={{ fontSize: 13, color: isSelected ? '#CC2200' : '#333' }}>
+                                                            {head.name}
+                                                        </span>
+                                                        {isRecommended && (
+                                                            <span className="badge badge-success ml-2" style={{ fontSize: 9 }}>Đề xuất</span>
+                                                        )}
+                                                    </div>
+                                                    <small className="text-muted d-block">
+                                                        Tải tối đa: {unit === 'Inch' ? `${kgToLbs(head.maxKg)} lbs` : `${head.maxKg} kg`}
+                                                    </small>
+                                                </div>
+                                                <input
+                                                    type="radio"
+                                                    name="suctionHead"
+                                                    checked={isSelected}
+                                                    onChange={() => setSuctionHeadId(head.id)}
+                                                    className="ml-2"
+                                                />
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
 
-            <div className="content__action">
+            {/* ACTION BUTTONS (Ghim đáy trên Mobile theo yêu cầu Mục 01) */}
+            <div className="content__action sticky-mobile-action">
                 <a href="#requote" className="content__action--requote" onClick={(e) => { e.preventDefault(); requote(); }}>
                     Requote
                 </a>

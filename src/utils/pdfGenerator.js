@@ -353,6 +353,10 @@ export async function generateQuotationPDF({
     outputFileName,
     selectedUnit,
     zoomft,
+    actualLoad,
+    surfaceType,
+    environment,
+    canvasSnapshot,
     onProgress
 }) {
     if (onProgress) onProgress(10);
@@ -377,7 +381,7 @@ export async function generateQuotationPDF({
     const font_open_sans = await pdfDoc.embedFont(regularBytes);
     const logoImage = await pdfDoc.embedJpg(imageBytes);
 
-    if (onProgress) onProgress(40);
+    if (onProgress) onProgress(35);
 
     const page = pdfDoc.addPage([drw * 210, drw * 297]);
 
@@ -406,7 +410,7 @@ export async function generateQuotationPDF({
     });
 
     bottom_y -= drw * 7.3;
-    drawTxt('Aardwolf Vacuum Tube Lifter', margin_left, bottom_y, drw * 4, true, 0);
+    drawTxt('Aardwolf Vacuum Tube Lifter - 5-Step Smart Configurator', margin_left, bottom_y, drw * 3.6, true, 0);
 
     bottom_y -= drw * 4.9;
     drawTxt('The above drawing is based on information provided by the buyer. The Aardwolf vacuum tube lifter is', margin_left, bottom_y, font_sz, false);
@@ -414,8 +418,11 @@ export async function generateQuotationPDF({
 
     bottom_y -= drw * 11.6;
     if (currentWorkload) {
-        drawTxt(`Lifting capacity: ${currentWorkload.maxLiftingCapacity}. (As per customer’s request). The Aardwolf Vacuum Tube Lifter is a classic`, margin_left, bottom_y, font_sz);
-        drawTxt(`design typically suited for loads between ${currentWorkload.minLiftingCapacity} - ${currentWorkload.maxLiftingCapacity}.`, margin_left, bottom_y - drw * 4, font_sz);
+        drawTxt(`Lifting capacity: ${currentWorkload.maxLiftingCapacity}. Suited for loads between ${currentWorkload.minLiftingCapacity} - ${currentWorkload.maxLiftingCapacity}.`, margin_left, bottom_y, font_sz);
+        if (actualLoad) {
+            const actualText = `Workpiece: ${actualLoad.weight}kg (${actualLoad.length}x${actualLoad.width}x${actualLoad.height}mm) | Env: ${environment || 'Clean'}`;
+            drawTxt(actualText, margin_left, bottom_y - drw * 4, font_sz, true, 1);
+        }
     }
 
     bottom_y -= drw * 15.3;
@@ -462,7 +469,7 @@ export async function generateQuotationPDF({
     page.drawLine({ start: { x: middleX, y: bottom_y }, end: { x: middleX, y: bottom_y - totalRows * rowHeight }, thickness: thick, color: borderColor });
     page.drawLine({ start: { x: endX, y: bottom_y }, end: { x: endX, y: bottom_y - totalRows * rowHeight }, thickness: thick, color: borderColor });
 
-    // Draw table content
+    // Table rows
     const labels = [
         'Maximum lifting capacity', 'Lift tube size', 'Electrical vacuum pump',
         'Vertical movement (Stroke)', '2.5m lift tube (standard)', 'Installation height',
@@ -518,9 +525,9 @@ export async function generateQuotationPDF({
         height: 9 * drw
     });
 
-    if (onProgress) onProgress(70);
+    if (onProgress) onProgress(60);
 
-    // Draw SVG components
+    // Draw SVG 2D Component
     if (pdfContent && sceneData) {
         const svgSaver = {
             data: sceneData,
@@ -538,6 +545,35 @@ export async function generateQuotationPDF({
         await svg.drawSvg();
     }
 
+    // Embed 3D Snapshot into top-right corner of Page if available
+    if (canvasSnapshot) {
+        try {
+            const base64Data = canvasSnapshot.split(',')[1];
+            const binaryStr = atob(base64Data);
+            const bytes = new Uint8Array(binaryStr.length);
+            for (let i = 0; i < binaryStr.length; i++) {
+                bytes[i] = binaryStr.charCodeAt(i);
+            }
+            const snapshotPng = await pdfDoc.embedPng(bytes);
+            page.drawImage(snapshotPng, {
+                x: drw * 148,
+                y: drw * 180,
+                width: 44 * drw,
+                height: 32 * drw
+            });
+            page.drawRectangle({
+                x: drw * 148,
+                y: drw * 180,
+                width: 44 * drw,
+                height: 32 * drw,
+                borderColor: rgb(0.8, 0.8, 0.8),
+                borderWidth: 0.5
+            });
+        } catch (e) {
+            console.warn('Could not embed 3D canvas snapshot in PDF:', e);
+        }
+    }
+
     if (onProgress) onProgress(90);
 
     const pdfBytes = await pdfDoc.save();
@@ -546,7 +582,7 @@ export async function generateQuotationPDF({
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = outputFileName || 'vector_document.pdf';
+    a.download = outputFileName || 'vacuum_tube_lifter_quotation.pdf';
     a.click();
     URL.revokeObjectURL(url);
 

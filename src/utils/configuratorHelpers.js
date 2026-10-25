@@ -6,33 +6,108 @@ import {
     small_tube,
     big_tube,
     WORKLOAD_DATA,
-    parseFeetAndInches
+    parseFeetAndInches,
+    RULES
 } from '../constants/data.js';
 
+export function getCraneConfig(craneId) {
+    return RULES.cranes.find(c => c.id === craneId) || RULES.cranes[0];
+}
+
+export function isJibDisabled(craneType, jibId) {
+    const crane = getCraneConfig(craneType);
+    return !crane.allowedJibs.includes(jibId);
+}
+
 export function validateJibForCrane(craneType, currentJib) {
-    if (craneType === 'mobile-crane') {
-        if (currentJib === '4m' || currentJib === '5m') {
-            return '2.5m';
-        }
-    } else if (craneType === 'wall-mounted-crane') {
-        if (currentJib === '2.5m') {
-            return '3m';
-        }
+    const crane = getCraneConfig(craneType);
+    if (!crane.allowedJibs.includes(currentJib)) {
+        return crane.allowedJibs[0];
     }
     return currentJib;
 }
 
-export function isJibDisabled(craneType, jib) {
-    if (craneType === 'mobile-crane') {
-        return jib === '4m' || jib === '5m';
+export function getRecommendedSuctionHead(surfaceType, weightKg, lengthMm, widthMm) {
+    const heads = RULES.suctionHeads;
+
+    // Check if high stack or 90 swivel requested
+    if (surfaceType === 'high_stack') {
+        return heads.find(h => h.id === 'high_stack') || heads[0];
     }
-    if (craneType === 'wall-mounted-crane') {
-        return jib === '2.5m';
+    if (surfaceType === 'swivel_90') {
+        return heads.find(h => h.id === 'swivel_90') || heads[0];
     }
-    return false;
+    if (surfaceType === 'bag_woven') {
+        return heads.find(h => h.id === 'bag_suction') || heads[0];
+    }
+    if (surfaceType === 'porous_rough') {
+        return heads.find(h => h.id === 'foam_pad') || heads[0];
+    }
+
+    // If large dimensions (length > 1000mm or width > 600mm) or heavy weight (> 100kg)
+    if (lengthMm > 1000 || widthMm > 600 || weightKg > 100 || surfaceType === 'sheet_metal') {
+        return heads.find(h => h.id === 'multi_pad') || heads[0];
+    }
+
+    if (weightKg > 50 || lengthMm > 400 || widthMm > 400) {
+        return heads.find(h => h.id === 'four_bellow') || heads[0];
+    }
+
+    if (weightKg > 30 || lengthMm > 300) {
+        return heads.find(h => h.id === 'rectangular_double') || heads[0];
+    }
+
+    return heads.find(h => h.id === 'round_single') || heads[0];
 }
 
-export function get3DConfiguration(craneType, jibLengthStr, workLoadLimit, loadType, selectedUnit) {
+export function checkCapacityStatus(wllId, weightKg) {
+    if (!wllId || !weightKg || weightKg <= 0) return { status: 'NORMAL', diff: 0, suggestedWll: null };
+
+    const currentWll = RULES.wllLevels.find(w => w.id === wllId);
+    if (!currentWll) return { status: 'NORMAL', diff: 0, suggestedWll: null };
+
+    const capacity = currentWll.capacityKg;
+
+    if (weightKg > capacity) {
+        // Find smallest WLL >= weightKg
+        const sorted = [...RULES.wllLevels].sort((a, b) => a.capacityKg - b.capacityKg);
+        const suitable = sorted.find(w => w.capacityKg >= weightKg);
+        return {
+            status: 'OVERLOAD',
+            capacity,
+            weightKg,
+            suggestedWll: suitable ? suitable.id : sorted[sorted.length - 1].id,
+            suggestedCapacity: suitable ? suitable.capacityKg : sorted[sorted.length - 1].capacityKg,
+            message: `Tải trọng thực tế (${weightKg} kg) vượt quá định mức WLL (${capacity} kg)!`
+        };
+    }
+
+    // Check underload (if weight is less than 35% of capacity, suggest a more economical WLL)
+    if (weightKg < capacity * 0.35) {
+        const sorted = [...RULES.wllLevels].sort((a, b) => a.capacityKg - b.capacityKg);
+        const suitable = sorted.filter(w => w.capacityKg >= weightKg).shift();
+        if (suitable && suitable.id !== wllId) {
+            return {
+                status: 'UNDERLOAD',
+                capacity,
+                weightKg,
+                suggestedWll: suitable.id,
+                suggestedCapacity: suitable.capacityKg,
+                message: `Tải trọng thực tế (${weightKg} kg) nhỏ hơn nhiều so với WLL (${capacity} kg). Bạn có thể tối ưu chi phí bằng mức nhỏ hơn.`
+            };
+        }
+    }
+
+    return {
+        status: 'OPTIMAL',
+        capacity,
+        weightKg,
+        suggestedWll: null,
+        message: `Tải trọng phù hợp hoàn hảo với định mức WLL ${capacity} kg.`
+    };
+}
+
+export function get3DConfiguration(craneType, jibLengthStr, workLoadLimit, suctionHeadId, selectedUnit) {
     const jibLength = parseFloat((jibLengthStr || '2.5m').replace('m', ''));
     let selectedCraneType = craneType || 'floor-mounted-crane';
 
@@ -80,36 +155,20 @@ export function get3DConfiguration(craneType, jibLengthStr, workLoadLimit, loadT
         _pump_group = undefined;
     }
 
-    let outputFile = null;
-    if (loadType) {
-        if (loadType.toLowerCase().includes("300max")) {
-            _head_stack = HEAD_STACKS[0];
-            _suction_pack = SUCTION_PACKS[0];
-            zoomft = { x: 0, y: -30, scale: 0.15 };
-        } else if (loadType.toLowerCase().includes("400large")) {
-            _head_stack = HEAD_STACKS[3];
-            _suction_pack = SUCTION_PACKS[2];
-            zoomft = { x: -2, y: -18, scale: 0.15 };
-        } else if (loadType.toLowerCase().includes("bags")) {
-            _head_stack = HEAD_STACKS[3];
-            _suction_pack = SUCTION_PACKS[3];
-            zoomft = { x: -5, y: -15, scale: 0.15 };
-        } else if (loadType.toLowerCase().includes("medium")) {
-            _head_stack = HEAD_STACKS[0];
-            _suction_pack = SUCTION_PACKS[1];
-            zoomft = { x: 0, y: -25, scale: 0.15 };
-        } else if (loadType.toLowerCase().includes("high")) {
-            _head_stack = HEAD_STACKS[1];
-            _suction_pack = SUCTION_PACKS[2];
-            zoomft = { x: -12, y: -2, scale: 0.11 };
-        } else if (loadType.toLowerCase().includes("sheet")) {
-            _head_stack = HEAD_STACKS[2];
-            _suction_pack = SUCTION_PACKS[4];
-            zoomft = { x: -10, y: -6, scale: 0.1 };
-        }
+    // Resolve suction head from id
+    const headObj = RULES.suctionHeads.find(h => h.id === suctionHeadId) || RULES.suctionHeads[0];
+    _head_stack = HEAD_STACKS.find(hs => hs.key === headObj.headKey) || HEAD_STACKS[0];
+    _suction_pack = SUCTION_PACKS.find(sp => sp.key === headObj.padKey) || SUCTION_PACKS[0];
 
-        outputFile = `${selectedCraneType}_${jibLength}_${liftTubeSize}_${loadType}.pdf`;
-    }
+    if (headObj.type === 'round') zoomft = { x: 0, y: -30, scale: 0.15 };
+    else if (headObj.type === 'rectangular') zoomft = { x: 0, y: -25, scale: 0.15 };
+    else if (headObj.type === 'multi') zoomft = { x: -2, y: -18, scale: 0.15 };
+    else if (headObj.type === 'foam' || headObj.type === 'bag') zoomft = { x: -5, y: -15, scale: 0.15 };
+    else if (headObj.type === 'sheet') zoomft = { x: -10, y: -6, scale: 0.1 };
+    else if (headObj.type === 'arm') zoomft = { x: -12, y: -2, scale: 0.11 };
+    else zoomft = { x: -5, y: -10, scale: 0.12 };
+
+    const outputFile = `${selectedCraneType}_${jibLength}_${liftTubeSize || 'std'}_${headObj.id}.pdf`;
 
     if (_tube && _crane && _crane.name.toLowerCase().includes('articulated')) {
         _tube = { name: _tube.name.replace(' ID ', ' SM ') };
@@ -129,7 +188,7 @@ export function get3DConfiguration(craneType, jibLengthStr, workLoadLimit, loadT
     };
 }
 
-export function calculateTotalPrice(priceList, workLoadLimit, crane, headStack, suctionPack, selectedUnit) {
+export function calculateTotalPrice(priceList, workLoadLimit, crane, headStack, suctionPack, environment, selectedUnit) {
     if (!priceList || !workLoadLimit || !WORKLOAD_DATA[workLoadLimit]) return null;
 
     const itm = WORKLOAD_DATA[workLoadLimit][selectedUnit];
@@ -147,6 +206,8 @@ export function calculateTotalPrice(priceList, workLoadLimit, crane, headStack, 
 
         if (priceList['tube'] && priceList['tube'][liftTubeSize]) {
             total += priceList['tube'][liftTubeSize];
+        } else if (itm.priceLiftTubeSize) {
+            total += itm.priceLiftTubeSize;
         }
     }
 
@@ -156,13 +217,19 @@ export function calculateTotalPrice(priceList, workLoadLimit, crane, headStack, 
 
     if (priceList['motor'] && priceList['motor'][motor]) {
         total += priceList['motor'][motor];
+    } else if (itm.priceLiftTubePower) {
+        total += Math.round(itm.priceLiftTubePower * 1000);
     }
 
     if (crane && priceList['crane'] && priceList['crane'][crane.key]) {
         total += priceList['crane'][crane.key];
     }
 
-    const filterKey = motor === '8kw' ? "zfp300" : "zfp120";
+    // Filter rule: dusty environment or large motor requires heavy filter
+    const filterKey = (environment === 'dusty' || motor === '8kw' || motor === '9.2kw' || motor === '12.5kw') 
+        ? "zfp300" 
+        : "zfp120";
+
     if (priceList['filter'] && priceList['filter'][filterKey]) {
         total += priceList['filter'][filterKey];
     }

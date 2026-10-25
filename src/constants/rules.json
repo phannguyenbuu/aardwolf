@@ -1,0 +1,252 @@
+{
+  "cranes": [
+    {
+      "id": "floor-mounted-crane",
+      "name": "Floor-Mounted Crane",
+      "description": "Cẩu trục gắn sàn chịu lực cao, xoay 360 độ linh hoạt",
+      "allowedJibs": ["2.5m", "3m", "4m", "5m"]
+    },
+    {
+      "id": "mobile-crane",
+      "name": "Mobile Crane",
+      "description": "Cẩu trục di động bánh xe có đối trọng, dễ dàng di chuyển trong nhà xưởng",
+      "allowedJibs": ["2.5m", "3m"],
+      "disabledJibsTooltip": "Cẩu di động chỉ an toàn với tay cần tối đa 3m để đảm bảo độ ổn định đối trọng."
+    },
+    {
+      "id": "wall-mounted-crane",
+      "name": "Wall-Mounted Crane",
+      "description": "Cẩu trục áp tường tiết kiệm diện tích sàn nhà xưởng",
+      "allowedJibs": ["3m", "4m", "5m"],
+      "disabledJibsTooltip": "Cẩu áp tường yêu cầu chiều dài tối thiểu 3m cho khoảng vươn tiêu chuẩn."
+    }
+  ],
+  "jibs": [
+    { "id": "2.5m", "name": "2.5m", "lengthM": 2.5, "labelM": "2.5 m (articulated jib crane)", "labelInch": "8'2\" (articulated jib crane)" },
+    { "id": "3m", "name": "3m", "lengthM": 3.0, "labelM": "3 m", "labelInch": "9'10\"" },
+    { "id": "4m", "name": "4m", "lengthM": 4.0, "labelM": "4 m", "labelInch": "13'1\"" },
+    { "id": "5m", "name": "5m", "lengthM": 5.0, "labelM": "5 m", "labelInch": "16'5\"" }
+  ],
+  "wllLevels": [
+    {
+      "id": "30kg",
+      "capacityKg": 30,
+      "m": {
+        "maxLiftingCapacity": "30 kg",
+        "minLiftingCapacity": "5",
+        "liftTube17": "1.7 m",
+        "liftTube29": "2.9 m",
+        "liftTubeSize": "120 mm",
+        "liftTubePower": "2.2/2.6 kw",
+        "priceLiftTubeSize": 290,
+        "priceLiftTubePower": 2.150
+      }
+    },
+    {
+      "id": "45kg",
+      "capacityKg": 45,
+      "m": {
+        "maxLiftingCapacity": "45 kg",
+        "minLiftingCapacity": "10",
+        "liftTube17": "1.7 m",
+        "liftTube29": "2.9 m",
+        "liftTubeSize": "160 mm",
+        "liftTubePower": "3.3/3.8 kw",
+        "priceLiftTubeSize": 356,
+        "priceLiftTubePower": 2.743
+      }
+    },
+    {
+      "id": "70kg",
+      "capacityKg": 70,
+      "m": {
+        "maxLiftingCapacity": "70 kg",
+        "minLiftingCapacity": "10",
+        "liftTube17": "1.7 m",
+        "liftTube29": "2.9 m",
+        "liftTubeSize": "160 mm",
+        "liftTubePower": "4.0/4.6 kw",
+        "priceLiftTubeSize": 356,
+        "priceLiftTubePower": 3.424
+      }
+    },
+    {
+      "id": "80kg",
+      "capacityKg": 80,
+      "m": {
+        "maxLiftingCapacity": "80 kg",
+        "minLiftingCapacity": "10",
+        "liftTube17": "1.7 m",
+        "liftTube29": "2.9 m",
+        "liftTubeSize": "180 mm",
+        "liftTubePower": "4.0/4.6 kw",
+        "priceLiftTubeSize": 469,
+        "priceLiftTubePower": 3.424
+      }
+    },
+    {
+      "id": "120kg",
+      "capacityKg": 120,
+      "m": {
+        "maxLiftingCapacity": "120 kg",
+        "minLiftingCapacity": "10",
+        "liftTube17": "1.7 m",
+        "liftTube29": "2.9 m",
+        "liftTubeSize": "200 mm",
+        "liftTubePower": "5.7/6.6 kw",
+        "priceLiftTubeSize": 328,
+        "priceLiftTubePower": 3.857
+      }
+    },
+    {
+      "id": "150kg",
+      "capacityKg": 150,
+      "m": {
+        "maxLiftingCapacity": "150 kg",
+        "minLiftingCapacity": "10",
+        "liftTube17": "1.7 m",
+        "liftTube29": "2.9 m",
+        "liftTubeSize": "250 mm",
+        "liftTubePower": "7.5/8.0 kw",
+        "priceLiftTubeSize": 376,
+        "priceLiftTubePower": 5.033
+      }
+    },
+    {
+      "id": "200kg",
+      "capacityKg": 200,
+      "m": {
+        "maxLiftingCapacity": "200 kg",
+        "minLiftingCapacity": "20",
+        "liftTube17": "1.7 m",
+        "liftTube29": "2.9 m",
+        "liftTubeSize": "250 mm",
+        "liftTubePower": "7.5/8.0 kw",
+        "priceLiftTubeSize": 420,
+        "priceLiftTubePower": 5.250
+      }
+    },
+    {
+      "id": "250kg",
+      "capacityKg": 250,
+      "m": {
+        "maxLiftingCapacity": "250 kg",
+        "minLiftingCapacity": "25",
+        "liftTube17": "1.7 m",
+        "liftTube29": "2.9 m",
+        "liftTubeSize": "270 mm",
+        "liftTubePower": "8.5/9.2 kw",
+        "priceLiftTubeSize": 480,
+        "priceLiftTubePower": 5.800
+      }
+    },
+    {
+      "id": "300kg",
+      "capacityKg": 300,
+      "m": {
+        "maxLiftingCapacity": "300 kg",
+        "minLiftingCapacity": "30",
+        "liftTube17": "1.7 m",
+        "liftTube29": "2.9 m",
+        "liftTubeSize": "300 mm",
+        "liftTubePower": "11.0/12.5 kw",
+        "priceLiftTubeSize": 550,
+        "priceLiftTubePower": 6.500
+      }
+    }
+  ],
+  "environments": [
+    { "id": "clean", "name": "Môi trường tiêu chuẩn / Không bụi", "en": "Clean / Non-dusty environment" },
+    { "id": "dusty", "name": "Môi trường nhiều bụi / Công nghiệp", "en": "Dusty / Heavy industrial environment", "requireFilter": "zfp300" }
+  ],
+  "surfaceTypes": [
+    { "id": "carton_smooth", "name": "Thùng carton / Hộp giấy (Cartons)", "recommendedHead": "round_single" },
+    { "id": "sheet_metal", "name": "Tấm kim loại / Kính / Nhẵn kín khí (Sheet metal / Glass)", "recommendedHead": "multi_pad" },
+    { "id": "porous_rough", "name": "Bề mặt xốp / Gỗ / Nhám thoát khí (Porous / Wood / Rough)", "recommendedHead": "foam_pad" },
+    { "id": "bag_woven", "name": "Bao tải hạt / Bao dệt / Bao xi măng (Bags / Sacks)", "recommendedHead": "bag_suction" },
+    { "id": "high_stack", "name": "Xếp chồng cao / Pallet cao (High stack loading)", "recommendedHead": "high_stack" },
+    { "id": "swivel_90", "name": "Lật nghiêng / Xoay góc 90° (90° Swivel & Tilt)", "recommendedHead": "swivel_90" }
+  ],
+  "suctionHeads": [
+    {
+      "id": "round_single",
+      "name": "Đầu hút tròn đơn (Single Bellow)",
+      "type": "round",
+      "headKey": "single_control_head",
+      "padKey": "bellow_250",
+      "maxKg": 50,
+      "icon": "/assets/images/Icon (7).png",
+      "supportedSurfaces": ["carton_smooth"]
+    },
+    {
+      "id": "rectangular_double",
+      "name": "Đầu hút chữ nhật đôi (Double Bellows)",
+      "type": "rectangular",
+      "headKey": "single_control_head",
+      "padKey": "double_bellow_125",
+      "maxKg": 80,
+      "icon": "/assets/images/Icon (1).png",
+      "supportedSurfaces": ["carton_smooth"]
+    },
+    {
+      "id": "four_bellow",
+      "name": "Đầu hút 4 điểm (Four Bellows Pad)",
+      "type": "multi",
+      "headKey": "comfort_control_head",
+      "padKey": "four_bellow_125",
+      "maxKg": 150,
+      "icon": "/assets/images/Icon (2).png",
+      "supportedSurfaces": ["carton_smooth", "sheet_metal"]
+    },
+    {
+      "id": "foam_pad",
+      "name": "Đầu hút đệm xốp (Oval Foam Pad)",
+      "type": "foam",
+      "headKey": "comfort_control_head",
+      "padKey": "oval_foam_suction_380_220",
+      "maxKg": 120,
+      "icon": "/assets/images/Icon (3).png",
+      "supportedSurfaces": ["porous_rough"]
+    },
+    {
+      "id": "bag_suction",
+      "name": "Đầu hút chuyên dụng cho bao tải (Bag Gripper)",
+      "type": "bag",
+      "headKey": "comfort_control_head",
+      "padKey": "oval_foam_suction_380_220",
+      "maxKg": 80,
+      "icon": "/assets/images/Icon (4).png",
+      "supportedSurfaces": ["bag_woven"]
+    },
+    {
+      "id": "multi_pad",
+      "name": "Cụm hút đa điểm cho tấm lớn (Multi-Pad Lifter)",
+      "type": "sheet",
+      "headKey": "extra_hand",
+      "padKey": "sheet_metal_pad",
+      "maxKg": 300,
+      "icon": "/assets/images/Icon (5).png",
+      "supportedSurfaces": ["sheet_metal"]
+    },
+    {
+      "id": "high_stack",
+      "name": "Đầu hút tay vươn cao (High Stack Arm)",
+      "type": "arm",
+      "headKey": "hight_stack",
+      "padKey": "four_bellow_125",
+      "maxKg": 150,
+      "icon": "/assets/images/Icon (6).png",
+      "supportedSurfaces": ["high_stack", "carton_smooth"]
+    },
+    {
+      "id": "swivel_90",
+      "name": "Đầu hút xoay lật 90° (90° Swivel & Tilt)",
+      "type": "swivel",
+      "headKey": "comfort_control_head",
+      "padKey": "four_bellow_125",
+      "maxKg": 150,
+      "icon": "/assets/images/Icon (7).png",
+      "supportedSurfaces": ["swivel_90", "sheet_metal"]
+    }
+  ]
+}

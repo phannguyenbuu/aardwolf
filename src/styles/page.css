@@ -9,6 +9,29 @@ body {
     font-family: 'Open Sans', sans-serif;
 }
 
+.step-title {
+    font-size: 15px;
+    font-weight: bold;
+    color: #1A1A1A;
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.step-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    background-color: #CC2200;
+    color: #FFFFFF;
+    border-radius: 50%;
+    font-size: 13px;
+    font-weight: bold;
+    margin-right: 8px;
+}
+
 .header input {
     font-size: 16px;
     padding: 3px 5px;
@@ -76,7 +99,7 @@ body {
     background: #fff;
     padding: 15px 2px;
     border-radius: 10px;
-    margin: 17px 1px !important;
+    margin: 10px 1px !important;
 }
 
 .content__action {
@@ -140,14 +163,16 @@ body {
 
 .content__left--content--item-1 {
     background: #CCCCCC;
-    padding: 14px;
+    padding: 12px;
     border: 1px solid #F0F3F5;
     font-weight: bold;
+    font-size: 13px;
 }
 
 .content__left--content--item-3 {
-    padding: 14px;
+    padding: 12px;
     font-weight: bold;
+    font-size: 13px;
 }
 
 .content__left--content--item-2 {
@@ -156,6 +181,7 @@ body {
     align-items: center;
     border-radius: 0px;
     padding: 10px 14px;
+    font-size: 13px;
 }
 
 .content__left--price span:first-child {
@@ -173,11 +199,6 @@ body {
     color: #CC2200 !important;
     padding: 0px 5px;
     cursor: pointer;
-}
-
-#loadTypeList {
-    display: flex;
-    flex-wrap: wrap;
 }
 
 .menu-mobile {
@@ -331,17 +352,59 @@ canvas {
     height: 100% !important;
 }
 
-@media screen and (max-width: 820px) {
+/* Mobile responsive enhancements (< 768px): Item 01 requirements */
+@media screen and (max-width: 768px) {
     #threejs-container {
-        display: none;
+        position: relative !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: 40vh !important;
+        border-radius: 8px !important;
+        margin-bottom: 20px !important;
+        display: flex !important;
     }
 
     .image-3d {
-        display: none;
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 40vh;
+        width: 100%;
+    }
+
+    .image-3d .icon-3d {
+        top: 10px !important;
+        right: 10px !important;
+    }
+
+    .image-3d .icon-3d img {
+        width: 32px !important;
+    }
+
+    /* Nút Quote ghim đáy (Sticky bottom) */
+    .sticky-mobile-action {
+        position: fixed !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        background: rgba(255, 255, 255, 0.95) !important;
+        backdrop-filter: blur(8px) !important;
+        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.15) !important;
+        padding: 10px 15px !important;
+        z-index: 9999 !important;
+        margin: 0 !important;
+        display: flex !important;
+        justify-content: space-around !important;
+    }
+
+    .sticky-mobile-action a {
+        flex: 1 !important;
+        margin: 0 5px !important;
+        text-align: center !important;
     }
 
     .show-3d-active #threejs-container {
-        display: flex !important;
         position: fixed !important;
         top: 0 !important;
         left: 0 !important;
@@ -349,18 +412,15 @@ canvas {
         height: 100vh !important;
         z-index: 9999 !important;
         border-radius: 0 !important;
-        box-shadow: none !important;
     }
 
     .show-3d-active .image-3d {
-        display: block !important;
         position: fixed !important;
         top: 0 !important;
         left: 0 !important;
         width: 100vw !important;
         height: 100vh !important;
         z-index: 10000 !important;
-        pointer-events: none !important;
     }
 
     .show-3d-active .image-3d .back {
@@ -370,14 +430,6 @@ canvas {
         position: absolute !important;
         left: 20px !important;
         top: 20px !important;
-        pointer-events: auto !important;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-    }
-
-    .show-3d-active .image-3d .icon-3d {
-        top: 20px !important;
-        right: 20px !important;
-        left: auto !important;
         pointer-events: auto !important;
     }
 

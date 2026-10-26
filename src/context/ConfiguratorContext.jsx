@@ -60,7 +60,112 @@ export function ConfiguratorProvider({ children }) {
 
     // Viewport render mode: 'interactive' or 'studio-render'
     const [viewportMode, setViewportMode] = useState('studio-render'); // Default to stunning studio render mode
-    const [studioTheme, setStudioTheme] = useState('studio'); // 'studio', 'workshop', 'blueprint'
+    const [studioTheme, setStudioTheme] = useState('cornell'); // 'cornell', 'studio', 'workshop', 'blueprint'
+
+    // Left Column active tab: 'user-setting' | 'component-materials' | 'environment' | 'studio-hd' | 'material-lib'
+    const [activeLeftTab, setActiveLeftTab] = useState('user-setting');
+
+    // Component Materials & PBR state
+    const [selectedPart, setSelectedPart] = useState('crane');
+    const [componentMaterials, setComponentMaterials] = useState({
+        crane: 'steel_brushed',
+        pump: 'plastic_yellow_aardwolf',
+        tube: 'rubber_corrugated_tube',
+        head: 'titanium_dark',
+        suction: 'rubber_suction_pad',
+        workpiece: 'aluminum_brushed'
+    });
+
+    const [customParams, setCustomParams] = useState({
+        crane: { roughness: 0.32, metalness: 0.9, clearcoat: 0.3, color: '#dde2e8' },
+        pump: { roughness: 0.25, metalness: 0.1, clearcoat: 0.6, color: '#f5b400' },
+        tube: { roughness: 0.26, metalness: 0.05, clearcoat: 0.5, color: '#27272a' },
+        head: { roughness: 0.35, metalness: 0.7, clearcoat: 0.3, color: '#20242a' },
+        suction: { roughness: 0.88, metalness: 0.02, clearcoat: 0.0, color: '#181a1c' },
+        workpiece: { roughness: 0.72, metalness: 0.05, clearcoat: 0.0, color: '#c0c8d2' }
+    });
+
+    const updateComponentMaterial = useCallback((partKey, matId) => {
+        setComponentMaterials(prev => ({ ...prev, [partKey]: matId }));
+    }, []);
+
+    const updateCustomParam = useCallback((partKey, paramKey, value) => {
+        setCustomParams(prev => ({
+            ...prev,
+            [partKey]: {
+                ...prev[partKey],
+                [paramKey]: value
+            }
+        }));
+    }, []);
+
+    const applyMaterialPreset = useCallback((presetMats) => {
+        setComponentMaterials(presetMats);
+    }, []);
+
+    // Environment & Lighting states
+    const [downlightEnabled, setDownlightEnabled] = useState(true);
+    const [downlightIntensity, setDownlightIntensity] = useState(4.8);
+    const [downlightColorTemp, setDownlightColorTemp] = useState('warm'); // 'warm' | 'neutral' | 'cool'
+    const [cornellLeftColor, setCornellLeftColor] = useState('#1caa28');
+    const [cornellRightColor, setCornellRightColor] = useState('#e6261f');
+    const [cornellBleedIntensity, setCornellBleedIntensity] = useState(1.4);
+
+    // Wavelet Filter & Path Tracer settings (Matching Domenicobrz reference)
+    const [waveletParams, setWaveletParams] = useState({
+        c_phi: 105,
+        n_phi: 0.01,
+        p_phi: 1.0,
+        c_phiMultiplier: 0.34,
+        stepMultiplier: 1.5,
+        iterations: 10,
+        atrous5x5: true,
+        spp: 3,
+        mirrorIndex: 1,
+        maxFramesHistory: 10,
+        fibaHistoryMod: 0.54,
+        qualityPreset: 'highQuality'
+    });
+
+    const updateWaveletParam = useCallback((key, val) => {
+        setWaveletParams(prev => ({ ...prev, [key]: val }));
+    }, []);
+
+    const applyQualityPreset = useCallback((presetName) => {
+        const presets = {
+            lowQuality: { spp: 1, iterations: 4, c_phi: 80, stepMultiplier: 1.2, qualityPreset: 'lowQuality' },
+            mediumQuality: { spp: 2, iterations: 6, c_phi: 95, stepMultiplier: 1.35, qualityPreset: 'mediumQuality' },
+            highQuality: { spp: 3, iterations: 10, c_phi: 105, stepMultiplier: 1.5, qualityPreset: 'highQuality' },
+            veryHighQuality: { spp: 6, iterations: 14, c_phi: 120, stepMultiplier: 1.7, qualityPreset: 'veryHighQuality' }
+        };
+        if (presets[presetName]) {
+            setWaveletParams(prev => ({ ...prev, ...presets[presetName] }));
+        }
+    }, []);
+
+    // Studio HD Render controls
+    const [showSpecsHUD, setShowSpecsHUD] = useState(true);
+    const [isTurntableActive, setIsTurntableActive] = useState(false);
+    const [isExporting, setIsExporting] = useState(false);
+    const [exportRenderTrigger, setExportRenderTrigger] = useState(0);
+
+    const triggerExportRender = useCallback(() => {
+        setExportRenderTrigger(Date.now());
+    }, []);
+
+    const [cameraTelemetry, setCameraTelemetry] = useState({
+        posX: 1130,
+        posY: 1200,
+        posZ: 7500,
+        targetX: 1130,
+        targetY: 1200,
+        targetZ: 0,
+        distance: 7500,
+        fov: 45,
+        azimuth: 0,
+        elevation: 0,
+        preset: 'Cornell Reference'
+    });
 
     // Canvas snapshot for PDF report
     const [canvasSnapshot, setCanvasSnapshot] = useState(null);
@@ -320,6 +425,43 @@ export function ConfiguratorProvider({ children }) {
         setViewportMode,
         studioTheme,
         setStudioTheme,
+        activeLeftTab,
+        setActiveLeftTab,
+        selectedPart,
+        setSelectedPart,
+        componentMaterials,
+        setComponentMaterials,
+        customParams,
+        setCustomParams,
+        updateComponentMaterial,
+        updateCustomParam,
+        applyMaterialPreset,
+        downlightEnabled,
+        setDownlightEnabled,
+        downlightIntensity,
+        setDownlightIntensity,
+        downlightColorTemp,
+        setDownlightColorTemp,
+        cornellLeftColor,
+        setCornellLeftColor,
+        cornellRightColor,
+        setCornellRightColor,
+        cornellBleedIntensity,
+        setCornellBleedIntensity,
+        waveletParams,
+        setWaveletParams,
+        updateWaveletParam,
+        applyQualityPreset,
+        showSpecsHUD,
+        setShowSpecsHUD,
+        isTurntableActive,
+        setIsTurntableActive,
+        isExporting,
+        setIsExporting,
+        exportRenderTrigger,
+        triggerExportRender,
+        cameraTelemetry,
+        setCameraTelemetry,
         login,
         logout,
         requote,

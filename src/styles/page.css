@@ -2519,6 +2519,45 @@ input[type="radio"]:disabled + label {
     border-radius: 4px;
 }
 
+/* Light Sources Sub-tabs in Environment Tab */
+.light-tabs-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.light-tab-btn {
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    color: #475569;
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-size: 11.5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.light-tab-btn:hover {
+    background: #e2e8f0;
+    color: #0f172a;
+}
+
+.light-tab-btn.active {
+    background: #0f172a;
+    color: #ffffff;
+    border-color: #0f172a;
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.25);
+}
+
+.light-subpanel {
+    background: #ffffff;
+    border-radius: 8px;
+    padding: 6px 2px;
+}
+
 /* Environment Theme Grid */
 .env-theme-grid {
     display: grid;

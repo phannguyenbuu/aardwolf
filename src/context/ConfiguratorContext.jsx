@@ -103,10 +103,74 @@ export function ConfiguratorProvider({ children }) {
         setComponentMaterials(presetMats);
     }, []);
 
-    // Environment & Lighting states
-    const [downlightEnabled, setDownlightEnabled] = useState(true);
-    const [downlightIntensity, setDownlightIntensity] = useState(4.8);
-    const [downlightColorTemp, setDownlightColorTemp] = useState('warm'); // 'warm' | 'neutral' | 'cool'
+    // Detailed Scene Lighting Configuration
+    const DEFAULT_LIGHTING = {
+        keyLight: {
+            enabled: true,
+            intensity: 2.2,
+            color: '#fffbf2',
+            castShadow: true,
+            posX: 3200,
+            posY: 5600,
+            posZ: 3800
+        },
+        downlight: {
+            enabled: true,
+            intensity: 4.8,
+            colorTemp: 'warm', // 'warm', 'neutral', 'cool'
+            color: '#fff6dc',
+            castShadow: false, // Default false to prevent dual shadow fight & flickering!
+            angle: 0.95,
+            penumbra: 0.85
+        },
+        ambientLight: {
+            intensity: 0.75,
+            color: '#ffffff'
+        },
+        fillLight: {
+            enabled: true,
+            intensity: 1.2,
+            color: '#e8f0fc'
+        },
+        rimLight: {
+            enabled: true,
+            intensity: 1.4,
+            color: '#fffaea'
+        },
+        exposure: 1.15
+    };
+
+    const [sceneLights, setSceneLights] = useState(DEFAULT_LIGHTING);
+
+    const updateSceneLight = useCallback((lightName, field, value) => {
+        setSceneLights(prev => ({
+            ...prev,
+            [lightName]: {
+                ...prev[lightName],
+                [field]: value
+            }
+        }));
+    }, []);
+
+    const setExposure = useCallback((val) => {
+        setSceneLights(prev => ({
+            ...prev,
+            exposure: val
+        }));
+    }, []);
+
+    const resetLighting = useCallback(() => {
+        setSceneLights(DEFAULT_LIGHTING);
+    }, []);
+
+    // Aliases for backward compatibility
+    const downlightEnabled = sceneLights.downlight.enabled;
+    const setDownlightEnabled = useCallback((val) => updateSceneLight('downlight', 'enabled', val), [updateSceneLight]);
+    const downlightIntensity = sceneLights.downlight.intensity;
+    const setDownlightIntensity = useCallback((val) => updateSceneLight('downlight', 'intensity', val), [updateSceneLight]);
+    const downlightColorTemp = sceneLights.downlight.colorTemp;
+    const setDownlightColorTemp = useCallback((val) => updateSceneLight('downlight', 'colorTemp', val), [updateSceneLight]);
+
     const [cornellLeftColor, setCornellLeftColor] = useState('#1caa28');
     const [cornellRightColor, setCornellRightColor] = useState('#e6261f');
     const [cornellBleedIntensity, setCornellBleedIntensity] = useState(1.4);
@@ -448,6 +512,10 @@ export function ConfiguratorProvider({ children }) {
         setCornellRightColor,
         cornellBleedIntensity,
         setCornellBleedIntensity,
+        sceneLights,
+        updateSceneLight,
+        setExposure,
+        resetLighting,
         waveletParams,
         setWaveletParams,
         updateWaveletParam,

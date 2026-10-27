@@ -24,7 +24,6 @@ export default function ConfiguratorPage() {
                             onClick={() => setActiveLeftTab('user-setting')}
                             title="Tất cả các thông số cấu hình đầu vào"
                         >
-                            <span className="col-tab-icon">👤</span>
                             <span className="col-tab-text">User Setting</span>
                         </button>
                         <button
@@ -33,7 +32,6 @@ export default function ConfiguratorPage() {
                             onClick={() => setActiveLeftTab('component-materials')}
                             title="Vật liệu của từng cấu kiện máy móc"
                         >
-                            <span className="col-tab-icon">🎨</span>
                             <span className="col-tab-text">Material cấu kiện</span>
                         </button>
                         <button
@@ -42,7 +40,6 @@ export default function ConfiguratorPage() {
                             onClick={() => setActiveLeftTab('environment')}
                             title="Môi trường, Đèn trần, Cornell Box, Wavelet Filter"
                         >
-                            <span className="col-tab-icon">🏛️</span>
                             <span className="col-tab-text">Environment</span>
                         </button>
                         <button
@@ -51,7 +48,6 @@ export default function ConfiguratorPage() {
                             onClick={() => setActiveLeftTab('studio-hd')}
                             title="Studio HD Render, Xuất ảnh 4K, Telemetry"
                         >
-                            <span className="col-tab-icon">📸</span>
                             <span className="col-tab-text">Studio HD</span>
                         </button>
                         <button
@@ -60,7 +56,6 @@ export default function ConfiguratorPage() {
                             onClick={() => setActiveLeftTab('material-lib')}
                             title="Thư viện 25+ vật liệu PBR và Presets 1-Click"
                         >
-                            <span className="col-tab-icon">💎</span>
                             <span className="col-tab-text">Material Lib</span>
                         </button>
                     </div>

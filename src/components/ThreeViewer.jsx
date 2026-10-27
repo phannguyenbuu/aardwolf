@@ -91,6 +91,7 @@ export default function ThreeViewer() {
         cornellLeftColor,
         cornellRightColor,
         cornellBleedIntensity,
+        sceneLights,
         showSpecsHUD,
         setShowSpecsHUD,
         isTurntableActive,
@@ -121,6 +122,7 @@ export default function ThreeViewer() {
     const ambientLightRef = useRef(null);
     const fillLightRef = useRef(null);
     const rimLightRef = useRef(null);
+    const shadowFloorRef = useRef(null);
 
     // Cornell Box specific scene elements
     const cornellGroupRef = useRef(null);
@@ -197,7 +199,7 @@ export default function ThreeViewer() {
         renderer.toneMapping = THREE.ACESFilmicToneMapping;
         renderer.toneMappingExposure = 1.15;
         renderer.shadowMap.enabled = true;
-        renderer.shadowMap.type = THREE.PCFShadowMap;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
         renderer.setClearColor(0x000000, 0);
         rendererRef.current = renderer;
         window.__threeRenderer = renderer;
@@ -216,7 +218,7 @@ export default function ThreeViewer() {
         scene.add(ambientLight);
         ambientLightRef.current = ambientLight;
 
-        const keyLight = new THREE.DirectionalLight(0xfffbf2, 2.4);
+        const keyLight = new THREE.DirectionalLight(0xfffbf2, 2.2);
         keyLight.position.set(3200, 5600, 3800);
         const lightTarget = new THREE.Object3D();
         lightTarget.position.set(DEFAULT_CENTER.x, 0, 0);
@@ -229,15 +231,15 @@ export default function ThreeViewer() {
         keyLight.shadow.mapSize.width = 4096;
         keyLight.shadow.mapSize.height = 4096;
         keyLight.shadow.camera.near = 500;
-        keyLight.shadow.camera.far = 16000;
-        const shRange = 4800;
+        keyLight.shadow.camera.far = 18000;
+        const shRange = 5000;
         keyLight.shadow.camera.left = -shRange;
         keyLight.shadow.camera.right = shRange;
         keyLight.shadow.camera.top = shRange;
         keyLight.shadow.camera.bottom = -shRange;
-        keyLight.shadow.bias = 0.00005;
-        keyLight.shadow.normalBias = 0.05;
-        keyLight.shadow.radius = 3.2;
+        keyLight.shadow.bias = -0.0001;
+        keyLight.shadow.normalBias = 0.03;
+        keyLight.shadow.radius = 2.0;
         scene.add(keyLight);
 
         const fillLight = new THREE.DirectionalLight(0xe8f0fc, 1.2);
@@ -282,10 +284,12 @@ export default function ThreeViewer() {
         });
         const shadowFloor = new THREE.Mesh(shadowFloorGeo, shadowFloorMat);
         shadowFloor.rotation.x = -Math.PI / 2;
-        shadowFloor.position.y = 1;
+        shadowFloor.position.y = 0;
         shadowFloor.receiveShadow = true;
         shadowFloor.isStageElement = true;
+        shadowFloor.visible = (studioTheme !== 'cornell');
         scene.add(shadowFloor);
+        shadowFloorRef.current = shadowFloor;
 
         // Selection Highlight Box
         const selectionBox = new THREE.Box3Helper(new THREE.Box3(), 0x38bdf8);
@@ -414,11 +418,13 @@ export default function ThreeViewer() {
         cornellCeilingLight.target = lightTarget;
         cornellCeilingLight.angle = Math.PI / 2.8;
         cornellCeilingLight.penumbra = 0.85;
-        cornellCeilingLight.castShadow = true;
+        cornellCeilingLight.castShadow = false; // Default false - user can toggle in lighting panel
         cornellCeilingLight.shadow.mapSize.width = 2048;
         cornellCeilingLight.shadow.mapSize.height = 2048;
-        cornellCeilingLight.shadow.bias = 0.00005;
-        cornellCeilingLight.shadow.normalBias = 0.05;
+        cornellCeilingLight.shadow.camera.near = 100;
+        cornellCeilingLight.shadow.camera.far = 12000;
+        cornellCeilingLight.shadow.bias = -0.0001;
+        cornellCeilingLight.shadow.normalBias = 0.03;
         scene.add(cornellCeilingLight);
         cornellCeilingLightRef.current = cornellCeilingLight;
 
@@ -887,24 +893,73 @@ export default function ThreeViewer() {
         if (!sceneRef.current) return;
 
         const isCornell = studioTheme === 'cornell';
+
+        // Toggle Cornell Room vs Studio Floor to prevent Z-Fighting
         if (cornellGroupRef.current) {
             cornellGroupRef.current.visible = isCornell;
         }
-        if (cornellCeilingLightRef.current) {
-            cornellCeilingLightRef.current.visible = isCornell && downlightEnabled;
-            cornellCeilingLightRef.current.intensity = downlightIntensity;
+        if (shadowFloorRef.current) {
+            shadowFloorRef.current.visible = !isCornell;
+        }
 
-            // Downlight color temperature
-            if (downlightColorTemp === 'warm') {
-                cornellCeilingLightRef.current.color.setHex(0xfff4d6);
-            } else if (downlightColorTemp === 'cool') {
-                cornellCeilingLightRef.current.color.setHex(0xe8f4ff);
-            } else {
-                cornellCeilingLightRef.current.color.setHex(0xffffff);
+        // Apply Custom Scene Lights
+        if (sceneLights) {
+            // 1. Key Light (Main Directional Light)
+            if (keyLightRef.current) {
+                keyLightRef.current.visible = sceneLights.keyLight.enabled;
+                keyLightRef.current.intensity = sceneLights.keyLight.intensity;
+                keyLightRef.current.color.set(sceneLights.keyLight.color);
+                keyLightRef.current.castShadow = sceneLights.keyLight.castShadow;
+                keyLightRef.current.position.set(
+                    sceneLights.keyLight.posX,
+                    sceneLights.keyLight.posY,
+                    sceneLights.keyLight.posZ
+                );
+            }
+
+            // 2. Ambient Light
+            if (ambientLightRef.current) {
+                ambientLightRef.current.intensity = sceneLights.ambientLight.intensity;
+                ambientLightRef.current.color.set(sceneLights.ambientLight.color);
+            }
+
+            // 3. Fill Light
+            if (fillLightRef.current) {
+                fillLightRef.current.visible = sceneLights.fillLight.enabled;
+                fillLightRef.current.intensity = sceneLights.fillLight.intensity;
+                fillLightRef.current.color.set(sceneLights.fillLight.color);
+            }
+
+            // 4. Rim Light
+            if (rimLightRef.current) {
+                rimLightRef.current.visible = sceneLights.rimLight.enabled;
+                rimLightRef.current.intensity = sceneLights.rimLight.intensity;
+                rimLightRef.current.color.set(sceneLights.rimLight.color);
+            }
+
+            // 5. Downlight Emitter (Cornell Box SpotLight)
+            if (cornellCeilingLightRef.current) {
+                cornellCeilingLightRef.current.visible = isCornell && sceneLights.downlight.enabled;
+                cornellCeilingLightRef.current.intensity = sceneLights.downlight.intensity;
+                cornellCeilingLightRef.current.castShadow = sceneLights.downlight.castShadow;
+                cornellCeilingLightRef.current.color.set(sceneLights.downlight.color || '#fff6dc');
+                if (sceneLights.downlight.angle) {
+                    cornellCeilingLightRef.current.angle = sceneLights.downlight.angle;
+                }
+                if (sceneLights.downlight.penumbra !== undefined) {
+                    cornellCeilingLightRef.current.penumbra = sceneLights.downlight.penumbra;
+                }
+            }
+
+            // 6. Camera Tone Mapping Exposure
+            if (rendererRef.current && sceneLights.exposure) {
+                rendererRef.current.toneMappingExposure = sceneLights.exposure;
             }
         }
+
+        // Cornell Box Wall Materials & Emitter Visibility
         if (cornellEmitterMatRef.current) {
-            cornellEmitterMatRef.current.visible = isCornell && downlightEnabled;
+            cornellEmitterMatRef.current.visible = isCornell && (sceneLights?.downlight?.enabled ?? true);
         }
         if (cornellLeftWallMatRef.current) {
             cornellLeftWallMatRef.current.color.set(cornellLeftColor);
@@ -922,27 +977,7 @@ export default function ThreeViewer() {
             cornellRedBounceRef.current.color.set(cornellRightColor);
             cornellRedBounceRef.current.intensity = cornellBleedIntensity;
         }
-
-        // Key light adjustments per theme
-        if (keyLightRef.current && ambientLightRef.current) {
-            if (isCornell) {
-                keyLightRef.current.intensity = 1.0;
-                ambientLightRef.current.intensity = 0.55;
-            } else if (studioTheme === 'workshop') {
-                keyLightRef.current.intensity = 2.5;
-                keyLightRef.current.color.setHex(0xffecd1);
-                ambientLightRef.current.intensity = 0.65;
-            } else if (studioTheme === 'blueprint') {
-                keyLightRef.current.intensity = 2.0;
-                keyLightRef.current.color.setHex(0x38bdf8);
-                ambientLightRef.current.intensity = 0.85;
-            } else {
-                keyLightRef.current.intensity = 2.4;
-                keyLightRef.current.color.setHex(0xfffbf2);
-                ambientLightRef.current.intensity = 0.75;
-            }
-        }
-    }, [studioTheme, downlightEnabled, downlightIntensity, downlightColorTemp, cornellLeftColor, cornellRightColor, cornellBleedIntensity]);
+    }, [studioTheme, sceneLights, cornellLeftColor, cornellRightColor, cornellBleedIntensity]);
 
     // Handle high-resolution 4K Studio Render export
     const handleExportRender = useCallback(() => {

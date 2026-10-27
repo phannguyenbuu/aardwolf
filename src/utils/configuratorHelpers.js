@@ -243,3 +243,20 @@ export function calculateTotalPrice(priceList, workLoadLimit, crane, headStack, 
 
     return total ? total.toLocaleString('en-US') + '$' : null;
 }
+
+export function extractPoint3(inputString) {
+    if (!inputString) return [null, null];
+    const p1Match = inputString.match(/p1_(-?\d+)_(-?\d+)_(-?\d+)/);
+    const p2Match = inputString.match(/p2_(-?\d+)_(-?\d+)_(-?\d+)/);
+
+    const parsePoint = (match) => {
+        if (!match) return null;
+        return {
+            x: parseFloat(match[1]),
+            y: parseFloat(match[2]),
+            z: parseFloat(match[3]),
+        };
+    };
+
+    return [parsePoint(p1Match), parsePoint(p2Match)];
+}

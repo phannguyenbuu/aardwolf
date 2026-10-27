@@ -9,7 +9,16 @@ export default function TabComponentMaterials() {
         componentMaterials,
         updateComponentMaterial,
         customParams,
-        updateCustomParam
+        updateCustomParam,
+        basePositions,
+        partOffsets,
+        updatePartOffset,
+        stepPartOffset,
+        resetPartOffset,
+        resetAllPartOffsets,
+        gizmoEnabled,
+        setGizmoEnabled,
+        actualLoad
     } = useConfigurator();
 
     const parts = [
@@ -20,6 +29,14 @@ export default function TabComponentMaterials() {
         { key: 'suction', label: PART_LABELS.suction, icon: PART_ICONS.suction },
         { key: 'workpiece', label: PART_LABELS.workpiece, icon: PART_ICONS.workpiece }
     ];
+
+    const currentBasePos = basePositions[selectedPart] || { x: 0, y: 0, z: 0 };
+    const currentOffset = partOffsets[selectedPart] || { x: 0, y: 0, z: 0 };
+    const currentWorldPos = {
+        x: Math.round(currentBasePos.x + currentOffset.x),
+        y: Math.round(currentBasePos.y + currentOffset.y),
+        z: Math.round(currentBasePos.z + currentOffset.z)
+    };
 
     const currentMatId = componentMaterials[selectedPart] || 'steel_brushed';
     const currentMatDef = PBR_MATERIALS.find(m => m.id === currentMatId) || PBR_MATERIALS[0];
@@ -51,7 +68,7 @@ export default function TabComponentMaterials() {
             {/* 1. SELECT PART TO CUSTOMIZE */}
             <div className="tab-section-card mb-3">
                 <div className="section-card-header">
-                    <span className="card-title">1. Chọn bộ phận cấu kiện cần đổi vật liệu:</span>
+                    <span className="card-title">1. Chọn bộ phận cấu kiện cần thao tác:</span>
                 </div>
                 <div className="part-selection-grid">
                     {parts.map(p => (
@@ -68,11 +85,166 @@ export default function TabComponentMaterials() {
                 </div>
             </div>
 
-            {/* 2. CHOOSE PBR MATERIAL FOR SELECTED PART */}
+            {/* 2. 3D POSITION & PRECISION TRANSFORM GIZMO PANEL (3ds Max Style) */}
+            <div className="tab-section-card mb-3 transform-gizmo-section">
+                <div className="section-card-header d-flex justify-content-between align-items-center">
+                    <span className="card-title">
+                        2. Vị trí & Tọa độ 3D: <strong>{PART_ICONS[selectedPart]} {PART_LABELS[selectedPart]}</strong>
+                    </span>
+                    <button
+                        type="button"
+                        className={`btn-gizmo-toggle ${gizmoEnabled ? 'active' : ''}`}
+                        onClick={() => setGizmoEnabled(!gizmoEnabled)}
+                        title={gizmoEnabled ? 'Ẩn Gizmo 3 trục trên 3D' : 'Hiện Gizmo 3 trục trên 3D'}
+                    >
+                        <span className="gizmo-dot" />
+                        {gizmoEnabled ? 'Gizmo 3 trục: BẬT' : 'Gizmo 3 trục: TẮT'}
+                    </button>
+                </div>
+
+                <div className="gizmo-instruction-hint mb-3">
+                    <span className="hint-icon">💡</span>
+                    <span>
+                        Kéo 3 mũi tên trên vật thể: 
+                        <strong className="text-red"> Đỏ (X - Ngang)</strong>, 
+                        <strong className="text-green"> Xanh lá (Y - Cao độ)</strong>, 
+                        <strong className="text-blue"> Xanh dương (Z - Chiều sâu)</strong> 
+                        hoặc nhập số chính xác bên dưới:
+                    </span>
+                </div>
+
+                {/* XYZ Precision Coordinate Rows */}
+                <div className="coordinate-inputs-container mb-3">
+                    {/* X Axis */}
+                    <div className="coord-row coord-row-x">
+                        <div className="coord-label-cell">
+                            <span className="axis-badge badge-x">X</span>
+                            <span className="axis-name">Ngang (Width)</span>
+                        </div>
+                        <div className="coord-input-cell">
+                            <input
+                                type="number"
+                                className="form-control form-control-sm coord-num-input"
+                                value={currentWorldPos.x}
+                                onChange={(e) => {
+                                    const val = parseFloat(e.target.value) || 0;
+                                    updatePartOffset(selectedPart, 'x', val - (currentBasePos.x || 0));
+                                }}
+                            />
+                            <span className="unit-label">mm</span>
+                        </div>
+                        <div className="coord-step-cell">
+                            <button type="button" className="step-btn" onClick={() => stepPartOffset(selectedPart, 'x', -100)}>-100</button>
+                            <button type="button" className="step-btn" onClick={() => stepPartOffset(selectedPart, 'x', -10)}>-10</button>
+                            <button type="button" className="step-btn" onClick={() => stepPartOffset(selectedPart, 'x', 10)}>+10</button>
+                            <button type="button" className="step-btn" onClick={() => stepPartOffset(selectedPart, 'x', 100)}>+100</button>
+                        </div>
+                    </div>
+
+                    {/* Y Axis (Height UP) */}
+                    <div className="coord-row coord-row-y">
+                        <div className="coord-label-cell">
+                            <span className="axis-badge badge-y">Y</span>
+                            <span className="axis-name">Cao độ (Height)</span>
+                        </div>
+                        <div className="coord-input-cell">
+                            <input
+                                type="number"
+                                className="form-control form-control-sm coord-num-input"
+                                value={currentWorldPos.y}
+                                onChange={(e) => {
+                                    const val = parseFloat(e.target.value) || 0;
+                                    updatePartOffset(selectedPart, 'y', val - (currentBasePos.y || 0));
+                                }}
+                            />
+                            <span className="unit-label">mm</span>
+                        </div>
+                        <div className="coord-step-cell">
+                            <button type="button" className="step-btn" onClick={() => stepPartOffset(selectedPart, 'y', -100)}>-100</button>
+                            <button type="button" className="step-btn" onClick={() => stepPartOffset(selectedPart, 'y', -10)}>-10</button>
+                            <button type="button" className="step-btn" onClick={() => stepPartOffset(selectedPart, 'y', 10)}>+10</button>
+                            <button type="button" className="step-btn" onClick={() => stepPartOffset(selectedPart, 'y', 100)}>+100</button>
+                        </div>
+                    </div>
+
+                    {/* Z Axis (Depth) */}
+                    <div className="coord-row coord-row-z">
+                        <div className="coord-label-cell">
+                            <span className="axis-badge badge-z">Z</span>
+                            <span className="axis-name">Chiều sâu (Depth)</span>
+                        </div>
+                        <div className="coord-input-cell">
+                            <input
+                                type="number"
+                                className="form-control form-control-sm coord-num-input"
+                                value={currentWorldPos.z}
+                                onChange={(e) => {
+                                    const val = parseFloat(e.target.value) || 0;
+                                    updatePartOffset(selectedPart, 'z', val - (currentBasePos.z || 0));
+                                }}
+                            />
+                            <span className="unit-label">mm</span>
+                        </div>
+                        <div className="coord-step-cell">
+                            <button type="button" className="step-btn" onClick={() => stepPartOffset(selectedPart, 'z', -100)}>-100</button>
+                            <button type="button" className="step-btn" onClick={() => stepPartOffset(selectedPart, 'z', -10)}>-10</button>
+                            <button type="button" className="step-btn" onClick={() => stepPartOffset(selectedPart, 'z', 10)}>+10</button>
+                            <button type="button" className="step-btn" onClick={() => stepPartOffset(selectedPart, 'z', 100)}>+100</button>
+                        </div>
+                    </div>
+                </div>
+
+                {/* 1-Click Smart Alignment Actions */}
+                <div className="coord-actions-grid">
+                    <button
+                        type="button"
+                        className="btn-smart-action"
+                        onClick={() => resetPartOffset(selectedPart)}
+                        title="Đưa cấu kiện này về vị trí lắp ráp mặc định"
+                    >
+                        <span>🎯 Reset vị trí chuẩn</span>
+                    </button>
+                    <button
+                        type="button"
+                        className="btn-smart-action"
+                        onClick={() => {
+                            if (selectedPart === 'workpiece') {
+                                const h = actualLoad?.height || 250;
+                                updatePartOffset('workpiece', 'y', Math.round(h / 2) - currentBasePos.y);
+                            } else {
+                                updatePartOffset(selectedPart, 'y', -currentBasePos.y);
+                            }
+                        }}
+                        title="Đặt vật thể tiếp xúc mặt sàn"
+                    >
+                        <span>⬇️ Chạm sàn (Ground)</span>
+                    </button>
+                    <button
+                        type="button"
+                        className="btn-smart-action"
+                        onClick={() => {
+                            updatePartOffset(selectedPart, 'z', -currentBasePos.z);
+                        }}
+                        title="Căn tâm thẳng hàng trục cần cẩu Z = 0"
+                    >
+                        <span>📐 Căn tâm cần cẩu (Z = 0)</span>
+                    </button>
+                    <button
+                        type="button"
+                        className="btn-smart-action btn-smart-danger"
+                        onClick={resetAllPartOffsets}
+                        title="Reset toàn bộ 6 cấu kiện về vị trí chuẩn ban đầu"
+                    >
+                        <span>🔄 Reset tất cả cấu kiện</span>
+                    </button>
+                </div>
+            </div>
+
+            {/* 3. CHOOSE PBR MATERIAL FOR SELECTED PART */}
             <div className="tab-section-card mb-3">
                 <div className="section-card-header d-flex justify-content-between align-items-center">
                     <span className="card-title">
-                        2. Vật liệu cho: <strong>{PART_ICONS[selectedPart]} {PART_LABELS[selectedPart]}</strong>
+                        3. Vật liệu cho: <strong>{PART_ICONS[selectedPart]} {PART_LABELS[selectedPart]}</strong>
                     </span>
                     <span className="badge badge-primary">{currentMatDef.badge || 'PBR'}</span>
                 </div>
@@ -113,10 +285,10 @@ export default function TabComponentMaterials() {
                 </div>
             </div>
 
-            {/* 3. PHYSICAL PBR PARAMETER SLIDERS */}
+            {/* 4. PHYSICAL PBR PARAMETER SLIDERS */}
             <div className="tab-section-card mb-3">
                 <div className="section-card-header">
-                    <span className="card-title">3. Tinh chỉnh thông số vật lý (Physical PBR):</span>
+                    <span className="card-title">4. Tinh chỉnh thông số vật lý (Physical PBR):</span>
                 </div>
 
                 <div className="pbr-slider-group mb-2">

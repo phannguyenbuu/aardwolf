@@ -5,7 +5,8 @@ import {
     get3DConfiguration,
     calculateTotalPrice,
     getRecommendedSuctionHead,
-    checkCapacityStatus
+    checkCapacityStatus,
+    extractPoint3
 } from '../utils/configuratorHelpers.js';
 
 const STORAGE_KEY = 'AarwolfVacumn';
@@ -60,7 +61,7 @@ export function ConfiguratorProvider({ children }) {
 
     // Viewport render mode: 'interactive' or 'studio-render'
     const [viewportMode, setViewportMode] = useState('studio-render'); // Default to stunning studio render mode
-    const [studioTheme, setStudioTheme] = useState('cornell'); // 'cornell', 'studio', 'workshop', 'blueprint'
+    const [studioTheme, setStudioTheme] = useState('workshop'); // 'workshop' (default), 'cornell', 'studio', 'blueprint'
 
     // Left Column active tab: 'user-setting' | 'component-materials' | 'environment' | 'studio-hd' | 'material-lib'
     const [activeLeftTab, setActiveLeftTab] = useState('user-setting');
@@ -101,6 +102,62 @@ export function ConfiguratorProvider({ children }) {
 
     const applyMaterialPreset = useCallback((presetMats) => {
         setComponentMaterials(presetMats);
+    }, []);
+
+    // 3D Object Positioning & 3ds Max Transform Gizmo State
+    const DEFAULT_PART_OFFSETS = {
+        crane: { x: 0, y: 0, z: 0 },
+        pump: { x: 0, y: 0, z: 0 },
+        tube: { x: 0, y: 0, z: 0 },
+        head: { x: 0, y: 0, z: 0 },
+        suction: { x: 0, y: 0, z: 0 },
+        workpiece: { x: 0, y: 0, z: 0 }
+    };
+    const [partOffsets, setPartOffsets] = useState(DEFAULT_PART_OFFSETS);
+    const [gizmoEnabled, setGizmoEnabled] = useState(true);
+    const [gizmoMode, setGizmoMode] = useState('translate'); // 'translate' | 'rotate'
+    const [gizmoSize, setGizmoSize] = useState(0.85);
+
+    const updatePartOffset = useCallback((partKey, axis, val) => {
+        setPartOffsets(prev => ({
+            ...prev,
+            [partKey]: {
+                ...prev[partKey],
+                [axis]: Number(val) || 0
+            }
+        }));
+    }, []);
+
+    const stepPartOffset = useCallback((partKey, axis, delta) => {
+        setPartOffsets(prev => ({
+            ...prev,
+            [partKey]: {
+                ...prev[partKey],
+                [axis]: Math.round((prev[partKey]?.[axis] || 0) + delta)
+            }
+        }));
+    }, []);
+
+    const setPartOffsetFull = useCallback((partKey, newOffset) => {
+        setPartOffsets(prev => ({
+            ...prev,
+            [partKey]: {
+                x: Math.round(newOffset.x || 0),
+                y: Math.round(newOffset.y || 0),
+                z: Math.round(newOffset.z || 0)
+            }
+        }));
+    }, []);
+
+    const resetPartOffset = useCallback((partKey) => {
+        setPartOffsets(prev => ({
+            ...prev,
+            [partKey]: { x: 0, y: 0, z: 0 }
+        }));
+    }, []);
+
+    const resetAllPartOffsets = useCallback(() => {
+        setPartOffsets(DEFAULT_PART_OFFSETS);
     }, []);
 
     // Detailed Scene Lighting Configuration
@@ -444,6 +501,28 @@ export function ConfiguratorProvider({ children }) {
         return WORKLOAD_DATA[workLoadLimit][unit];
     }, [workLoadLimit, unit]);
 
+    // Base kinematic assembly coordinates in Three.js space (X, Y up, Z depth)
+    const basePositions = useMemo(() => {
+        let p1 = { x: -87, y: 0, z: 0 };
+        let p2 = { x: 2612, y: 0, z: 2119 };
+        if (config3D?.crane?.name) {
+            const [parsedP1, parsedP2] = extractPoint3(config3D.crane.name);
+            if (parsedP1) p1 = parsedP1;
+            if (parsedP2) p2 = parsedP2;
+        }
+        const isMobile = craneType?.toLowerCase().includes('mobile');
+        const h = Math.max(20, actualLoad?.height || 250);
+
+        return {
+            crane: { x: 0, y: 0, z: 0 },
+            pump: { x: p1.x, y: p1.z + (isMobile ? 310 : 0), z: p1.y },
+            tube: { x: p2.x + 25.5, y: p2.z, z: p2.y },
+            head: { x: p2.x, y: 153, z: p2.y },
+            suction: { x: p2.x, y: 153, z: p2.y },
+            workpiece: { x: p2.x, y: Math.round(h / 2), z: p2.y }
+        };
+    }, [config3D?.crane?.name, craneType, actualLoad?.height]);
+
     const value = {
         unit,
         setUnit,
@@ -530,6 +609,20 @@ export function ConfiguratorProvider({ children }) {
         triggerExportRender,
         cameraTelemetry,
         setCameraTelemetry,
+        basePositions,
+        partOffsets,
+        setPartOffsets,
+        updatePartOffset,
+        stepPartOffset,
+        setPartOffsetFull,
+        resetPartOffset,
+        resetAllPartOffsets,
+        gizmoEnabled,
+        setGizmoEnabled,
+        gizmoMode,
+        setGizmoMode,
+        gizmoSize,
+        setGizmoSize,
         login,
         logout,
         requote,

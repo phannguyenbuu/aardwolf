@@ -1,28 +1,14 @@
 import React, { useEffect, useRef, useCallback, useState } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { TransformControls } from 'three/examples/jsm/controls/TransformControls.js';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js';
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
 import download from 'downloadjs';
 import { useConfigurator } from '../context/ConfiguratorContext.jsx';
 import { ALL_PRELOAD_ITEMS, mmToInch } from '../constants/data.js';
 import { PBR_MATERIALS, PART_LABELS, PART_ICONS, createPBRMaterial } from '../constants/pbrMaterials.js';
-
-function extractPoint3(inputString) {
-    const p1Match = inputString.match(/p1_(-?\d+)_(-?\d+)_(-?\d+)/);
-    const p2Match = inputString.match(/p2_(-?\d+)_(-?\d+)_(-?\d+)/);
-
-    const parsePoint = (match) => {
-        if (!match) return null;
-        return {
-            x: parseFloat(match[1]),
-            y: parseFloat(match[2]),
-            z: parseFloat(match[3]),
-        };
-    };
-
-    return [parsePoint(p1Match), parsePoint(p2Match)];
-}
+import { extractPoint3 } from '../utils/configuratorHelpers.js';
 
 const TUBE_OFFSET = 25.5;
 
@@ -99,7 +85,18 @@ export default function ThreeViewer() {
         isExporting,
         setIsExporting,
         exportRenderTrigger,
-        setCameraTelemetry
+        setCameraTelemetry,
+        basePositions,
+        partOffsets,
+        setPartOffsetFull,
+        stepPartOffset,
+        resetPartOffset,
+        resetAllPartOffsets,
+        gizmoEnabled,
+        setGizmoEnabled,
+        gizmoMode,
+        setGizmoMode,
+        gizmoSize
     } = useConfigurator();
 
     const [clickedPin, setClickedPin] = useState(null);
@@ -108,6 +105,15 @@ export default function ThreeViewer() {
     const cameraRef = useRef(null);
     const rendererRef = useRef(null);
     const controlsRef = useRef(null);
+    const transformControlsRef = useRef(null);
+    const partRootsRef = useRef({});
+    const basePositionsRef = useRef(basePositions);
+    const isDraggingGizmoRef = useRef(false);
+
+    useEffect(() => {
+        basePositionsRef.current = basePositions;
+    }, [basePositions]);
+
     const loadedObjectsMapRef = useRef(new Map());
     const isReadyRef = useRef(false);
     const workpieceGroupRef = useRef(null);
@@ -301,6 +307,37 @@ export default function ThreeViewer() {
         scene.add(selectionBox);
         selectionBoxRef.current = selectionBox;
 
+        // 3D 3-Axis Transform Gizmo (3ds Max style XYZ Translate)
+        const transformControls = new TransformControls(camera, renderer.domElement);
+        transformControls.setMode(gizmoMode || 'translate');
+        transformControls.size = gizmoSize || 0.85;
+        transformControls.space = 'world';
+        const tcHelper = transformControls.getHelper();
+        tcHelper.isStageElement = true;
+        scene.add(tcHelper);
+        transformControlsRef.current = transformControls;
+
+        transformControls.addEventListener('dragging-changed', (event) => {
+            isDraggingGizmoRef.current = event.value;
+            if (controlsRef.current) {
+                controlsRef.current.enabled = !event.value;
+            }
+        });
+
+        transformControls.addEventListener('objectChange', () => {
+            const attached = transformControls.object;
+            if (attached && attached.userData?.partKey) {
+                const key = attached.userData.partKey;
+                const base = basePositionsRef.current[key] || { x: 0, y: 0, z: 0 };
+                const newOffset = {
+                    x: Math.round(attached.position.x - base.x),
+                    y: Math.round(attached.position.y - base.y),
+                    z: Math.round(attached.position.z - base.z)
+                };
+                setPartOffsetFull(key, newOffset);
+            }
+        });
+
         // =========================================================================
         // REALTIME PATH TRACING CORNELL BOX ENVIRONMENT (Matching Domenicobrz)
         // Proportions: boxW=7000, boxH=7000, boxD=7000 centered at (cx, 3500, 0)
@@ -454,6 +491,7 @@ export default function ThreeViewer() {
         };
 
         const onPointerUp = (e) => {
+            if (isDraggingGizmoRef.current || transformControlsRef.current?.dragging) return;
             const dx = Math.abs(e.clientX - pointerStartRef.current.x);
             const dy = Math.abs(e.clientY - pointerStartRef.current.y);
             if (dx > 6 || dy > 6) return;
@@ -622,6 +660,7 @@ export default function ThreeViewer() {
             resizeObserver.disconnect();
             domElem.removeEventListener('pointerdown', onPointerDown);
             domElem.removeEventListener('pointerup', onPointerUp);
+            transformControls.dispose();
             renderer.dispose();
             pmremGenerator.dispose();
             roomEnvironment.dispose();
@@ -671,66 +710,22 @@ export default function ThreeViewer() {
                 scene.remove(child);
             }
         }
+        partRootsRef.current = {};
 
+        const base = basePositions;
+        const offsets = partOffsets;
         const { crane, pumpGroup, tube, headStack, suctionPack } = config3D;
 
-        const addToScene = (targetScene, objectName, position, rotation, partKey) => {
-            const proto = loadedObjectsMapRef.current.get(objectName);
-            if (!proto) return null;
-            const clone = proto.clone(true);
-            if (position) clone.position.set(position.x, position.y, position.z);
-            if (rotation) clone.rotation.set(rotation.x, rotation.y, rotation.z);
+        const createPartGroup = (partKey, objectName, isWorkpiece = false) => {
+            const basePos = base[partKey] || { x: 0, y: 0, z: 0 };
+            const off = offsets[partKey] || { x: 0, y: 0, z: 0 };
 
-            clone.traverse((child) => {
-                if (child.isMesh) {
-                    child.userData.partKey = partKey;
-                    const matId = componentMaterials[partKey] || 'steel_brushed';
-                    const customOverride = customParams[partKey] || null;
-                    child.material = createPBRMaterial(matId, customOverride);
-                    child.castShadow = true;
-                    child.receiveShadow = true;
-                }
-            });
+            const group = new THREE.Group();
+            group.name = `root_${partKey}`;
+            group.userData.partKey = partKey;
+            group.position.set(basePos.x + off.x, basePos.y + off.y, basePos.z + off.z);
 
-            targetScene.add(clone);
-            return clone;
-        };
-
-        if (crane) addToScene(scene, crane.name, null, null, 'crane');
-        if (pumpGroup) addToScene(scene, pumpGroup.name, null, null, 'pump');
-
-        if (crane && tube && headStack && suctionPack) {
-            const [p1, p2] = extractPoint3(crane.name);
-            if (p2) {
-                const tubeMesh = addToScene(scene, tube.name, {
-                    x: p2.x,
-                    y: p2.y,
-                    z: p2.z - TUBE_OFFSET
-                }, null, 'tube');
-
-                if (tubeMesh && texturesRef.current.tubeTex) {
-                    tubeMesh.traverse((child) => {
-                        if (child.isMesh) {
-                            child.material.map = texturesRef.current.tubeTex;
-                            child.material.needsUpdate = true;
-                        }
-                    });
-                }
-
-                const tubeHeight = 1200;
-                const pad = {
-                    x: p2.x,
-                    y: p2.y,
-                    z: p2.z - tubeHeight - headStack.y
-                };
-
-                addToScene(scene, headStack.name, pad, null, 'head');
-                addToScene(scene, suctionPack.name, pad, null, 'suction');
-
-                // Workpiece
-                const workpieceGroup = new THREE.Group();
-                workpieceGroupRef.current = workpieceGroup;
-
+            if (isWorkpiece) {
                 const l = Math.max(50, actualLoad.length);
                 const w = Math.max(50, actualLoad.width);
                 const h = Math.max(20, actualLoad.height);
@@ -742,67 +737,105 @@ export default function ThreeViewer() {
                 workpieceMesh.userData.partKey = 'workpiece';
                 workpieceMesh.castShadow = true;
                 workpieceMesh.receiveShadow = true;
-
-                const workpieceCenterY = pad.z - (h / 2);
-                workpieceMesh.position.set(pad.x, workpieceCenterY, pad.y);
-                workpieceGroup.add(workpieceMesh);
+                group.add(workpieceMesh);
 
                 const edgesGeo = new THREE.EdgesGeometry(boxGeo);
                 const edgesMat = new THREE.LineBasicMaterial({ color: 0x222222, linewidth: 2 });
                 const wireframe = new THREE.LineSegments(edgesGeo, edgesMat);
-                wireframe.position.copy(workpieceMesh.position);
-                workpieceGroup.add(wireframe);
+                group.add(wireframe);
 
                 const dimText = unit === 'Inch'
                     ? `${Math.round(mmToInch(l))}" × ${Math.round(mmToInch(w))}"`
                     : `${l} × ${w} mm`;
                 const sprite = createDimensionSprite(dimText);
-                sprite.position.set(pad.x, workpieceCenterY, pad.y + (w / 2) + 140);
-                workpieceGroup.add(sprite);
+                sprite.position.set(0, 0, (w / 2) + 140);
+                group.add(sprite);
 
-                scene.add(workpieceGroup);
+                workpieceGroupRef.current = group;
+            } else if (objectName) {
+                const proto = loadedObjectsMapRef.current.get(objectName);
+                if (proto) {
+                    const clone = proto.clone(true);
+                    clone.traverse((child) => {
+                        if (child.isMesh) {
+                            child.userData.partKey = partKey;
+                            const matId = componentMaterials[partKey] || 'steel_brushed';
+                            const customOverride = customParams[partKey] || null;
+                            child.material = createPBRMaterial(matId, customOverride);
+                            child.castShadow = true;
+                            child.receiveShadow = true;
 
-                // Auto bounding box
-                const bbox = new THREE.Box3();
-                scene.traverse((child) => {
-                    if (child.isMesh && !child.isStageElement && !child.isSprite && !child.isLineSegments) {
-                        bbox.expandByObject(child);
-                    }
-                });
-
-                if (!bbox.isEmpty()) {
-                    const center = new THREE.Vector3();
-                    const size = new THREE.Vector3();
-                    bbox.getCenter(center);
-                    bbox.getSize(size);
-                    currentCenterRef.current.copy(center);
-                    currentSizeRef.current.copy(size);
-
-                    if (lightTargetRef.current) {
-                        lightTargetRef.current.position.set(center.x, 0, 0);
-                    }
-
-                    if (controlsRef.current && cameraRef.current) {
-                        controlsRef.current.target.copy(center);
-                        const span = Math.max(size.x, size.y, 3000);
-                        const camDist = Math.max(5400, span * 1.55);
-
-                        if (studioTheme === 'cornell') {
-                            // Lock into Cornell Box reference perspective
-                            cameraRef.current.fov = 45;
-                            cameraRef.current.position.set(center.x, 3200, 9600);
-                            controlsRef.current.target.set(center.x, 3200, 0);
-                        } else {
-                            cameraRef.current.fov = 34;
-                            cameraRef.current.position.set(center.x + (span * 0.45), center.y + (span * 0.38), camDist);
+                            if (partKey === 'tube' && texturesRef.current.tubeTex) {
+                                child.material.map = texturesRef.current.tubeTex;
+                                child.material.needsUpdate = true;
+                            }
                         }
-                        cameraRef.current.updateProjectionMatrix();
-                        controlsRef.current.update();
-                    }
+                    });
+                    group.add(clone);
                 }
             }
+
+            scene.add(group);
+            partRootsRef.current[partKey] = group;
+            return group;
+        };
+
+        if (crane) createPartGroup('crane', crane.name);
+        if (pumpGroup) createPartGroup('pump', pumpGroup.name);
+        if (tube) createPartGroup('tube', tube.name);
+        if (headStack) createPartGroup('head', headStack.name);
+        if (suctionPack) createPartGroup('suction', suctionPack.name);
+        createPartGroup('workpiece', null, true);
+
+        // Auto bounding box
+        const bbox = new THREE.Box3();
+        scene.traverse((child) => {
+            if (child.isMesh && !child.isStageElement && !child.isSprite && !child.isLineSegments) {
+                bbox.expandByObject(child);
+            }
+        });
+
+        if (!bbox.isEmpty()) {
+            const center = new THREE.Vector3();
+            const size = new THREE.Vector3();
+            bbox.getCenter(center);
+            bbox.getSize(size);
+            currentCenterRef.current.copy(center);
+            currentSizeRef.current.copy(size);
+
+            if (lightTargetRef.current) {
+                lightTargetRef.current.position.set(center.x, 0, 0);
+            }
+
+            if (controlsRef.current && cameraRef.current) {
+                controlsRef.current.target.copy(center);
+                const span = Math.max(size.x, size.y, 3000);
+                const camDist = Math.max(5400, span * 1.55);
+
+                if (studioTheme === 'cornell') {
+                    // Lock into Cornell Box reference perspective
+                    cameraRef.current.fov = 45;
+                    cameraRef.current.position.set(center.x, 3200, 9600);
+                    controlsRef.current.target.set(center.x, 3200, 0);
+                } else {
+                    cameraRef.current.fov = 34;
+                    cameraRef.current.position.set(center.x + (span * 0.45), center.y + (span * 0.38), camDist);
+                }
+                cameraRef.current.updateProjectionMatrix();
+                controlsRef.current.update();
+            }
         }
-    }, [config3D, actualLoad, unit, componentMaterials, customParams, studioTheme]);
+
+        // Attach transform controls to active selectedPart
+        const tc = transformControlsRef.current;
+        if (tc) {
+            if (gizmoEnabled && selectedPart && partRootsRef.current[selectedPart]) {
+                tc.attach(partRootsRef.current[selectedPart]);
+            } else {
+                tc.detach();
+            }
+        }
+    }, [config3D, actualLoad, unit, componentMaterials, customParams, studioTheme, basePositions, partOffsets, gizmoEnabled, selectedPart]);
 
     useEffect(() => {
         if (isReadyRef.current) {
@@ -810,31 +843,54 @@ export default function ThreeViewer() {
         }
     }, [config3D, actualLoad, unit, update3DScene]);
 
+    // Sync object positions when partOffsets changes in React state (smooth, without full scene rebuild)
+    useEffect(() => {
+        Object.keys(partOffsets).forEach((key) => {
+            const root = partRootsRef.current[key];
+            const basePos = basePositions[key];
+            const off = partOffsets[key];
+            if (root && basePos && off) {
+                const tx = basePos.x + off.x;
+                const ty = basePos.y + off.y;
+                const tz = basePos.z + off.z;
+                if (Math.abs(root.position.x - tx) > 0.05 ||
+                    Math.abs(root.position.y - ty) > 0.05 ||
+                    Math.abs(root.position.z - tz) > 0.05) {
+                    root.position.set(tx, ty, tz);
+                }
+            }
+        });
+    }, [partOffsets, basePositions]);
+
+    // Attach / Detach / Configure TransformControls
+    useEffect(() => {
+        const tc = transformControlsRef.current;
+        if (!tc) return;
+
+        tc.setMode(gizmoMode || 'translate');
+        tc.size = gizmoSize || 0.85;
+
+        if (gizmoEnabled && selectedPart && partRootsRef.current[selectedPart]) {
+            tc.attach(partRootsRef.current[selectedPart]);
+        } else {
+            tc.detach();
+        }
+    }, [selectedPart, gizmoEnabled, gizmoMode, gizmoSize]);
+
     // Sync Selection Box3Helper
     useEffect(() => {
         if (!selectionBoxRef.current || !sceneRef.current) return;
         const helper = selectionBoxRef.current;
         const box3 = helper.box;
 
-        if (!selectedPart) {
+        if (!selectedPart || !partRootsRef.current[selectedPart]) {
             helper.visible = false;
             return;
         }
 
-        box3.makeEmpty();
-        if (selectedPart === 'workpiece') {
-            if (workpieceGroupRef.current) {
-                box3.setFromObject(workpieceGroupRef.current);
-            }
-        } else {
-            sceneRef.current.traverse((child) => {
-                if (child.isMesh && child.userData?.partKey === selectedPart && !child.isStageElement && !child.isLineSegments && !child.isSprite) {
-                    box3.expandByObject(child);
-                }
-            });
-        }
+        box3.setFromObject(partRootsRef.current[selectedPart]);
         helper.visible = !box3.isEmpty();
-    }, [selectedPart, config3D]);
+    }, [selectedPart, partOffsets, config3D]);
 
     // Handle Camera Presets trigger
     useEffect(() => {
@@ -1082,6 +1138,49 @@ export default function ThreeViewer() {
                     <div className="pin-marker-pill">
                         <span className="pin-icon">{PART_ICONS[clickedPin.partKey]}</span>
                         <span className="pin-label">{PART_LABELS[clickedPin.partKey]}</span>
+                    </div>
+                </div>
+            )}
+
+            {/* Floating 3ds Max Style Transform Gizmo Viewport Pill */}
+            {selectedPart && (
+                <div className="viewport-gizmo-pill">
+                    <div className="gizmo-pill-header">
+                        <span className="gizmo-pill-icon">{PART_ICONS[selectedPart]}</span>
+                        <span className="gizmo-pill-title">{PART_LABELS[selectedPart]}</span>
+                        <span className="gizmo-pill-badge">3D Gizmo</span>
+                    </div>
+                    <div className="gizmo-pill-coords">
+                        <span className="coord-chip coord-x">
+                            <span className="axis-dot dot-x" />
+                            X: {Math.round((basePositions[selectedPart]?.x || 0) + (partOffsets[selectedPart]?.x || 0))}
+                        </span>
+                        <span className="coord-chip coord-y">
+                            <span className="axis-dot dot-y" />
+                            Y: {Math.round((basePositions[selectedPart]?.y || 0) + (partOffsets[selectedPart]?.y || 0))}
+                        </span>
+                        <span className="coord-chip coord-z">
+                            <span className="axis-dot dot-z" />
+                            Z: {Math.round((basePositions[selectedPart]?.z || 0) + (partOffsets[selectedPart]?.z || 0))}
+                        </span>
+                    </div>
+                    <div className="gizmo-pill-actions">
+                        <button
+                            type="button"
+                            className={`gizmo-btn ${gizmoEnabled ? 'active' : ''}`}
+                            onClick={() => setGizmoEnabled(!gizmoEnabled)}
+                            title={gizmoEnabled ? "Ẩn Gizmo 3 trục" : "Hiện Gizmo 3 trục"}
+                        >
+                            {gizmoEnabled ? "Gizmo: ON" : "Gizmo: OFF"}
+                        </button>
+                        <button
+                            type="button"
+                            className="gizmo-btn"
+                            onClick={() => resetPartOffset(selectedPart)}
+                            title="Reset vị trí chuẩn cấu kiện này"
+                        >
+                            ↺ Reset
+                        </button>
                     </div>
                 </div>
             )}

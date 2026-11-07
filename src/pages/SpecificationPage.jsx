@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
+import { build2dDrawing } from '../utils/drawing2d.js';
 import { useConfigurator } from '../context/ConfiguratorContext.jsx';
-import { generateQuotationPDF } from '../utils/pdfGenerator.js';
 import { RULES, kgToLbs } from '../constants/data.js';
+import QuotationBom from '../components/QuotationBom.jsx';
+import { effectiveLoadType } from '../utils/selectionRules.js';
 
 export default function SpecificationPage() {
     const {
         currentWorkload,
         totalPrice,
+        quotationBom,
         userName,
         requote,
         backToConfigurator,
         config3D,
-        pdfContent,
         unit,
         craneType,
         jibLength,
@@ -38,9 +40,10 @@ export default function SpecificationPage() {
         setIs3DLoading(true);
 
         try {
+            const { generateQuotationPDF } = await import('../utils/pdfGenerator.js');
             await generateQuotationPDF({
                 sceneData: config3D.crane,
-                pdfContent: pdfContent,
+                pdfContent: build2dDrawing(config3D),
                 currentWorkload,
                 userName,
                 totalPrice,
@@ -49,8 +52,9 @@ export default function SpecificationPage() {
                 zoomft: config3D.zoomft,
                 actualLoad,
                 surfaceType: surfaceObj?.name,
-                environment: environment === 'dusty' ? 'Dusty / Industrial' : 'Standard / Clean',
+                environment: effectiveLoadType(environment, surfaceType) === 'porous' ? 'Porous load' : 'Non-porous load',
                 canvasSnapshot,
+                quotationBom: userName ? quotationBom : { ...quotationBom, lines: quotationBom.lines.map(line => ({ ...line, unitPrice: null, subtotal: null })), total: null },
                 onProgress: (p) => setLoadingProgress(p)
             });
         } catch (err) {
@@ -63,7 +67,7 @@ export default function SpecificationPage() {
     };
 
     return (
-        <div className="container pb-5">
+        <div className="container pb-5 quote-page">
             <div className="row content py-2">
                 <div className="col-lg-6 col-md-12 col-12 content__left">
                     <a
@@ -71,13 +75,13 @@ export default function SpecificationPage() {
                         href="#back"
                         onClick={(e) => { e.preventDefault(); backToConfigurator(); }}
                     >
-                        <img src="/assets/images/back.png" alt="back" className="mr-1" style={{ width: 8 }} />
-                        <span>Back to Configurator</span>
+                        <img src="/assets/images/back.png" alt="back" style={{ width: 8, marginRight: 10 }} />
+                        <span>Back</span>
                     </a>
 
                     <div className="content__left--title d-flex justify-content-between align-items-center">
                         <p className="m-0 font-weight-bold">ORDER SPECIFICATION (5-STEP SUMMARY)</p>
-                        <span className="badge badge-primary">{unit.toUpperCase()} UNIT</span>
+                        <span className="badge unit-badge">{unit === 'Inch' ? 'inch/lbs' : 'mm/kg'}</span>
                     </div>
 
                     {/* Summary cards of configured 5 steps */}
@@ -87,10 +91,10 @@ export default function SpecificationPage() {
                             <ul className="list-unstyled mb-0" style={{ fontSize: 13, lineHeight: '1.8' }}>
                                 <li><strong>1. Crane Type:</strong> {craneObj?.name} (Reach: {jibLength})</li>
                                 <li><strong>2. Rated WLL:</strong> {currentWorkload?.maxLiftingCapacity}</li>
-                                <li><strong>3. Environment:</strong> {environment === 'dusty' ? 'Heavy Industrial / Dusty (Requires ZFP300 Filter)' : 'Standard / Clean'}</li>
+                                <li><strong>3. Load type:</strong> {effectiveLoadType(environment, surfaceType) === 'porous' ? 'Porous load' : 'Non-porous load'}</li>
                                 <li><strong>4. Workpiece Surface:</strong> {surfaceObj?.name} {customNotes && `(${customNotes})`}</li>
                                 <li><strong>5. Actual Dimensions:</strong> {actualLoad.length} × {actualLoad.width} × {actualLoad.height} mm (Actual Load: {actualLoad.weight} kg / {kgToLbs(actualLoad.weight)} lbs)</li>
-                                <li><strong>6. Recommended Suction Head:</strong> {headObj?.name} (Max Rated: {headObj?.maxKg} kg)</li>
+                                <li><strong>6. Recommended Suction Head:</strong> {headObj?.name} (Max Rated: {headObj ? +headObj.maxKg.toFixed(3) : ""} kg)</li>
                             </ul>
                         </div>
                     </div>
@@ -126,7 +130,7 @@ export default function SpecificationPage() {
                         </div>
 
                         <div className="row content__left--content--item m-0">
-                            <div className="col-12 content__left--content--item-3 bg-light">
+                            <div className="col-12 content__left--content--item-3">
                                 Vertical movement (Stroke)
                             </div>
                         </div>
@@ -171,35 +175,20 @@ export default function SpecificationPage() {
                         </div>
                     )}
 
-                    <div className="content__left--price text-center py-3 bg-white rounded shadow-sm mb-3">
-                        <span className="h5 mb-0 mr-2">Estimated Quotation Price:</span>
-                        <span id="totalPrice" className="h4 text-danger font-weight-bold mb-0">
-                            {userName ? (totalPrice || 'Calculating...') : 'Login for price'}
+                    <QuotationBom bom={quotationBom} showPrices={!!userName} />
+
+                    <div className="content__left--price text-center py-4">
+                        <span>Price:</span>{' '}
+                        <span id="totalPrice">
+                            {userName ? (quotationBom.total === null ? 'Price requires consultation' : `US$ ${quotationBom.total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`) : 'Login for price'}
                         </span>
                     </div>
 
                     <div className="content__left-price--action text-center">
-                        <a
-                            className="requote mr-2"
-                            href="#requote"
-                            onClick={(e) => { e.preventDefault(); requote(); }}
-                        >
-                            Requote
-                        </a>
-                        <a
-                            className="back backcontent mr-2"
-                            href="#back"
-                            onClick={(e) => { e.preventDefault(); backToConfigurator(); }}
-                        >
-                            Back
-                        </a>
-                        <a
-                            href="#download"
-                            id="download"
-                            className="btn btn-danger font-weight-bold"
-                            onClick={(e) => { e.preventDefault(); handleDownloadPDF(); }}
-                        >
-                            {isDownloading ? 'Generating PDF...' : '📄 Download & Print Quotation PDF'}
+                        <a href="#requote" onClick={(e) => { e.preventDefault(); requote(); }}>Requote</a>
+                        <a href="#back" onClick={(e) => { e.preventDefault(); backToConfigurator(); }}>Back</a>
+                        <a href="#download" id="download" onClick={(e) => { e.preventDefault(); handleDownloadPDF(); }}>
+                            {isDownloading ? 'Generating PDF...' : 'Download & Print quotation'}
                         </a>
                     </div>
 

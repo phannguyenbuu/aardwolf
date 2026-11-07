@@ -1,0 +1,86 @@
+<!doctype html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>GenAI Render Modal — API Docs</title><style>
+*{box-sizing:border-box}body{font:15px/1.7 system-ui,sans-serif;margin:0;background:#f6f7fa;color:#20242d}main{max-width:1120px;margin:36px auto;background:#fff;padding:40px 48px;border:1px solid #e4e7ec;border-radius:16px}h1{font-size:30px;line-height:1.3}h2{margin-top:44px;border-top:1px solid #e4e7ec;padding-top:22px;font-size:22px}a{color:#175cc5;overflow-wrap:anywhere}table{border-collapse:collapse;width:100%;display:block;overflow-x:auto;margin:20px 0}th,td{padding:12px 14px;text-align:left;vertical-align:top;border:1px solid #e1e5eb}th{background:#f2f5fa}pre{background:#182232;color:#e2eaf8;padding:20px;overflow:auto;border-radius:8px;line-height:1.6}code{font-family:Consolas,monospace;font-size:13px}p code,td code{background:#f0f3f7;padding:2px 5px;border-radius:4px}.links{display:flex;gap:22px;flex-wrap:wrap} @media(max-width:700px){main{margin:0;border:0;border-radius:0;padding:24px 18px}h1{font-size:25px}th,td{padding:8px}}
+</style></head><body><main><nav class="links"><a href="README.md">Tải Markdown</a><a href="../assets/remoteEntry.js">Remote Entry</a></nav><h1>GenAI Render Modal — API &amp; tích hợp</h1><p>Remote Entry: <a href="https://genai.toolxprint.com/render-modal/assets/remoteEntry.js">https://genai.toolxprint.com/render-modal/assets/remoteEntry.js</a></p><p>Container: <code>genaiRenderModal</code> · Exposed module: <code>./RenderModal</code> · Export: <code>mount</code>.</p><p>Module có React root, CSS và Shadow DOM riêng. Host không cần chia sẻ React hay dùng React; JavaScript thuần có thể gọi API dưới đây. Render AI công khai, không cần Admin token.</p><h2>1. Tích hợp nhanh</h2><pre><code>const container = await import(
+  &#x27;https://genai.toolxprint.com/render-modal/assets/remoteEntry.js&#x27;
+);
+await container.init({});
+const { mount } = (await container.get(&#x27;./RenderModal&#x27;))();
+
+const host = document.createElement(&#x27;genai-render-modal&#x27;);
+document.body.append(host);
+
+// canvas là canvas của ứng dụng chủ, có quyền đọc pixel.
+const props = {
+  mode: &#x27;realistic&#x27;,
+  capture: async () =&gt; canvas.toDataURL(&#x27;image/png&#x27;),
+  prompt: &#x27;Soft daylight.&#x27;,
+  systemPrompt: &#x27;Preserve the product geometry and logo.&#x27;,
+  scenePrompt: &#x27;Create a product photograph.&#x27;,
+  contextPrompt: &#x27;A clean environment.&#x27;,
+  scenes: [{ id: &#x27;studio&#x27;, label: &#x27;Studio&#x27;, image: &#x27;https://example.com/studio.jpg&#x27;, prompt: &#x27;Soft studio lighting.&#x27; }],
+  initialSceneId: &#x27;studio&#x27;,
+  downloadFileName: &#x27;product-render.png&#x27;,
+  onResult: result =&gt; console.log(&#x27;Result:&#x27;, result),
+  onProgress: state =&gt; console.log(&#x27;Progress:&#x27;, state),
+  onError: error =&gt; console.error(error.message),
+  cameraMetadata: {
+    position: [0, 2, 4], target: [0, 1, 0],
+    fov: 45, aspect: 16 / 9, up: [0, 1, 0]
+  },
+  apiBase: &#x27;https://genai.toolxprint.com/api&#x27;,
+  onClose: () =&gt; modal.unmount()
+};
+const modal = mount(host, props);
+</code></pre><h2>2. Đầu vào mount(element, props)</h2><p><code>element</code> là HTMLElement mới, đã thêm vào DOM và chưa có ShadowRoot. Mỗi lần mount dùng một element mới.</p><table><thead><tr><th>Prop</th><th>Kiểu</th><th>Bắt buộc / mặc định</th><th>Ý nghĩa</th></tr></thead><tbody><tr><td>mode</td><td>&#x27;realistic&#x27; / &#x27;render&#x27; / &#x27;capture&#x27;</td><td>Bắt buộc</td><td>AI / renderer của host / chỉ xem ảnh chụp</td></tr><tr><td>capture</td><td>() =&gt; Promise&lt;string&gt;</td><td>Bắt buộc ở mọi mode</td><td>Trả PNG hoặc JPEG data URL; gọi lúc mở và trước khi gửi AI</td></tr><tr><td>onClose</td><td>() =&gt; void</td><td>Bắt buộc</td><td>Host xử lý yêu cầu đóng, thường gọi modal.unmount()</td></tr><tr><td>render</td><td>(options) =&gt; Promise&lt;Blob&gt;</td><td>Bắt buộc khi mode=&#x27;render&#x27;</td><td>Host thực thi renderer và trả ảnh dưới dạng Blob</td></tr><tr><td>prompt</td><td>string</td><td>&#x27;&#x27;</td><td>Nội dung ban đầu trong ô prompt, người dùng có thể sửa</td></tr><tr><td>systemPrompt</td><td>string</td><td>&#x27;&#x27;</td><td>Quy tắc do host cung cấp; ghép vào chuỗi prompt, không phải system role riêng của API</td></tr><tr><td>scenePrompt</td><td>string</td><td>&#x27;&#x27;</td><td>Mô tả bối cảnh chung do host truyền</td></tr><tr><td>contextPrompt</td><td>string</td><td>&#x27;&#x27;</td><td>Ngữ cảnh bổ sung tùy nghiệp vụ, ví dụ môi trường sạch/bụi</td></tr><tr><td>scenes</td><td>Array&lt;{ id, label, image, prompt }&gt;</td><td>[]</td><td>Danh sách scene do host cung cấp. Rỗng thì ẩn picker; không có scene công nghiệp mặc định</td></tr><tr><td>initialSceneId</td><td>string</td><td>Scene đầu tiên</td><td>Scene được chọn ban đầu; ID không tồn tại sẽ chọn scene đầu</td></tr><tr><td>aspectRatios</td><td>string[]</td><td>[&#x27;1:1&#x27;, &#x27;3:2&#x27;, &#x27;4:3&#x27;, &#x27;16:9&#x27;]</td><td>Các tỷ lệ cho phép</td></tr><tr><td>initialAspectRatio</td><td>string</td><td>&#x27;16:9&#x27;</td><td>Tỷ lệ ban đầu; nếu không nằm trong danh sách thì chọn mục đầu</td></tr><tr><td>title</td><td>string</td><td>Theo mode</td><td>Tiêu đề modal</td></tr><tr><td>renderButtonLabel</td><td>string</td><td>Render Realistic / Render</td><td>Tên nút bắt đầu</td></tr><tr><td>downloadFileName</td><td>string</td><td>&#x27;render.png&#x27;</td><td>Tên file tải xuống; trình duyệt có thể bỏ qua với URL ảnh khác origin</td></tr><tr><td>promptPlaceholder</td><td>string</td><td>&#x27;Describe your image…&#x27;</td><td>Placeholder ô prompt</td></tr><tr><td>timeHint</td><td>string</td><td>Hướng dẫn chờ chung</td><td>Chuỗi rỗng để ẩn hướng dẫn</td></tr><tr><td>jobOptions</td><td>object</td><td>{}</td><td>Trường bổ sung cho body API như engine, job_type, new_chat; không được ghi đè prompt, reference_images, aspect_ratio</td></tr><tr><td>pollIntervalMs</td><td>number</td><td>2000</td><td>Khoảng poll, tối thiểu 100ms</td></tr><tr><td>timeoutMs</td><td>number</td><td>1200000</td><td>Giới hạn chờ poll, tối thiểu 1000ms; không phải timeout toàn bộ lượt capture/POST</td></tr><tr><td>onResult</td><td>(result) =&gt; void</td><td>Tùy chọn</td><td>Nhận kết quả AI hoặc renderer host</td></tr><tr><td>onProgress</td><td>({ progress, busy }) =&gt; void</td><td>Tùy chọn</td><td>progress: number hoặc null; busy: boolean</td></tr><tr><td>onError</td><td>({ message, name }) =&gt; void</td><td>Tùy chọn</td><td>Lỗi capture/tạo job/poll/render; không gọi khi người dùng Cancel</td></tr><tr><td>cameraMetadata</td><td>object</td><td>{}</td><td>position, target, up: number[3]; fov, aspect: number. Dữ liệu tham chiếu cho prompt, không thay đổi camera host</td></tr><tr><td>apiBase</td><td>string</td><td><a href="https://genai.toolxprint.com/api">https://genai.toolxprint.com/api</a></td><td>API gốc, không có dấu / cuối. Aardwolf dùng proxy /api/genai</td></tr><tr><td>hideCloseButton</td><td>boolean</td><td>false</td><td>Ẩn nút X trong header của mode render/capture; realistic vẫn có X. Escape và bấm backdrop vẫn yêu cầu đóng</td></tr></tbody></table><p><code>portalTarget</code> do mount quản lý trong Shadow DOM, không truyền từ host.</p><p>Giữ callback capture ổn định khi update: thay callback sẽ chạy lại bước lấy ảnh preview. Nếu canvas có ảnh khác domain, cấu hình CORS cho ảnh để tránh canvas bị tainted.</p><h2>3. Đầu ra và vòng đời</h2><pre><code>// mount trả handle đồng bộ:
+const modal = mount(host, props);
+
+// update thay toàn bộ props, không merge. Truyền đầy đủ callback bắt buộc.
+modal.update({ ...props, workingEnvironment: &#x27;dusty&#x27; });
+
+// Dọn React root, abort yêu cầu client và xóa host element.
+modal.unmount();
+</code></pre><p>mount không trả Promise ảnh; kết quả được gửi qua onResult. Ảnh cũng hiển thị trong modal với before/after, zoom và nút tải xuống. Host nhận yêu cầu đóng qua onClose().</p><pre><code>// AI:
+onResult({ mode: &#x27;realistic&#x27;, url, jobId, aspectRatio, sceneId });
+// Renderer host:
+onResult({ mode: &#x27;render&#x27;, url, blob, engine });
+// Tiến độ:
+onProgress({ progress: 100, busy: false });
+// Lỗi:
+onError({ message: &#x27;Could not create render job&#x27;, name: &#x27;Error&#x27; });
+</code></pre><p>URL của mode render là object URL tạm, bị thu hồi khi render lượt mới hoặc unmount. Giữ Blob từ callback và tự tạo URL riêng nếu cần dùng lâu dài. URL AI do backend trả về, tuổi thọ phụ thuộc dịch vụ lưu ảnh. Lỗi do callback host ném ra được log, không biến job render thành thất bại.</p><p>Với mode render, Blob là đầu ra của callback do host cung cấp, module chuyển Blob thành object URL để hiển thị. Host có thể giữ Blob ngay trong callback render nếu cần lưu lại.</p><pre><code>const render = async ({ engine, environment, exposure, intensity, signal, onProgress }) =&gt; {
+  // engine: &#x27;studio&#x27; hoặc &#x27;hdr&#x27;; environment: 1 hoặc 3.
+  // exposure mặc định 1.15; intensity mặc định 2.8.
+  // signal: AbortSignal; kiểm tra khi export để hỗ trợ Cancel.
+  onProgress(0); // số từ 0 đến 100; null nếu chưa biết tiến độ.
+  const blob = await myRenderer.export({ engine, environment, exposure, intensity, signal });
+  onProgress(100);
+  return blob; // Blob ảnh PNG/JPEG.
+};
+modal.update({ ...props, mode: &#x27;render&#x27;, render });
+</code></pre><p>Cancel trong UI abort yêu cầu client và gửi POST /jobs/{id}/cancel nếu đã có job ID. Unmount và Escape abort yêu cầu client; không đảm bảo job upstream đã hủy. onClose chỉ là thông báo yêu cầu đóng, host phải gọi unmount để dọn modal.</p><h2>4. Prompt và tách biệt nghiệp vụ</h2><p>Remote không có thương hiệu, mô tả sản phẩm, quy tắc camera, cảnh công nghiệp, tên file hay môi trường riêng của Aardwolf. Tất cả chính sách sản phẩm do host truyền. systemPrompt chỉ là tên prop; API hiện nhận một chuỗi prompt duy nhất.</p><p>Thứ tự ghép, bỏ qua phần rỗng:</p><pre><code>systemPrompt
+scenePrompt
+scenes[selectedSceneId].prompt
+contextPrompt
+OUTPUT ASPECT RATIO: &lt;ratio&gt; (width:height).
+Camera metadata: &lt;JSON&gt;.
+prompt (nội dung hiện tại trong ô nhập)
+</code></pre><p>Đổi prop prompt bằng update sẽ cập nhật ô nhập. Nếu giữ nguyên giá trị prompt, thao tác rerender của host không xóa nội dung người dùng đang sửa. initialSceneId và initialAspectRatio chỉ dùng lúc mount; muốn reset hoàn toàn lựa chọn hãy unmount và mount element mới. scenes có thể update, nếu scene cũ không còn tồn tại thì chọn scene đầu tiên.</p><p>Host Aardwolf giữ riêng policy logo/máy/camera, danh sách scene và ánh xạ môi trường trong src/rendering/renderModalConfig.js. Consumer khác truyền chính sách của mình và không nhận các quy tắc đó. Prop workingEnvironment cũ đã được thay bằng contextPrompt tự do; scene mặc định cũ phải chuyển thành scenes do host truyền.</p><h2>5. Hợp đồng HTTP của mode realistic</h2><p>Tất cả đường dẫn dưới đây nối vào apiBase. Header: Content-Type: application/json; không gắn Authorization.</p><table><thead><tr><th>Method</th><th>Đường dẫn</th><th>Mục đích</th></tr></thead><tbody><tr><td>POST</td><td>/jobs/edit-full</td><td>Tạo job với ảnh tham chiếu</td></tr><tr><td>GET</td><td>/jobs/{id}</td><td>Poll trạng thái</td></tr><tr><td>POST</td><td>/jobs/{id}/cancel</td><td>Yêu cầu hủy</td></tr></tbody></table><pre><code>{
+  &quot;engine&quot;: &quot;chatgpt&quot;,
+  &quot;job_type&quot;: &quot;edit_full&quot;,
+  &quot;prompt&quot;: &quot;Prompt được modal tổng hợp...&quot;,
+  &quot;new_chat&quot;: false,
+  &quot;reference_images&quot;: [&quot;data:image/png;base64,...&quot;],
+  &quot;aspect_ratio&quot;: &quot;4:3&quot;
+}
+</code></pre><pre><code>{
+  &quot;id&quot;: &quot;job-id&quot;,
+  &quot;status&quot;: &quot;running&quot;,
+  &quot;progress&quot;: 25
+}
+</code></pre><pre><code>{
+  &quot;id&quot;: &quot;job-id&quot;,
+  &quot;status&quot;: &quot;completed&quot;,
+  &quot;result_image_url&quot;: &quot;https://example.com/result.png&quot;
+}
+</code></pre><p>Parser cũng nhận job lồng trong <code>{ &quot;job&quot;: {...} }</code>, ID trong job_id và ảnh trong outputs gồm phần tử <code>{ &quot;type&quot;: &quot;image&quot;, &quot;url&quot;: &quot;...&quot; }</code>. Trạng thái thất bại: failed, error, cancelled, canceled. Poll khoảng 2 giây; giới hạn chờ phía client là 20 phút. Lỗi fetch/5xx khi poll được thử lại trong giới hạn này. Lỗi hiển thị trong modal và gửi qua onError.</p><p>Nếu dùng API khác domain, API phải cho phép CORS cho origin của host. Remote assets đã có CORS; điều này độc lập với CORS của API. Không truyền secret trong props frontend.</p><h2>6. Build, deploy và kiểm chứng</h2><p>Source: modules/render-modal trong repo Aardwolf. Build từ repo root:</p><pre><code>npm run build:render-modal
+</code></pre><p>Deploy nội dung modules/render-modal/dist vào /render-modal/ trên GenAI. Giữ các chunk hash cũ, cập nhật remoteEntry.js sau khi chunk mới đã có; remoteEntry cần revalidate và MIME JavaScript đúng. Docs nằm trong public/docs nên được giữ qua các lần build.</p><p>Host Aardwolf có thể đổi URL bằng biến VITE_RENDER_MODAL_REMOTE rồi restart Vite/rebuild. Adapter host có Retry/Close nếu remote không tải được.</p><p>Kiểm chứng đã thực hiện: remote/chunk và ảnh nền thật trên production; mock phản hồi tạo/poll job để kiểm tra data URL, tỷ lệ 4:3, hiển thị kết quả và đóng. Chưa chạy một lượt tạo ảnh AI thực tế trong bài kiểm chứng Module Federation.</p><h2>7. Mobile layout</h2><p>Remote tự chuyển sang bố cục mobile khi màn hình rộng tối đa 767px hoặc cao tối đa 500px. Điện thoại dọc dùng preview phía trên và điều khiển phía dưới trong một vùng cuộn; landscape thấp dùng hai cột. Nút thao tác có vùng chạm tối thiểu 44px, ô prompt dùng font 16px, hỗ trợ safe-area và chiều cao visualViewport khi bàn phím thay đổi. Mount khóa cuộn trang phía sau, unmount phục hồi overflow.</p><p>Đã kiểm tra trình duyệt mô phỏng touch tại 320×568, 390×844, 768×1024 và 844×390 cho realistic/render/capture: không tràn ngang, nhập prompt, truy cập tải ảnh, đóng và phục hồi cuộn. Bàn phím hệ điều hành và safe-area trên thiết bị thật chưa được kiểm tra trực tiếp.</p></main></body></html>

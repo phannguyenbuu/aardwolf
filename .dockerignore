@@ -1,0 +1,10 @@
+.git
+node_modules
+dist
+build
+ref
+Vacumn
+app_vacuum_resource
+*.zip
+*.pdf
+.env*

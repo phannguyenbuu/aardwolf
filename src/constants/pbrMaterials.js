@@ -8,22 +8,28 @@
  * - C2 WebGPU Renderer (Anisotropic specular highlights)
  */
 import * as THREE from 'three';
+import { STANDARD_MATERIALS } from './standardMaterials.js';
 
 export const PBR_MATERIAL_CATEGORIES = {
-    METALS: 'Kim loại (Metals)',
-    GLASS: 'Kính & Trong suốt (Glass & Optics)',
-    PLASTICS: 'Nhựa & Lớp phủ (Polymers & Enamels)',
-    RUBBERS: 'Cao su & Giác hút (Rubbers & Suction)'
+    METALS: 'Metals',
+    GLASS: 'Glass & Optics',
+    PLASTICS: 'Polymers & Enamels',
+    RUBBERS: 'Rubbers & Suction',
+    SURFACES: 'Ground & Surfaces'
 };
 
-export const PBR_MATERIALS = [
+export const LEGACY_PBR_MATERIALS = [
+    {
+        id: 'workpiece_wood', name: 'Workpiece Wood', category: PBR_MATERIAL_CATEGORIES.SURFACES,
+        params: { color: '#ffffff', roughness: 0.85, metalness: 0, diffuseImage: '/textures/workpiece-wood.png' }
+    },
     // ==========================================
     // METALS (KIM LOẠI)
     // ==========================================
     {
         id: 'gold_24k',
         category: PBR_MATERIAL_CATEGORIES.METALS,
-        name: 'Vàng 24K Hoàng Gia (24K Royal Gold)',
+        name: '24K Royal Gold',
         previewColor: '#FFD700',
         badge: 'Precious',
         params: {
@@ -38,7 +44,7 @@ export const PBR_MATERIALS = [
     {
         id: 'gold_rose',
         category: PBR_MATERIAL_CATEGORIES.METALS,
-        name: 'Vàng Hồng Quý Phái (Rose Gold)',
+        name: 'Rose Gold',
         previewColor: '#B76E79',
         badge: 'Precious',
         params: {
@@ -52,7 +58,7 @@ export const PBR_MATERIALS = [
     {
         id: 'aluminum_brushed',
         category: PBR_MATERIAL_CATEGORIES.METALS,
-        name: 'Nhôm Phay Xước (Brushed Aluminum)',
+        name: 'Brushed Aluminum',
         previewColor: '#D1D5DB',
         badge: 'Industrial',
         params: {
@@ -66,7 +72,7 @@ export const PBR_MATERIALS = [
     {
         id: 'aluminum_polished',
         category: PBR_MATERIAL_CATEGORIES.METALS,
-        name: 'Nhôm Đánh Bóng (Polished Aluminum)',
+        name: 'Polished Aluminum',
         previewColor: '#E5E7EB',
         badge: 'Specular',
         params: {
@@ -80,7 +86,7 @@ export const PBR_MATERIALS = [
     {
         id: 'copper',
         category: PBR_MATERIAL_CATEGORIES.METALS,
-        name: 'Đồng Đỏ Nguyên Chất (Pure Red Copper)',
+        name: 'Pure Red Copper',
         previewColor: '#C87A5B',
         badge: 'Pure Metal',
         params: {
@@ -94,7 +100,7 @@ export const PBR_MATERIALS = [
     {
         id: 'brass',
         category: PBR_MATERIAL_CATEGORIES.METALS,
-        name: 'Đồng Thau Công Nghiệp (Industrial Brass)',
+        name: 'Industrial Brass',
         previewColor: '#D4AF37',
         badge: 'Alloy',
         params: {
@@ -108,7 +114,7 @@ export const PBR_MATERIALS = [
     {
         id: 'steel_brushed',
         category: PBR_MATERIAL_CATEGORIES.METALS,
-        name: 'Thép Không Gỉ Xước (Brushed Stainless Steel)',
+        name: 'Brushed Stainless Steel',
         previewColor: '#8A9EA7',
         badge: 'Structural',
         params: {
@@ -122,7 +128,7 @@ export const PBR_MATERIALS = [
     {
         id: 'chrome_mirror',
         category: PBR_MATERIAL_CATEGORIES.METALS,
-        name: 'Mạ Crom Bóng Gương (Mirror Polished Chrome)',
+        name: 'Mirror Polished Chrome',
         previewColor: '#F8FAFC',
         badge: 'Ultra Mirror',
         params: {
@@ -137,7 +143,7 @@ export const PBR_MATERIALS = [
     {
         id: 'titanium_dark',
         category: PBR_MATERIAL_CATEGORIES.METALS,
-        name: 'Titan Gunmetal Xám (Dark Titanium)',
+        name: 'Dark Titanium',
         previewColor: '#475569',
         badge: 'Aerospace',
         params: {
@@ -151,7 +157,7 @@ export const PBR_MATERIALS = [
     {
         id: 'cast_iron',
         category: PBR_MATERIAL_CATEGORIES.METALS,
-        name: 'Gang Đúc Nhám (Rough Cast Iron)',
+        name: 'Rough Cast Iron',
         previewColor: '#27272A',
         badge: 'Heavy Cast',
         params: {
@@ -168,7 +174,7 @@ export const PBR_MATERIALS = [
     {
         id: 'glass_clear',
         category: PBR_MATERIAL_CATEGORIES.GLASS,
-        name: 'Kính Trắng Siêu Trong (Ultra-Clear Float Glass)',
+        name: 'Ultra-Clear Float Glass',
         previewColor: '#E2E8F0',
         badge: 'Float Glass',
         params: {
@@ -185,7 +191,7 @@ export const PBR_MATERIALS = [
     {
         id: 'glass_amber',
         category: PBR_MATERIAL_CATEGORIES.GLASS,
-        name: 'Kính Hấp Thụ Hổ Phách (Amber Absorption Glass)',
+        name: 'Amber Absorption Glass',
         previewColor: '#CD5615',
         badge: 'Absorption',
         params: {
@@ -203,7 +209,7 @@ export const PBR_MATERIALS = [
     {
         id: 'glass_tinted_blue',
         category: PBR_MATERIAL_CATEGORIES.GLASS,
-        name: 'Kính Lọc Xanh Biển (Cyan/Blue Tinted Glass)',
+        name: 'Cyan/Blue Tinted Glass',
         previewColor: '#38BDF8',
         badge: 'Solar Tint',
         params: {
@@ -221,7 +227,7 @@ export const PBR_MATERIALS = [
     {
         id: 'glass_emerald',
         category: PBR_MATERIAL_CATEGORIES.GLASS,
-        name: 'Kính Xanh Lục Bảo (Emerald Architectural Glass)',
+        name: 'Emerald Architectural Glass',
         previewColor: '#10B981',
         badge: 'Tinted',
         params: {
@@ -239,7 +245,7 @@ export const PBR_MATERIALS = [
     {
         id: 'glass_frosted',
         category: PBR_MATERIAL_CATEGORIES.GLASS,
-        name: 'Kính Mờ Phun Cát (Frosted Sandblasted Glass)',
+        name: 'Frosted Sandblasted Glass',
         previewColor: '#CBD5E1',
         badge: 'Diffused',
         params: {
@@ -255,7 +261,7 @@ export const PBR_MATERIALS = [
     {
         id: 'glass_dispersion',
         category: PBR_MATERIAL_CATEGORIES.GLASS,
-        name: 'Kính Lăng Kính Tán Sắc (Dispersion Prism Glass)',
+        name: 'Dispersion Prism Glass',
         previewColor: '#A855F7',
         badge: 'Dispersion',
         params: {
@@ -276,7 +282,7 @@ export const PBR_MATERIALS = [
     {
         id: 'plastic_yellow_aardwolf',
         category: PBR_MATERIAL_CATEGORIES.PLASTICS,
-        name: 'Vàng An Toàn Aardwolf (Aardwolf Safety Yellow)',
+        name: 'Aardwolf Safety Yellow',
         previewColor: '#F59E0B',
         badge: 'OEM Coating',
         params: {
@@ -291,7 +297,7 @@ export const PBR_MATERIALS = [
     {
         id: 'plastic_crimson_gloss',
         category: PBR_MATERIAL_CATEGORIES.PLASTICS,
-        name: 'Nhựa Đỏ Bóng Cao Cấp (Glossy Crimson Enamel)',
+        name: 'Glossy Crimson Enamel',
         previewColor: '#DC2626',
         badge: 'High Gloss',
         params: {
@@ -305,7 +311,7 @@ export const PBR_MATERIALS = [
     {
         id: 'plastic_piano_black',
         category: PBR_MATERIAL_CATEGORIES.PLASTICS,
-        name: 'Nhựa Đen Bóng Piano (Glossy Jet Piano Black)',
+        name: 'Glossy Jet Piano Black',
         previewColor: '#111827',
         badge: 'Piano Finish',
         params: {
@@ -319,7 +325,7 @@ export const PBR_MATERIALS = [
     {
         id: 'plastic_white_enamel',
         category: PBR_MATERIAL_CATEGORIES.PLASTICS,
-        name: 'Nhựa Men Trắng Sứ (Glossy Ceramic White)',
+        name: 'Glossy Ceramic White',
         previewColor: '#F9FAFB',
         badge: 'Ceramic Enamel',
         params: {
@@ -333,7 +339,7 @@ export const PBR_MATERIALS = [
     {
         id: 'plastic_matte_abs',
         category: PBR_MATERIAL_CATEGORIES.PLASTICS,
-        name: 'Nhựa Kỹ Thuật ABS Nhám (Matte Heavy ABS)',
+        name: 'Matte Heavy ABS',
         previewColor: '#374151',
         badge: 'Matte ABS',
         params: {
@@ -346,7 +352,7 @@ export const PBR_MATERIALS = [
     {
         id: 'polymer_polycarbonate',
         category: PBR_MATERIAL_CATEGORIES.PLASTICS,
-        name: 'Nhựa Bán Trong Polycarbonate (Translucent PC)',
+        name: 'Translucent PC',
         previewColor: '#94A3B8',
         badge: 'Translucent',
         params: {
@@ -366,7 +372,7 @@ export const PBR_MATERIALS = [
     {
         id: 'rubber_suction_pad',
         category: PBR_MATERIAL_CATEGORIES.RUBBERS,
-        name: 'Cao Su Giác Hút NBR Đen (Vacuum Suction Pad)',
+        name: 'Vacuum Suction Pad',
         previewColor: '#18181B',
         badge: 'Heavy Grip',
         params: {
@@ -379,7 +385,7 @@ export const PBR_MATERIALS = [
     {
         id: 'rubber_silicone_orange',
         category: PBR_MATERIAL_CATEGORIES.RUBBERS,
-        name: 'Cao Su Silicone Cam Chịu Nhiệt (Orange Silicone)',
+        name: 'Orange Silicone',
         previewColor: '#EA580C',
         badge: 'High Heat',
         params: {
@@ -392,7 +398,7 @@ export const PBR_MATERIALS = [
     {
         id: 'rubber_corrugated_tube',
         category: PBR_MATERIAL_CATEGORIES.RUBBERS,
-        name: 'Cao Su Gân Ống Bellows (Corrugated Bellows)',
+        name: 'Corrugated Bellows',
         previewColor: '#27272A',
         badge: 'Flexible Bellow',
         params: {
@@ -401,6 +407,11 @@ export const PBR_MATERIALS = [
             roughness: 0.82,
             clearcoat: 0.05
         }
+    },
+    {
+        id: 'concrete_ground', category: PBR_MATERIAL_CATEGORIES.SURFACES,
+        name: 'Matte Ground', previewColor: '#c6cbd2', badge: 'Surface',
+        params: { color: 0xc6cbd2, roughness: 0.7, metalness: 0, clearcoat: 0 }
     }
 ];
 
@@ -410,10 +421,129 @@ export const PBR_MATERIALS = [
  * @param {object} [customOverrides] Optional physical overrides (roughness, metalness, clearcoat, transmission, ior)
  * @returns {THREE.MeshPhysicalMaterial}
  */
-export function createPBRMaterial(materialId, customOverrides = null) {
-    const matDef = PBR_MATERIALS.find(m => m.id === materialId) || PBR_MATERIALS[0];
+const diffuseTextureCache = new Map();
+const surfaceTextureCache = new Map();
+function getSurfaceDetail(kind) {
+    if (surfaceTextureCache.has(kind)) return surfaceTextureCache.get(kind);
+    const size = 128, rough = new Uint8Array(size * size * 4), normal = new Uint8Array(size * size * 4);
+    let seed = 73;
+    const random = () => { seed = (1664525 * seed + 1013904223) >>> 0; return seed / 4294967296; };
+    for (let y = 0; y < size; y++) {
+        const band = random();
+        for (let x = 0; x < size; x++) {
+            const i = (y * size + x) * 4;
+            const noise = kind === 'brushed' ? band * 0.85 + random() * 0.15 : random();
+            const r = Math.round(220 + noise * 35);
+            rough.set([r, r, r, 255], i);
+            const bump = Math.round((noise - 0.5) * (kind === 'brushed' ? 12 : 18));
+            normal.set([128 + (kind === 'brushed' ? 0 : bump), 128 + bump, 255, 255], i);
+        }
+    }
+    const make = data => { const texture = new THREE.DataTexture(data, size, size); texture.wrapS = texture.wrapT = THREE.RepeatWrapping; texture.repeat.set(kind === 'brushed' ? 4 : 12, kind === 'brushed' ? 16 : 12); texture.magFilter = THREE.LinearFilter; texture.minFilter = THREE.LinearMipmapLinearFilter; texture.generateMipmaps = true; texture.needsUpdate = true; return texture; };
+    const result = { roughness: make(rough), normal: make(normal) };
+    surfaceTextureCache.set(kind, result); return result;
+}
+export const PBR_MATERIALS = STANDARD_MATERIALS;
+export function createPBRMaterial(materialId, customOverrides = null, definitions = {}) {
+    if (customOverrides?.originalSurfaces?.length) {
+        const { originalSurfaces, ...shared } = customOverrides;
+        const materials = originalSurfaces.map(surface => surface.presetId
+            ? createPBRMaterial(surface.presetId, { ...shared, ...definitions[surface.presetId] }, definitions)
+            : createPBRMaterial(materialId, { ...shared, ...surface }, definitions));
+        return materials.length === 1 ? materials[0] : materials;
+    }
+    const matDef = [...PBR_MATERIALS, ...LEGACY_PBR_MATERIALS].find(m => m.id === materialId || (materialId === 'white_electrical_cabinet' && m.id === 'white_plastic')) || PBR_MATERIALS[3];
     const params = { ...matDef.params, ...(customOverrides || {}) };
+    const edgeChamferRadius = params.edgeChamferRadius ?? 0;
+    delete params.edgeChamferRadius;
+    const diffuseImage = params.diffuseImage;
+    const diffuseContrast = params.diffuseContrast ?? 1;
+    delete params.diffuseContrast;
+    const uvw = params.diffuseUVW || params.uvw || {};
+    const bumpUVW = params.bumpUVW || params.uvw || {};
+    delete params.diffuseUVW;
+    delete params.bumpUVW;
+    delete params.diffuseImage;
+    delete params.workpieceTextureApplied;
+    delete params.groundDefaultApplied;
+    delete params.fourMaterialDefaults;
+    delete params.chromeDefaultsApplied;
+    delete params.plasticDiffuseVersion;
+    delete params.rubberTextureVersion;
+    delete params.uvw;
+    const surface = /brushed/.test(materialId) ? getSurfaceDetail('brushed') : /rubber|abs_matte/.test(materialId) ? getSurfaceDetail('rubber') : null;
+    if (surface) {
+        params.roughnessMap = surface.roughness;
+        params.normalMap = surface.normal;
+        params.normalScale = new THREE.Vector2(0.25, 0.25);
+    }
+    if (diffuseImage) {
+        const textureKey = diffuseImage + JSON.stringify(uvw) + ":contrast:" + diffuseContrast;
+        if (!diffuseTextureCache.has(textureKey)) {
+            const texture = new THREE.TextureLoader().load(diffuseImage, loaded => {
+                if (diffuseContrast === 1) { loaded.userData.ready = true; loaded.userData.pendingCopies?.forEach(copy => { copy.image = loaded.image; copy.needsUpdate = true; }); return; }
+                const canvas = document.createElement('canvas');
+                canvas.width = loaded.image.width;
+                canvas.height = loaded.image.height;
+                const context = canvas.getContext('2d');
+                context.filter = `contrast(${diffuseContrast})`;
+                context.drawImage(loaded.image, 0, 0);
+                loaded.image = canvas;
+                loaded.needsUpdate = true;
+                loaded.userData.ready = true;
+                loaded.userData.pendingCopies?.forEach(copy => { copy.image = loaded.image; copy.needsUpdate = true; });
+                loaded.userData.pendingCopies?.clear();
+            });
+            texture.colorSpace = THREE.SRGBColorSpace;
+            diffuseTextureCache.set(textureKey, texture);
+        }
+        params.map = diffuseTextureCache.get(textureKey);
+        params.map.wrapS = params.map.wrapT = uvw.type === 'clamp' ? THREE.ClampToEdgeWrapping : uvw.type === 'mirror' ? THREE.MirroredRepeatWrapping : THREE.RepeatWrapping;
+        params.map.repeat.set(uvw.tileU ?? 1, uvw.tileV ?? 1);
+        params.map.offset.set(uvw.offsetU ?? 0, uvw.offsetV ?? 0);
+        params.map.center.set(0.5, 0.5);
+        params.map.rotation = THREE.MathUtils.degToRad(uvw.rotation || 0);
+        if (params.map.image) params.map.needsUpdate = true;
+        params.color = '#ffffff';
+    }
     
+    // Derive a high-contrast grayscale bump from the same source image.
+    if (params.bumpImage) {
+        const bumpImage = params.bumpImage;
+        const contrast = params.bumpContrast ?? 100;
+        const key = bumpImage + ':bump:' + contrast + JSON.stringify(bumpUVW);
+        if (!diffuseTextureCache.has(key)) {
+            const bump = new THREE.TextureLoader().load(bumpImage, loaded => {
+                const canvas = document.createElement('canvas');
+                canvas.width = loaded.image.width;
+                canvas.height = loaded.image.height;
+                const context = canvas.getContext('2d');
+                context.filter = `grayscale(1) contrast(${contrast})`;
+                context.drawImage(loaded.image, 0, 0);
+                loaded.image = canvas;
+                loaded.needsUpdate = true;
+                loaded.userData.ready = true;
+                loaded.userData.pendingCopies?.forEach(copy => { copy.image = loaded.image; copy.needsUpdate = true; });
+                loaded.userData.pendingCopies?.clear();
+            });
+            bump.colorSpace = THREE.NoColorSpace;
+            diffuseTextureCache.set(key, bump);
+        }
+        params.bumpMap = diffuseTextureCache.get(key);
+        params.bumpMap.wrapS = params.bumpMap.wrapT = THREE.RepeatWrapping;
+        params.bumpMap.repeat.set(bumpUVW.tileU ?? 1, bumpUVW.tileV ?? 1);
+        params.bumpMap.offset.set(bumpUVW.offsetU ?? 0, bumpUVW.offsetV ?? 0);
+        params.bumpMap.center.set(.5, .5);
+        params.bumpMap.rotation = THREE.MathUtils.degToRad(bumpUVW.rotation || 0);
+    }
+    if (params.bumpImage) {
+        // The supplied bump controls relief; procedural normals would mask its grain.
+        delete params.normalMap;
+        delete params.normalScale;
+    }
+    delete params.bumpImage;
+    delete params.bumpContrast;
+
     // Ensure Color instance
     if (typeof params.color === 'number' || typeof params.color === 'string') {
         params.color = new THREE.Color(params.color);
@@ -424,23 +554,94 @@ export function createPBRMaterial(materialId, customOverrides = null) {
 
     const mat = new THREE.MeshPhysicalMaterial(params);
     mat.userData = { 
+        edgeChamferRadius,
         materialId: matDef.id, 
         materialName: matDef.name,
         customParams: customOverrides || {}
     };
+    mat.userData.textureMapping = { diffuse: uvw, bump: bumpUVW };
+    if (materialId === 'blank_white') {
+        // Keep a white backdrop while compositing the shadow mask independently of HDR exposure.
+        mat.toneMapped = false;
+        mat.userData.shadowDarknessUniform = { value: 1 };
+        mat.onBeforeCompile = shader => {
+            shader.uniforms.groundShadowDarkness = mat.userData.shadowDarknessUniform;
+            shader.vertexShader = 'varying vec3 vGroundWorldPosition;\n' + shader.vertexShader;
+            shader.vertexShader = shader.vertexShader.replace('#include <begin_vertex>', '#include <begin_vertex>\nvGroundWorldPosition = (modelMatrix * vec4(position, 1.0)).xyz;');
+            shader.fragmentShader = 'uniform float groundShadowDarkness; varying vec3 vGroundWorldPosition;\n' + shader.fragmentShader;
+            shader.fragmentShader = shader.fragmentShader.replace('#include <shadowmap_pars_fragment>', '#include <shadowmap_pars_fragment>\n#include <shadowmask_pars_fragment>');
+            shader.fragmentShader = shader.fragmentShader.replace('#include <opaque_fragment>', 'float groundShadow = clamp((1.0 - getShadowMask()) * groundShadowDarkness, 0.0, 1.0); float groundFade = 1.0 - smoothstep(6500.0, 10000.0, length(vGroundWorldPosition.xz)); outgoingLight = mix(vec3(1.0), diffuse * (1.0 - groundShadow * 0.85), groundFade);\n#include <opaque_fragment>');
+        };
+        mat.customProgramCacheKey = () => 'blank-white-shadow-mask-fade';
+    }
+
     return mat;
 }
 
+export function applyWorldTextureSize(mesh, material) {
+    const materials = Array.isArray(material) ? material : [material];
+    const sourceGeometry = mesh.userData.textureMappingSourceGeometry || mesh.geometry;
+    mesh.userData.textureMappingSourceGeometry = sourceGeometry;
+    if (!materials.some(mat => Object.values(mat.userData.textureMapping || {}).some(mapping => mapping.worldSize))) {
+        if (mesh.geometry !== sourceGeometry) { mesh.geometry.dispose(); mesh.geometry = sourceGeometry; }
+        return;
+    }
+    mesh.updateWorldMatrix(true, false);
+    const previousGeometry = mesh.geometry;
+    const geometry = sourceGeometry.index ? sourceGeometry.toNonIndexed() : sourceGeometry.clone();
+    const positions = geometry.attributes.position;
+    const uv = geometry.attributes.uv ? geometry.attributes.uv.clone() : new THREE.BufferAttribute(new Float32Array(positions.count * 2), 2);
+    const normalMatrix = new THREE.Matrix3().getNormalMatrix(mesh.matrixWorld);
+    const normal = new THREE.Vector3(), point = new THREE.Vector3();
+    const groups = geometry.groups.length ? geometry.groups : [{ start: 0, count: positions.count, materialIndex: 0 }];
+    for (const group of groups) {
+        const mat = materials[group.materialIndex];
+        if (!mat || !Object.values(mat.userData.textureMapping || {}).some(mapping => mapping.worldSize)) continue;
+        for (let i = group.start; i < group.start + group.count; i += 3) {
+            // One projection per triangle prevents UV seams inside a face.
+            const a = new THREE.Vector3().fromBufferAttribute(positions, i);
+            const b = new THREE.Vector3().fromBufferAttribute(positions, i + 1);
+            const c = new THREE.Vector3().fromBufferAttribute(positions, i + 2);
+            normal.crossVectors(b.sub(a), c.sub(a)).applyNormalMatrix(normalMatrix);
+            const axis = Math.abs(normal.x) > Math.abs(normal.y) && Math.abs(normal.x) > Math.abs(normal.z) ? 'x' : Math.abs(normal.y) > Math.abs(normal.z) ? 'y' : 'z';
+            for (let j = i; j < i + 3; j++) {
+                point.fromBufferAttribute(positions, j).applyMatrix4(mesh.matrixWorld);
+                uv.setXY(j, axis === 'x' ? point.z : point.x, axis === 'y' ? point.z : point.y);
+            }
+        }
+    }
+    geometry.setAttribute('uv', uv);
+    mesh.geometry = geometry;
+    if (previousGeometry !== sourceGeometry) previousGeometry.dispose();
+    for (const mat of materials) {
+        for (const [channel, mapKey] of [['diffuse', 'map'], ['bump', 'bumpMap']]) {
+            const mapping = mat.userData.textureMapping?.[channel];
+            const texture = mat[mapKey];
+            if (!texture || !mapping?.worldSize) continue;
+            const own = texture.clone();
+            own.repeat.set((mapping.tileU ?? 1) / Math.max(.01, mapping.sizeX ?? 100), (mapping.tileV ?? 1) / Math.max(.01, mapping.sizeY ?? 100));
+            if (texture.userData.ready || texture.image?.complete || texture.image?.data) own.needsUpdate = true;
+            else {
+                texture.userData.pendingCopies ||= new Set();
+                texture.userData.pendingCopies.add(own);
+            }
+            mat[mapKey] = own;
+        }
+    }
+}
+
 export const PART_LABELS = {
-    crane: 'Crane Arm (Khung Cần Cẩu)',
-    pump: 'Vacuum Pump (Thân Bơm)',
-    tube: 'Vacuum Tube (Ống Nâng)',
-    head: 'Handle Unit (Tay Điều Khiển)',
-    suction: 'Suction Cups (Giác Hút)',
-    workpiece: 'Workpiece (Tấm Phôi Hút)'
+    ground: 'Ground Plane',
+    crane: 'Crane Arm',
+    pump: 'Vacuum Pump',
+    tube: 'Vacuum Tube',
+    head: 'Handle Unit',
+    suction: 'Suction Cups',
+    workpiece: 'Workpiece'
 };
 
 export const PART_ICONS = {
+    ground: '▱',
     crane: '🏗️',
     pump: '⚡',
     tube: '🌀',
@@ -449,6 +650,7 @@ export const PART_ICONS = {
     workpiece: '📦'
 };
 
+const FOUR_MATERIAL_PRESETS = [{ name: 'Standard Materials', mats: { crane: 'orange_painted_metal', pump: 'silver_metal', tube: 'yellow_tube_logo', head: 'silver_metal', suction: 'black_rubber' } }];
 export const PBR_PRESETS = [
     {
         name: '⭐ 24K Luxury Gold',
@@ -506,3 +708,4 @@ export const PBR_PRESETS = [
         }
     }
 ];
+

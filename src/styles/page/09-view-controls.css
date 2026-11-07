@@ -1,0 +1,152 @@
+/* Modern Floating View Controls Toolbar */
+.view-controls-floating {
+    position: absolute;
+    top: 15vh;
+    left: 50vw;
+    width: 44%;
+    height: 64vh;
+    pointer-events: none;
+    z-index: 1001;
+}
+
+.view-back-pill {
+    position: absolute;
+    top: 14px;
+    right: 16px;
+    pointer-events: auto;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    color: #333;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+}
+
+.view-back-pill:hover {
+    background: #ffffff;
+    transform: translateX(-2px);
+}
+
+.view-toolbar-pill {
+    position: absolute;
+    bottom: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    pointer-events: auto;
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding: 4px 8px;
+    border-radius: 30px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.14);
+    border: 1px solid rgba(255, 255, 255, 0.85);
+    white-space: nowrap;
+}
+
+.view-toolbar-divider {
+    width: 1px;
+    height: 20px;
+    background: rgba(0, 0, 0, 0.12);
+    margin: 0 4px;
+}
+
+.view-pill-btn {
+    border: none;
+    background: transparent;
+    padding: 5px 8px;
+    border-radius: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #444;
+    transition: all 0.18s ease;
+}
+
+.view-pill-btn img {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+}
+
+.view-pill-btn:hover {
+    background: rgba(0, 0, 0, 0.06);
+    color: #CC2200;
+    transform: translateY(-1px);
+}
+
+.view-pill-btn.active-orbit {
+    color: #CC2200;
+}
+
+.view-pill-btn.fullscreen-btn {
+    color: #555;
+}
+
+.view-pill-btn.fullscreen-btn:hover {
+    color: #CC2200;
+}
+
+.btn-label {
+    font-size: 12px;
+}
+
+/* Fullscreen Active Mode */
+.show-3d-active .three-viewport-wrapper {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    max-height: 100vh !important;
+    z-index: 10000 !important;
+    border-radius: 0 !important;
+}
+
+.show-3d-active #threejs-container {
+    height: calc(100vh - 240px) !important;
+    max-height: calc(100vh - 240px) !important;
+}
+
+.show-3d-active .view-controls-floating {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    z-index: 10001 !important;
+    padding: 24px;
+}
+
+#progressBar {
+    width: 260px;
+    height: 20px;
+}
+
+#progressBarContainer {
+    position: fixed;
+    top: 45vh;
+    left: 60vw;
+    z-index: 9999;
+    border-radius: 10px;
+    background-color: #fff;
+    padding: 20px;
+    max-width: 300px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+#threejs-container canvas {
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
+    outline: none;
+}

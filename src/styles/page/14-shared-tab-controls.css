@@ -1,0 +1,342 @@
+/* Tab Section Cards */
+.tab-section-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 14px 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.section-card-header {
+    font-size: 13px;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 12px;
+}
+
+/* Part Selection Grid */
+.part-selection-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 8px;
+}
+
+.part-pill-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 10px;
+    background: #f8fafc;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #334155;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+}
+
+.part-pill-btn:hover {
+    border-color: #94a3b8;
+    background: #f1f5f9;
+}
+
+.part-pill-btn.active {
+    background: #eff6ff;
+    border-color: #3b82f6;
+    color: #1d4ed8;
+    font-weight: 700;
+    box-shadow: 0 0 0 1px #3b82f6;
+}
+
+/* Material Swatches Grid */
+.material-swatches-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.swatch-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    border: 2px solid #ffffff;
+    box-shadow: 0 0 0 1px #cbd5e1;
+    cursor: pointer;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.15s ease;
+}
+
+.swatch-btn:hover {
+    transform: scale(1.15);
+}
+
+.swatch-btn.active {
+    box-shadow: 0 0 0 2.5px #CC2200;
+    transform: scale(1.1);
+}
+
+.swatch-check {
+    color: #ffffff;
+    font-weight: 900;
+    font-size: 14px;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+/* PBR Slider Group */
+.pbr-slider-group {
+    background: #f8fafc;
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid #f1f5f9;
+}
+
+.slider-label-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #475569;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.color-input-picker {
+    width: 36px;
+    height: 30px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    padding: 0;
+    background: transparent;
+}
+
+.color-hex-tag {
+    font-size: 12px;
+    font-family: monospace;
+    font-weight: 700;
+    color: #334155;
+    background: #e2e8f0;
+    padding: 3px 8px;
+    border-radius: 4px;
+}
+
+/* Light Sources Sub-tabs in Environment Tab */
+.light-tabs-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.light-tab-btn {
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    color: #475569;
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.light-tab-btn:hover {
+    background: #e2e8f0;
+    color: #0f172a;
+}
+
+.light-tab-btn.active {
+    background: #0f172a;
+    color: #ffffff;
+    border-color: #0f172a;
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.25);
+}
+
+.light-subpanel {
+    background: #ffffff;
+    border-radius: 8px;
+    padding: 6px 2px;
+}
+
+/* Environment Theme Grid */
+.env-theme-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.env-card-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 10px 12px;
+    background: #f8fafc;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+}
+
+.env-card-btn:hover {
+    border-color: #94a3b8;
+    background: #f1f5f9;
+}
+
+.env-card-btn.active {
+    border-color: #CC2200;
+    background: #fff5f5;
+    box-shadow: 0 0 0 1px #CC2200;
+}
+
+.env-card-btn .theme-name {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.env-card-btn .theme-sub {
+    font-size: 12px;
+    color: #64748b;
+    margin-top: 2px;
+}
+
+/* Wavelet Filter Card */
+.wavelet-filter-card {
+    border-color: #86efac;
+    background: #fbfdfc;
+}
+
+/* Preset Banners */
+.preset-banner-btn {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 10px 14px;
+    background: #f8fafc;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s ease;
+}
+
+.preset-banner-btn:hover {
+    border-color: #CC2200;
+    background: #fff8f8;
+    transform: translateY(-1px);
+}
+
+.preset-materials-mini-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 6px;
+}
+
+.mini-tag {
+    font-size: 12px;
+    color: #475569;
+    background: #e2e8f0;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 600;
+}
+
+/* Materials Catalog Grid */
+.category-filter-bar {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+}
+
+.cat-pill {
+    border: 1px solid #cbd5e1;
+    background: #f8fafc;
+    color: #475569;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 14px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.cat-pill.active {
+    background: #0f172a;
+    color: #ffffff;
+    border-color: #0f172a;
+}
+
+.materials-catalog-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(135px, 1fr));
+    gap: 8px;
+    max-height: 380px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.mat-catalog-card {
+    display: flex;
+    flex-direction: column;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: #ffffff;
+}
+
+.mat-catalog-card:hover {
+    border-color: #94a3b8;
+    transform: translateY(-1px);
+}
+
+.mat-catalog-card.active {
+    border-color: #CC2200;
+    box-shadow: 0 0 0 1px #CC2200;
+}
+
+.mat-card-swatch {
+    height: 48px;
+    width: 100%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mat-check-badge {
+    color: #ffffff;
+    font-weight: 900;
+    font-size: 16px;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+.mat-card-info {
+    padding: 6px 8px;
+}
+
+.mat-card-name {
+    font-size: 12px;
+    font-weight: 700;
+    color: #1e293b;
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Camera Presets Grid */
+.camera-presets-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 6px;
+}

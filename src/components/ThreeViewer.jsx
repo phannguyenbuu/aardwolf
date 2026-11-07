@@ -1,1091 +1,78 @@
-import React, { useEffect, useRef, useCallback, useState } from 'react';
-import * as THREE from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import { TransformControls } from 'three/examples/jsm/controls/TransformControls.js';
-import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js';
-import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
-import download from 'downloadjs';
-import { useConfigurator } from '../context/ConfiguratorContext.jsx';
-import { ALL_PRELOAD_ITEMS, mmToInch } from '../constants/data.js';
-import { PBR_MATERIALS, PART_LABELS, PART_ICONS, createPBRMaterial } from '../constants/pbrMaterials.js';
-import { extractPoint3 } from '../utils/configuratorHelpers.js';
-
-const TUBE_OFFSET = 25.5;
-
-// Default equipment center fallback
-const DEFAULT_CENTER = new THREE.Vector3(1130, 1200, 0);
-
-function createDimensionSprite(text) {
-    const canvas = document.createElement('canvas');
-    canvas.width = 320;
-    canvas.height = 80;
-    const ctx = canvas.getContext('2d');
-
-    // Rounded rectangle badge
-    ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
-    ctx.strokeStyle = '#38bdf8';
-    ctx.lineWidth = 3;
-    ctx.beginPath();
-    ctx.roundRect(4, 4, 312, 72, 12);
-    ctx.fill();
-    ctx.stroke();
-
-    // Text callout
-    ctx.fillStyle = '#ffffff';
-    ctx.font = 'bold 26px "Open Sans", sans-serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(text, 160, 40);
-
-    const texture = new THREE.CanvasTexture(canvas);
-    texture.minFilter = THREE.LinearFilter;
-    const material = new THREE.SpriteMaterial({ map: texture, depthTest: false });
-    const sprite = new THREE.Sprite(material);
-    sprite.scale.set(420, 105, 1);
-    return sprite;
-}
+import CameraController from "./CameraController.jsx";
+import GripPointEditor from "./GripPointEditor.jsx";
+import { lazy, Suspense } from 'react';
+const PathTraceDialog = lazy(() => import('./PathTraceDialog.jsx'));
+const RenderDialog = lazy(() => import('./RenderDialog.jsx'));
+import { PART_ICONS, PART_LABELS } from "../constants/pbrMaterials.js";
+import useThreeViewport from './three-viewer/useThreeViewport.js';
 
 export default function ThreeViewer() {
-    const containerRef = useRef(null);
     const {
-        config3D,
-        actualLoad,
-        unit,
-        surfaceType,
-        setPdfContent,
-        setIs3DLoading,
-        setLoadingProgress,
-        cameraPresetTrigger,
-        setCameraPresetTrigger,
-        takeSnapshotRef,
-        show3DModal,
-        setShow3DModal,
-        viewportMode,
-        setViewportMode,
         studioTheme,
-        setStudioTheme,
-        workLoadLimit,
+        viewportMode,
+        adminMode,
+        sceneRef,
+        cameraRef,
+        rendererRef,
+        partRootsRef,
+        controlsRef,
+        gripGeneration,
+        lowQuality,
+        setLowQuality,
+        is3DLoading,
+        lightingReady,
+        backgroundModelProgress,
+        loadingProgress,
+        modelLoadError,
+        setModelRetry,
+        renderDialog,
+        qualityRef,
+        setRenderDialog,
+        captureForDialog,
+        renderForDialog,
+        containerRef,
+        setShow3DModal,
+        reloadScene,
+        takeSnapshotRef,
+        setCameraInfoOpen,
+        cameraInfoOpen,
+        cameraTelemetry,
+        unit,
         craneType,
-        selectedPart,
-        setSelectedPart,
-        setActiveLeftTab,
-        componentMaterials,
-        customParams,
-        downlightEnabled,
-        downlightIntensity,
-        downlightColorTemp,
-        cornellLeftColor,
-        cornellRightColor,
-        cornellBleedIntensity,
-        sceneLights,
-        showSpecsHUD,
-        setShowSpecsHUD,
-        isTurntableActive,
-        setIsTurntableActive,
-        isExporting,
-        setIsExporting,
-        exportRenderTrigger,
-        setCameraTelemetry,
-        basePositions,
-        partOffsets,
-        setPartOffsetFull,
-        stepPartOffset,
-        resetPartOffset,
-        resetAllPartOffsets,
-        gizmoEnabled,
-        setGizmoEnabled,
-        gizmoMode,
-        setGizmoMode,
-        gizmoSize
-    } = useConfigurator();
-
-    const [clickedPin, setClickedPin] = useState(null);
-
-    const sceneRef = useRef(null);
-    const cameraRef = useRef(null);
-    const rendererRef = useRef(null);
-    const controlsRef = useRef(null);
-    const transformControlsRef = useRef(null);
-    const partRootsRef = useRef({});
-    const basePositionsRef = useRef(basePositions);
-    const isDraggingGizmoRef = useRef(false);
-
-    useEffect(() => {
-        basePositionsRef.current = basePositions;
-    }, [basePositions]);
-
-    const loadedObjectsMapRef = useRef(new Map());
-    const isReadyRef = useRef(false);
-    const workpieceGroupRef = useRef(null);
-    const texturesRef = useRef({});
-    const currentCenterRef = useRef(DEFAULT_CENTER.clone());
-    const currentSizeRef = useRef(new THREE.Vector3(3300, 2600, 1000));
-    const lightTargetRef = useRef(null);
-    const edgeLineMatRef = useRef(null);
-
-    // Studio lights refs
-    const keyLightRef = useRef(null);
-    const ambientLightRef = useRef(null);
-    const fillLightRef = useRef(null);
-    const rimLightRef = useRef(null);
-    const shadowFloorRef = useRef(null);
-
-    // Cornell Box specific scene elements
-    const cornellGroupRef = useRef(null);
-    const cornellCeilingLightRef = useRef(null);
-    const cornellRedBounceRef = useRef(null);
-    const cornellGreenBounceRef = useRef(null);
-    const cornellLeftWallMatRef = useRef(null);
-    const cornellRightWallMatRef = useRef(null);
-    const cornellBackWallMatRef = useRef(null);
-    const cornellFloorMatRef = useRef(null);
-    const cornellCeilingMatRef = useRef(null);
-    const cornellEmitterMatRef = useRef(null);
-
-    const selectionBoxRef = useRef(null);
-    const pointerStartRef = useRef({ x: 0, y: 0 });
-
-    // Camera animation refs
-    const cameraAnimRef = useRef({
-        active: false,
-        startPos: new THREE.Vector3(),
-        endPos: new THREE.Vector3(),
-        startTarget: new THREE.Vector3(),
-        endTarget: new THREE.Vector3(),
-        startTime: null,
-        duration: 0.8
-    });
-
-    // Auto-hide 3D click pin
-    useEffect(() => {
-        if (!clickedPin) return;
-        const timer = setTimeout(() => {
-            setClickedPin(null);
-        }, 3000);
-        return () => clearTimeout(timer);
-    }, [clickedPin]);
-
-    // Hook snapshot method for PDF generation
-    useEffect(() => {
-        takeSnapshotRef.current = () => {
-            return new Promise((resolve) => {
-                if (!rendererRef.current || !sceneRef.current || !cameraRef.current) {
-                    resolve('/assets/images/image-1.png');
-                    return;
-                }
-                rendererRef.current.render(sceneRef.current, cameraRef.current);
-                const dataUrl = rendererRef.current.domElement.toDataURL('image/png');
-                resolve(dataUrl);
-            });
-        };
-    }, [takeSnapshotRef]);
-
-    // Initialize Three.js scene
-    useEffect(() => {
-        const container = containerRef.current;
-        if (!container) return;
-
-        const w = container.clientWidth || window.innerWidth;
-        const h = container.clientHeight || window.innerHeight;
-
-        const scene = new THREE.Scene();
-        sceneRef.current = scene;
-        window.THREE = THREE;
-        window.__threeScene = scene;
-
-        // Renderer with High Dynamic Range, Soft Shadows & Tone Mapping
-        const renderer = new THREE.WebGLRenderer({
-            antialias: true,
-            alpha: true,
-            preserveDrawingBuffer: true,
-            powerPreference: 'high-performance'
-        });
-        renderer.setSize(w, h);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        renderer.toneMapping = THREE.ACESFilmicToneMapping;
-        renderer.toneMappingExposure = 1.15;
-        renderer.shadowMap.enabled = true;
-        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-        renderer.setClearColor(0x000000, 0);
-        rendererRef.current = renderer;
-        window.__threeRenderer = renderer;
-
-        container.innerHTML = '';
-        container.appendChild(renderer.domElement);
-
-        // Studio HDRI Environment Map via PMREMGenerator & RoomEnvironment
-        const pmremGenerator = new THREE.PMREMGenerator(renderer);
-        pmremGenerator.compileEquirectangularShader();
-        const roomEnvironment = new RoomEnvironment();
-        scene.environment = pmremGenerator.fromScene(roomEnvironment).texture;
-
-        // Realistic Studio Lighting
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.75);
-        scene.add(ambientLight);
-        ambientLightRef.current = ambientLight;
-
-        const keyLight = new THREE.DirectionalLight(0xfffbf2, 2.2);
-        keyLight.position.set(3200, 5600, 3800);
-        const lightTarget = new THREE.Object3D();
-        lightTarget.position.set(DEFAULT_CENTER.x, 0, 0);
-        scene.add(lightTarget);
-        keyLight.target = lightTarget;
-        lightTargetRef.current = lightTarget;
-        keyLightRef.current = keyLight;
-
-        keyLight.castShadow = true;
-        keyLight.shadow.mapSize.width = 4096;
-        keyLight.shadow.mapSize.height = 4096;
-        keyLight.shadow.camera.near = 500;
-        keyLight.shadow.camera.far = 18000;
-        const shRange = 5000;
-        keyLight.shadow.camera.left = -shRange;
-        keyLight.shadow.camera.right = shRange;
-        keyLight.shadow.camera.top = shRange;
-        keyLight.shadow.camera.bottom = -shRange;
-        keyLight.shadow.bias = -0.0001;
-        keyLight.shadow.normalBias = 0.03;
-        keyLight.shadow.radius = 2.0;
-        scene.add(keyLight);
-
-        const fillLight = new THREE.DirectionalLight(0xe8f0fc, 1.2);
-        fillLight.position.set(-3500, 3500, -2000);
-        scene.add(fillLight);
-        fillLightRef.current = fillLight;
-
-        const rimLight = new THREE.DirectionalLight(0xfffaea, 1.4);
-        rimLight.position.set(1200, 3800, -4800);
-        scene.add(rimLight);
-        rimLightRef.current = rimLight;
-
-        const bounceLight = new THREE.DirectionalLight(0xf0f4f8, 0.5);
-        bounceLight.position.set(DEFAULT_CENTER.x, -2000, 1500);
-        scene.add(bounceLight);
-
-        // Studio Camera with natural telephoto perspective (FOV 34 deg for showroom, 45 deg for Cornell)
-        const camera = new THREE.PerspectiveCamera(34, w / h, 50, 40000);
-        camera.position.set(2900, 2400, 5800);
-        camera.lookAt(DEFAULT_CENTER);
-        cameraRef.current = camera;
-        window.__threeCamera = cameraRef;
-
-        const controls = new OrbitControls(camera, renderer.domElement);
-        controls.enablePan = true;
-        controls.panSpeed = 1.0;
-        controls.minDistance = 600;
-        controls.maxDistance = 18000;
-        controls.enableDamping = true;
-        controls.dampingFactor = 0.08;
-        controls.target.copy(DEFAULT_CENTER);
-        controls.autoRotate = false;
-        controls.autoRotateSpeed = 1.2;
-        controlsRef.current = controls;
-        window.__threeControls = controlsRef;
-
-        // Showroom Stage Floor (ShadowMaterial)
-        const shadowFloorGeo = new THREE.PlaneGeometry(24000, 24000);
-        const shadowFloorMat = new THREE.ShadowMaterial({
-            opacity: 0.18,
-            depthWrite: false
-        });
-        const shadowFloor = new THREE.Mesh(shadowFloorGeo, shadowFloorMat);
-        shadowFloor.rotation.x = -Math.PI / 2;
-        shadowFloor.position.y = 0;
-        shadowFloor.receiveShadow = true;
-        shadowFloor.isStageElement = true;
-        shadowFloor.visible = (studioTheme !== 'cornell');
-        scene.add(shadowFloor);
-        shadowFloorRef.current = shadowFloor;
-
-        // Selection Highlight Box
-        const selectionBox = new THREE.Box3Helper(new THREE.Box3(), 0x38bdf8);
-        selectionBox.material.depthTest = false;
-        selectionBox.material.transparent = true;
-        selectionBox.material.opacity = 0.85;
-        selectionBox.visible = false;
-        selectionBox.isStageElement = true;
-        scene.add(selectionBox);
-        selectionBoxRef.current = selectionBox;
-
-        // 3D 3-Axis Transform Gizmo (3ds Max style XYZ Translate)
-        const transformControls = new TransformControls(camera, renderer.domElement);
-        transformControls.setMode(gizmoMode || 'translate');
-        transformControls.size = gizmoSize || 0.85;
-        transformControls.space = 'world';
-        const tcHelper = transformControls.getHelper();
-        tcHelper.isStageElement = true;
-        scene.add(tcHelper);
-        transformControlsRef.current = transformControls;
-
-        transformControls.addEventListener('dragging-changed', (event) => {
-            isDraggingGizmoRef.current = event.value;
-            if (controlsRef.current) {
-                controlsRef.current.enabled = !event.value;
-            }
-        });
-
-        transformControls.addEventListener('objectChange', () => {
-            const attached = transformControls.object;
-            if (attached && attached.userData?.partKey) {
-                const key = attached.userData.partKey;
-                const base = basePositionsRef.current[key] || { x: 0, y: 0, z: 0 };
-                const newOffset = {
-                    x: Math.round(attached.position.x - base.x),
-                    y: Math.round(attached.position.y - base.y),
-                    z: Math.round(attached.position.z - base.z)
-                };
-                setPartOffsetFull(key, newOffset);
-            }
-        });
-
-        // =========================================================================
-        // REALTIME PATH TRACING CORNELL BOX ENVIRONMENT (Matching Domenicobrz)
-        // Proportions: boxW=7000, boxH=7000, boxD=7000 centered at (cx, 3500, 0)
-        // Left: Green, Right: Red, Back/Floor/Ceiling: White, Ceiling Downlight Emitter
-        // =========================================================================
-        const cornellGroup = new THREE.Group();
-        cornellGroup.name = 'cornell_box';
-        cornellGroup.isStageElement = true;
-        cornellGroup.visible = true;
-        cornellGroupRef.current = cornellGroup;
-
-        const boxW = 7000;
-        const boxH = 7000;
-        const boxD = 7000;
-        const cx = DEFAULT_CENTER.x;
-        const cy = boxH / 2;
-        const cz = 0;
-
-        // 1. Green Left Wall
-        const greenWallGeo = new THREE.PlaneGeometry(boxD, boxH);
-        const greenWallMat = new THREE.MeshStandardMaterial({
-            color: 0x1caa28,
-            roughness: 0.82,
-            metalness: 0.01,
-            side: THREE.DoubleSide
-        });
-        const greenWall = new THREE.Mesh(greenWallGeo, greenWallMat);
-        greenWall.position.set(cx - (boxW / 2), cy, cz);
-        greenWall.rotation.y = Math.PI / 2;
-        greenWall.receiveShadow = true;
-        greenWall.isStageElement = true;
-        cornellGroup.add(greenWall);
-        cornellLeftWallMatRef.current = greenWallMat;
-
-        // 2. Red Right Wall
-        const redWallGeo = new THREE.PlaneGeometry(boxD, boxH);
-        const redWallMat = new THREE.MeshStandardMaterial({
-            color: 0xe6261f,
-            roughness: 0.82,
-            metalness: 0.01,
-            side: THREE.DoubleSide
-        });
-        const redWall = new THREE.Mesh(redWallGeo, redWallMat);
-        redWall.position.set(cx + (boxW / 2), cy, cz);
-        redWall.rotation.y = -Math.PI / 2;
-        redWall.receiveShadow = true;
-        redWall.isStageElement = true;
-        cornellGroup.add(redWall);
-        cornellRightWallMatRef.current = redWallMat;
-
-        // 3. Back White Wall
-        const backWallGeo = new THREE.PlaneGeometry(boxW, boxH);
-        const backWallMat = new THREE.MeshStandardMaterial({
-            color: 0xf0f0f0,
-            roughness: 0.85,
-            metalness: 0.01,
-            side: THREE.DoubleSide
-        });
-        const backWall = new THREE.Mesh(backWallGeo, backWallMat);
-        backWall.position.set(cx, cy, cz - (boxD / 2));
-        backWall.receiveShadow = true;
-        backWall.isStageElement = true;
-        cornellGroup.add(backWall);
-        cornellBackWallMatRef.current = backWallMat;
-
-        // 4. White Floor (extended forward towards camera for seamless horizon)
-        const cornellFloorGeo = new THREE.PlaneGeometry(boxW * 1.5, boxD * 2.5);
-        const cornellFloorMat = new THREE.MeshStandardMaterial({
-            color: 0xe5e5e5,
-            roughness: 0.72,
-            metalness: 0.02,
-            side: THREE.DoubleSide
-        });
-        const cornellFloor = new THREE.Mesh(cornellFloorGeo, cornellFloorMat);
-        cornellFloor.position.set(cx, 1, cz + (boxD * 0.75));
-        cornellFloor.rotation.x = -Math.PI / 2;
-        cornellFloor.receiveShadow = true;
-        cornellFloor.isStageElement = true;
-        cornellGroup.add(cornellFloor);
-        cornellFloorMatRef.current = cornellFloorMat;
-
-        // 5. White Ceiling
-        const ceilingGeo = new THREE.PlaneGeometry(boxW, boxD);
-        const ceilingMat = new THREE.MeshStandardMaterial({
-            color: 0xfafafa,
-            roughness: 0.85,
-            side: THREE.DoubleSide
-        });
-        const ceilingMesh = new THREE.Mesh(ceilingGeo, ceilingMat);
-        ceilingMesh.position.set(cx, boxH, cz);
-        ceilingMesh.rotation.x = Math.PI / 2;
-        ceilingMesh.isStageElement = true;
-        cornellGroup.add(ceilingMesh);
-        cornellCeilingMatRef.current = ceilingMat;
-
-        // 6. Ceiling Emitter Panel
-        const emitterSize = boxW * 0.65;
-        const emitterGeo = new THREE.PlaneGeometry(emitterSize, emitterSize);
-        const emitterMat = new THREE.MeshBasicMaterial({
-            color: 0xfff6dc,
-            side: THREE.DoubleSide
-        });
-        const emitterMesh = new THREE.Mesh(emitterGeo, emitterMat);
-        emitterMesh.position.set(cx, boxH - 12, cz);
-        emitterMesh.rotation.x = Math.PI / 2;
-        emitterMesh.isStageElement = true;
-        cornellGroup.add(emitterMesh);
-        cornellEmitterMatRef.current = emitterMat;
-
-        scene.add(cornellGroup);
-
-        // Downward soft ceiling light (No shadow acne, smooth penumbra)
-        const cornellCeilingLight = new THREE.SpotLight(0xfff6dc, 4.8);
-        cornellCeilingLight.position.set(cx, boxH - 40, cz);
-        cornellCeilingLight.target = lightTarget;
-        cornellCeilingLight.angle = Math.PI / 2.8;
-        cornellCeilingLight.penumbra = 0.85;
-        cornellCeilingLight.castShadow = false; // Default false - user can toggle in lighting panel
-        cornellCeilingLight.shadow.mapSize.width = 2048;
-        cornellCeilingLight.shadow.mapSize.height = 2048;
-        cornellCeilingLight.shadow.camera.near = 100;
-        cornellCeilingLight.shadow.camera.far = 12000;
-        cornellCeilingLight.shadow.bias = -0.0001;
-        cornellCeilingLight.shadow.normalBias = 0.03;
-        scene.add(cornellCeilingLight);
-        cornellCeilingLightRef.current = cornellCeilingLight;
-
-        // Green left bounce
-        const cornellGreenBounce = new THREE.DirectionalLight(0x1caa28, 1.4);
-        cornellGreenBounce.position.set(cx - (boxW / 2) + 400, cy, cz);
-        cornellGreenBounce.target = lightTarget;
-        scene.add(cornellGreenBounce);
-        cornellGreenBounceRef.current = cornellGreenBounce;
-
-        // Red right bounce
-        const cornellRedBounce = new THREE.DirectionalLight(0xe6261f, 1.4);
-        cornellRedBounce.position.set(cx + (boxW / 2) - 400, cy, cz);
-        cornellRedBounce.target = lightTarget;
-        scene.add(cornellRedBounce);
-        cornellRedBounceRef.current = cornellRedBounce;
-
-        // Textures
-        const texLoader = new THREE.TextureLoader();
-        const tubeTex = texLoader.load('/models/logo_tube.jpg');
-        tubeTex.colorSpace = THREE.SRGBColorSpace;
-        texturesRef.current = { tubeTex };
-
-        // Raycasting: Click to select part on 3D Canvas
-        const onPointerDown = (e) => {
-            pointerStartRef.current = { x: e.clientX, y: e.clientY };
-        };
-
-        const onPointerUp = (e) => {
-            if (isDraggingGizmoRef.current || transformControlsRef.current?.dragging) return;
-            const dx = Math.abs(e.clientX - pointerStartRef.current.x);
-            const dy = Math.abs(e.clientY - pointerStartRef.current.y);
-            if (dx > 6 || dy > 6) return;
-
-            if (!containerRef.current || !rendererRef.current || !cameraRef.current || !sceneRef.current) return;
-            const rect = containerRef.current.getBoundingClientRect();
-            const mouse = new THREE.Vector2(
-                ((e.clientX - rect.left) / rect.width) * 2 - 1,
-                -((e.clientY - rect.top) / rect.height) * 2 + 1
-            );
-            const raycaster = new THREE.Raycaster();
-            raycaster.setFromCamera(mouse, cameraRef.current);
-
-            const selectable = [];
-            sceneRef.current.traverse((child) => {
-                if (child.isMesh && !child.isStageElement && !child.isSprite && !child.isLineSegments && child.userData?.partKey) {
-                    selectable.push(child);
-                }
-            });
-
-            const intersects = raycaster.intersectObjects(selectable, false);
-            if (intersects.length > 0) {
-                const hitKey = intersects[0].object.userData.partKey;
-                if (hitKey) {
-                    setSelectedPart(hitKey);
-                    setActiveLeftTab('component-materials');
-                    setClickedPin({
-                        x: e.clientX - rect.left,
-                        y: e.clientY - rect.top,
-                        partKey: hitKey
-                    });
-                }
-            }
-        };
-
-        const domElem = renderer.domElement;
-        domElem.addEventListener('pointerdown', onPointerDown);
-        domElem.addEventListener('pointerup', onPointerUp);
-
-        // Animation loop
-        let lastTelemetryTime = 0;
-        let animationFrameId;
-        const animate = (timestamp) => {
-            animationFrameId = requestAnimationFrame(animate);
-
-            const anim = cameraAnimRef.current;
-            if (anim.active) {
-                if (!anim.startTime) anim.startTime = timestamp;
-                const elapsed = (timestamp - anim.startTime) / 1000;
-                const progress = Math.min(elapsed / anim.duration, 1);
-                const ease = 0.5 - Math.cos(progress * Math.PI) / 2;
-
-                camera.position.lerpVectors(anim.startPos, anim.endPos, ease);
-                controls.target.lerpVectors(anim.startTarget, anim.endTarget, ease);
-
-                if (progress >= 1) {
-                    anim.active = false;
-                    anim.startTime = null;
-                }
-            }
-
-            if (controls) {
-                controls.update();
-            }
-
-            // Real-time camera telemetry
-            if (timestamp - lastTelemetryTime > 120) {
-                lastTelemetryTime = timestamp;
-                const p = camera.position;
-                const t = controls.target;
-                const dist = Math.round(p.distanceTo(t));
-                const delta = new THREE.Vector3().subVectors(p, t);
-                const spherical = new THREE.Spherical().setFromVector3(delta);
-                const azimuth = Math.round((spherical.theta * 180) / Math.PI);
-                const elevation = Math.round(90 - (spherical.phi * 180) / Math.PI);
-
-                let presetName = 'Custom';
-                if (Math.abs(azimuth) < 10 && Math.abs(elevation) < 10 && Math.abs(p.z - 9600) < 1000) presetName = 'Cornell Reference';
-                else if (Math.abs(azimuth) < 15 && Math.abs(elevation) < 15) presetName = 'Front';
-                else if (elevation > 70) presetName = 'Top';
-                else if (Math.abs(Math.abs(azimuth) - 90) < 15) presetName = 'Side';
-                else if (Math.abs(azimuth - 45) < 25 && elevation > 12 && elevation < 45) presetName = 'Isometric';
-
-                setCameraTelemetry({
-                    posX: Math.round(p.x),
-                    posY: Math.round(p.y),
-                    posZ: Math.round(p.z),
-                    targetX: Math.round(t.x),
-                    targetY: Math.round(t.y),
-                    targetZ: Math.round(t.z),
-                    distance: dist,
-                    fov: Math.round(camera.fov),
-                    azimuth,
-                    elevation,
-                    preset: presetName
-                });
-            }
-
-            // Direct smooth PBR rendering - zero depth staircasing, zero horizontal stripes!
-            renderer.render(scene, camera);
-        };
-        animate();
-
-        // ResizeObserver
-        const resizeObserver = new ResizeObserver((entries) => {
-            for (const entry of entries) {
-                const { width, height } = entry.contentRect;
-                if (width > 0 && height > 0 && cameraRef.current && rendererRef.current) {
-                    cameraRef.current.aspect = width / height;
-                    cameraRef.current.updateProjectionMatrix();
-                    rendererRef.current.setSize(width, height, false);
-                }
-            }
-        });
-        resizeObserver.observe(container);
-
-        // Preload FBX models
-        setIs3DLoading(true);
-        const fbxLoader = new FBXLoader();
-        const edgeLineMat = new THREE.LineBasicMaterial({
-            color: 0x1e2228,
-            transparent: true,
-            opacity: 0.35,
-            linewidth: 1
-        });
-        edgeLineMatRef.current = edgeLineMat;
-
-        const preloadPromises = ALL_PRELOAD_ITEMS.map((item) => {
-            const fileName = `/models/aardwolf_all_part_${item.name}.fbx`;
-            return new Promise((resolve) => {
-                fbxLoader.load(
-                    fileName,
-                    (object) => {
-                        object.name = item.name;
-                        object.traverse((child) => {
-                            if (child.isMesh) {
-                                child.castShadow = true;
-                                child.receiveShadow = true;
-                                child.userData.origGeometry = child.geometry;
-                            }
-                        });
-                        loadedObjectsMapRef.current.set(item.name, object);
-                        resolve();
-                    },
-                    (xhr) => {
-                        if (xhr.total > 0) {
-                            setLoadingProgress(Math.round((xhr.loaded / xhr.total) * 100));
-                        }
-                    },
-                    (err) => {
-                        console.error('FBX Load error:', fileName, err);
-                        resolve();
-                    }
-                );
-            });
-        });
-
-        Promise.all(preloadPromises).then(() => {
-            isReadyRef.current = true;
-            setIs3DLoading(false);
-            update3DScene();
-        });
-
-        return () => {
-            cancelAnimationFrame(animationFrameId);
-            resizeObserver.disconnect();
-            domElem.removeEventListener('pointerdown', onPointerDown);
-            domElem.removeEventListener('pointerup', onPointerUp);
-            transformControls.dispose();
-            renderer.dispose();
-            pmremGenerator.dispose();
-            roomEnvironment.dispose();
-        };
-    }, []);
-
-    // Apply PBR Materials to components
-    const applyComponentMaterials = useCallback((mats, overrides) => {
-        const scene = sceneRef.current;
-        if (!scene || !isReadyRef.current) return;
-
-        scene.traverse((child) => {
-            if (child.isMesh && !child.isStageElement && !child.isSprite && !child.isLineSegments) {
-                const partKey = child.userData?.partKey;
-                if (partKey && mats[partKey]) {
-                    const matId = mats[partKey];
-                    const customOverride = overrides[partKey] || null;
-                    const pbrMat = createPBRMaterial(matId, customOverride);
-
-                    if (partKey === 'tube' && texturesRef.current.tubeTex) {
-                        pbrMat.map = texturesRef.current.tubeTex;
-                        pbrMat.needsUpdate = true;
-                    }
-
-                    child.material = pbrMat;
-                }
-            }
-        });
-    }, []);
-
-    // Reapply materials whenever componentMaterials or customParams change
-    useEffect(() => {
-        if (isReadyRef.current) {
-            applyComponentMaterials(componentMaterials, customParams);
-        }
-    }, [componentMaterials, customParams, applyComponentMaterials]);
-
-    // Update 3D Scene models
-    const update3DScene = useCallback(() => {
-        const scene = sceneRef.current;
-        if (!scene || !isReadyRef.current) return;
-
-        // Clear existing models except lights and stage elements
-        for (let i = scene.children.length - 1; i >= 0; i--) {
-            const child = scene.children[i];
-            if (!child.isLight && !child.isAxesHelper && !child.isStageElement) {
-                scene.remove(child);
-            }
-        }
-        partRootsRef.current = {};
-
-        const base = basePositions;
-        const offsets = partOffsets;
-        const { crane, pumpGroup, tube, headStack, suctionPack } = config3D;
-
-        const createPartGroup = (partKey, objectName, isWorkpiece = false) => {
-            const basePos = base[partKey] || { x: 0, y: 0, z: 0 };
-            const off = offsets[partKey] || { x: 0, y: 0, z: 0 };
-
-            const group = new THREE.Group();
-            group.name = `root_${partKey}`;
-            group.userData.partKey = partKey;
-            group.position.set(basePos.x + off.x, basePos.y + off.y, basePos.z + off.z);
-
-            if (isWorkpiece) {
-                const l = Math.max(50, actualLoad.length);
-                const w = Math.max(50, actualLoad.width);
-                const h = Math.max(20, actualLoad.height);
-
-                const boxGeo = new THREE.BoxGeometry(l, h, w);
-                const wpMatId = componentMaterials.workpiece || 'aluminum_brushed';
-                const wpMat = createPBRMaterial(wpMatId, customParams.workpiece);
-                const workpieceMesh = new THREE.Mesh(boxGeo, wpMat);
-                workpieceMesh.userData.partKey = 'workpiece';
-                workpieceMesh.castShadow = true;
-                workpieceMesh.receiveShadow = true;
-                group.add(workpieceMesh);
-
-                const edgesGeo = new THREE.EdgesGeometry(boxGeo);
-                const edgesMat = new THREE.LineBasicMaterial({ color: 0x222222, linewidth: 2 });
-                const wireframe = new THREE.LineSegments(edgesGeo, edgesMat);
-                group.add(wireframe);
-
-                const dimText = unit === 'Inch'
-                    ? `${Math.round(mmToInch(l))}" × ${Math.round(mmToInch(w))}"`
-                    : `${l} × ${w} mm`;
-                const sprite = createDimensionSprite(dimText);
-                sprite.position.set(0, 0, (w / 2) + 140);
-                group.add(sprite);
-
-                workpieceGroupRef.current = group;
-            } else if (objectName) {
-                const proto = loadedObjectsMapRef.current.get(objectName);
-                if (proto) {
-                    const clone = proto.clone(true);
-                    clone.traverse((child) => {
-                        if (child.isMesh) {
-                            child.userData.partKey = partKey;
-                            const matId = componentMaterials[partKey] || 'steel_brushed';
-                            const customOverride = customParams[partKey] || null;
-                            child.material = createPBRMaterial(matId, customOverride);
-                            child.castShadow = true;
-                            child.receiveShadow = true;
-
-                            if (partKey === 'tube' && texturesRef.current.tubeTex) {
-                                child.material.map = texturesRef.current.tubeTex;
-                                child.material.needsUpdate = true;
-                            }
-                        }
-                    });
-                    group.add(clone);
-                }
-            }
-
-            scene.add(group);
-            partRootsRef.current[partKey] = group;
-            return group;
-        };
-
-        if (crane) createPartGroup('crane', crane.name);
-        if (pumpGroup) createPartGroup('pump', pumpGroup.name);
-        if (tube) createPartGroup('tube', tube.name);
-        if (headStack) createPartGroup('head', headStack.name);
-        if (suctionPack) createPartGroup('suction', suctionPack.name);
-        createPartGroup('workpiece', null, true);
-
-        // Auto bounding box
-        const bbox = new THREE.Box3();
-        scene.traverse((child) => {
-            if (child.isMesh && !child.isStageElement && !child.isSprite && !child.isLineSegments) {
-                bbox.expandByObject(child);
-            }
-        });
-
-        if (!bbox.isEmpty()) {
-            const center = new THREE.Vector3();
-            const size = new THREE.Vector3();
-            bbox.getCenter(center);
-            bbox.getSize(size);
-            currentCenterRef.current.copy(center);
-            currentSizeRef.current.copy(size);
-
-            if (lightTargetRef.current) {
-                lightTargetRef.current.position.set(center.x, 0, 0);
-            }
-
-            if (controlsRef.current && cameraRef.current) {
-                controlsRef.current.target.copy(center);
-                const span = Math.max(size.x, size.y, 3000);
-                const camDist = Math.max(5400, span * 1.55);
-
-                if (studioTheme === 'cornell') {
-                    // Lock into Cornell Box reference perspective
-                    cameraRef.current.fov = 45;
-                    cameraRef.current.position.set(center.x, 3200, 9600);
-                    controlsRef.current.target.set(center.x, 3200, 0);
-                } else {
-                    cameraRef.current.fov = 34;
-                    cameraRef.current.position.set(center.x + (span * 0.45), center.y + (span * 0.38), camDist);
-                }
-                cameraRef.current.updateProjectionMatrix();
-                controlsRef.current.update();
-            }
-        }
-
-        // Attach transform controls to active selectedPart
-        const tc = transformControlsRef.current;
-        if (tc) {
-            if (gizmoEnabled && selectedPart && partRootsRef.current[selectedPart]) {
-                tc.attach(partRootsRef.current[selectedPart]);
-            } else {
-                tc.detach();
-            }
-        }
-    }, [config3D, actualLoad, unit, componentMaterials, customParams, studioTheme, basePositions, partOffsets, gizmoEnabled, selectedPart]);
-
-    useEffect(() => {
-        if (isReadyRef.current) {
-            update3DScene();
-        }
-    }, [config3D, actualLoad, unit, update3DScene]);
-
-    // Sync object positions when partOffsets changes in React state (smooth, without full scene rebuild)
-    useEffect(() => {
-        Object.keys(partOffsets).forEach((key) => {
-            const root = partRootsRef.current[key];
-            const basePos = basePositions[key];
-            const off = partOffsets[key];
-            if (root && basePos && off) {
-                const tx = basePos.x + off.x;
-                const ty = basePos.y + off.y;
-                const tz = basePos.z + off.z;
-                if (Math.abs(root.position.x - tx) > 0.05 ||
-                    Math.abs(root.position.y - ty) > 0.05 ||
-                    Math.abs(root.position.z - tz) > 0.05) {
-                    root.position.set(tx, ty, tz);
-                }
-            }
-        });
-    }, [partOffsets, basePositions]);
-
-    // Attach / Detach / Configure TransformControls
-    useEffect(() => {
-        const tc = transformControlsRef.current;
-        if (!tc) return;
-
-        tc.setMode(gizmoMode || 'translate');
-        tc.size = gizmoSize || 0.85;
-
-        if (gizmoEnabled && selectedPart && partRootsRef.current[selectedPart]) {
-            tc.attach(partRootsRef.current[selectedPart]);
-        } else {
-            tc.detach();
-        }
-    }, [selectedPart, gizmoEnabled, gizmoMode, gizmoSize]);
-
-    // Sync Selection Box3Helper
-    useEffect(() => {
-        if (!selectionBoxRef.current || !sceneRef.current) return;
-        const helper = selectionBoxRef.current;
-        const box3 = helper.box;
-
-        if (!selectedPart || !partRootsRef.current[selectedPart]) {
-            helper.visible = false;
-            return;
-        }
-
-        box3.setFromObject(partRootsRef.current[selectedPart]);
-        helper.visible = !box3.isEmpty();
-    }, [selectedPart, partOffsets, config3D]);
-
-    // Handle Camera Presets trigger
-    useEffect(() => {
-        if (!cameraPresetTrigger || !cameraRef.current || !controlsRef.current) return;
-
-        if (cameraPresetTrigger === '360') {
-            controlsRef.current.autoRotate = !controlsRef.current.autoRotate;
-            setIsTurntableActive(controlsRef.current.autoRotate);
-            setCameraPresetTrigger(null);
-            return;
-        }
-
-        const center = currentCenterRef.current;
-        const size = currentSizeRef.current;
-        const span = Math.max(size.x, size.y, 3000);
-
-        const p2Match = config3D?.crane?.name ? extractPoint3(config3D.crane.name)[1] : null;
-        const padX = p2Match ? p2Match.x : center.x;
-
-        const presets = {
-            'cornell-reference': {
-                pos: new THREE.Vector3(center.x, 3200, 9600),
-                target: new THREE.Vector3(center.x, 3200, 0),
-                fov: 45
-            },
-            'front-view': { pos: new THREE.Vector3(center.x, center.y, Math.max(6400, span * 1.75)), target: center, fov: 34 },
-            'left-view': { pos: new THREE.Vector3(center.x + Math.max(6400, span * 1.75), center.y, 0), target: center, fov: 34 },
-            'right-view': { pos: new THREE.Vector3(center.x - Math.max(6400, span * 1.75), center.y, 0), target: center, fov: 34 },
-            'top-view': { pos: new THREE.Vector3(center.x, Math.max(7200, span * 1.95), 0), target: center, fov: 34 },
-            'ortho-view': { pos: new THREE.Vector3(center.x + (span * 0.45), center.y + (span * 0.38), Math.max(6000, span * 1.65)), target: center, fov: 34 },
-            'focus-suction': { pos: new THREE.Vector3(padX + 900, 750, 1600), target: new THREE.Vector3(padX, 350, 0), fov: 32 }
-        };
-
-        const targetConfig = presets[cameraPresetTrigger];
-        if (targetConfig) {
-            if (targetConfig.fov) {
-                cameraRef.current.fov = targetConfig.fov;
-                cameraRef.current.updateProjectionMatrix();
-            }
-            cameraAnimRef.current = {
-                active: true,
-                startPos: cameraRef.current.position.clone(),
-                endPos: targetConfig.pos,
-                startTarget: controlsRef.current.target.clone(),
-                endTarget: targetConfig.target,
-                startTime: null,
-                duration: 0.8
-            };
-        }
-
-        setCameraPresetTrigger(null);
-    }, [cameraPresetTrigger, setCameraPresetTrigger, config3D, setIsTurntableActive]);
-
-    // Theme & Lighting updates
-    useEffect(() => {
-        if (!sceneRef.current) return;
-
-        const isCornell = studioTheme === 'cornell';
-
-        // Toggle Cornell Room vs Studio Floor to prevent Z-Fighting
-        if (cornellGroupRef.current) {
-            cornellGroupRef.current.visible = isCornell;
-        }
-        if (shadowFloorRef.current) {
-            shadowFloorRef.current.visible = !isCornell;
-        }
-
-        // Apply Custom Scene Lights
-        if (sceneLights) {
-            // 1. Key Light (Main Directional Light)
-            if (keyLightRef.current) {
-                keyLightRef.current.visible = sceneLights.keyLight.enabled;
-                keyLightRef.current.intensity = sceneLights.keyLight.intensity;
-                keyLightRef.current.color.set(sceneLights.keyLight.color);
-                keyLightRef.current.castShadow = sceneLights.keyLight.castShadow;
-                keyLightRef.current.position.set(
-                    sceneLights.keyLight.posX,
-                    sceneLights.keyLight.posY,
-                    sceneLights.keyLight.posZ
-                );
-            }
-
-            // 2. Ambient Light
-            if (ambientLightRef.current) {
-                ambientLightRef.current.intensity = sceneLights.ambientLight.intensity;
-                ambientLightRef.current.color.set(sceneLights.ambientLight.color);
-            }
-
-            // 3. Fill Light
-            if (fillLightRef.current) {
-                fillLightRef.current.visible = sceneLights.fillLight.enabled;
-                fillLightRef.current.intensity = sceneLights.fillLight.intensity;
-                fillLightRef.current.color.set(sceneLights.fillLight.color);
-            }
-
-            // 4. Rim Light
-            if (rimLightRef.current) {
-                rimLightRef.current.visible = sceneLights.rimLight.enabled;
-                rimLightRef.current.intensity = sceneLights.rimLight.intensity;
-                rimLightRef.current.color.set(sceneLights.rimLight.color);
-            }
-
-            // 5. Downlight Emitter (Cornell Box SpotLight)
-            if (cornellCeilingLightRef.current) {
-                cornellCeilingLightRef.current.visible = isCornell && sceneLights.downlight.enabled;
-                cornellCeilingLightRef.current.intensity = sceneLights.downlight.intensity;
-                cornellCeilingLightRef.current.castShadow = sceneLights.downlight.castShadow;
-                cornellCeilingLightRef.current.color.set(sceneLights.downlight.color || '#fff6dc');
-                if (sceneLights.downlight.angle) {
-                    cornellCeilingLightRef.current.angle = sceneLights.downlight.angle;
-                }
-                if (sceneLights.downlight.penumbra !== undefined) {
-                    cornellCeilingLightRef.current.penumbra = sceneLights.downlight.penumbra;
-                }
-            }
-
-            // 6. Camera Tone Mapping Exposure
-            if (rendererRef.current && sceneLights.exposure) {
-                rendererRef.current.toneMappingExposure = sceneLights.exposure;
-            }
-        }
-
-        // Cornell Box Wall Materials & Emitter Visibility
-        if (cornellEmitterMatRef.current) {
-            cornellEmitterMatRef.current.visible = isCornell && (sceneLights?.downlight?.enabled ?? true);
-        }
-        if (cornellLeftWallMatRef.current) {
-            cornellLeftWallMatRef.current.color.set(cornellLeftColor);
-        }
-        if (cornellRightWallMatRef.current) {
-            cornellRightWallMatRef.current.color.set(cornellRightColor);
-        }
-        if (cornellGreenBounceRef.current) {
-            cornellGreenBounceRef.current.visible = isCornell;
-            cornellGreenBounceRef.current.color.set(cornellLeftColor);
-            cornellGreenBounceRef.current.intensity = cornellBleedIntensity;
-        }
-        if (cornellRedBounceRef.current) {
-            cornellRedBounceRef.current.visible = isCornell;
-            cornellRedBounceRef.current.color.set(cornellRightColor);
-            cornellRedBounceRef.current.intensity = cornellBleedIntensity;
-        }
-    }, [studioTheme, sceneLights, cornellLeftColor, cornellRightColor, cornellBleedIntensity]);
-
-    // Handle high-resolution 4K Studio Render export
-    const handleExportRender = useCallback(() => {
-        if (!rendererRef.current || !sceneRef.current || !cameraRef.current || !containerRef.current) return;
-        setIsExporting(true);
-
-        try {
-            const renderer = rendererRef.current;
-            const camera = cameraRef.current;
-            const scene = sceneRef.current;
-            const container = containerRef.current;
-
-            const originalWidth = container.clientWidth;
-            const originalHeight = container.clientHeight;
-            const originalPixelRatio = renderer.getPixelRatio();
-
-            // Render at true 4K resolution (3840 x 2160)
-            const targetWidth = 3840;
-            const targetHeight = 2160;
-
-            renderer.setPixelRatio(1);
-            renderer.setSize(targetWidth, targetHeight, false);
-            camera.aspect = targetWidth / targetHeight;
-            camera.updateProjectionMatrix();
-
-            renderer.render(scene, camera);
-
-            const dataUrl = renderer.domElement.toDataURL('image/png', 1.0);
-            download(dataUrl, `Aardwolf_Vacuum_Lifter_Studio_Render_4K_${Date.now()}.png`, 'image/png');
-
-            // Restore original dimensions
-            renderer.setPixelRatio(originalPixelRatio);
-            renderer.setSize(originalWidth, originalHeight, true);
-            camera.aspect = originalWidth / originalHeight;
-            camera.updateProjectionMatrix();
-            renderer.render(scene, camera);
-        } catch (e) {
-            console.error('Export render error:', e);
-        } finally {
-            setTimeout(() => setIsExporting(false), 500);
-        }
-    }, [setIsExporting]);
-
-    // Handle export trigger from Column 1
-    useEffect(() => {
-        if (exportRenderTrigger > 0) {
-            handleExportRender();
-        }
-    }, [exportRenderTrigger, handleExportRender]);
-
+        jibLength,
+        workLoadLimit,
+        environment,
+        userSurfaceType,
+        actualLoad,
+        suctionHeadId,
+        handleId,
+        suctionModelVariant,
+        customNotes,
+        setSettingsCopied,
+        settingsCopied,
+        clickedPin,
+        exportProgress,
+        exportAbortRef,
+        settingsSaving,
+        settingsDirty,
+        settingsSaved,
+        saveAllSettings,
+        settingsStatus,
+        undoEdit,
+        canUndo,
+        redoEdit,
+        canRedo,
+    } = useThreeViewport();
     return (
-        <div className={`three-viewport-wrapper theme-${studioTheme} mode-${viewportMode}`}>
+        <div className={`three-viewport-wrapper theme-${studioTheme} mode-${viewportMode} ${adminMode ? 'is-admin-mode' : 'is-user-mode'}`}>
+            {adminMode && <CameraController />}
+            <GripPointEditor scene={sceneRef.current} camera={cameraRef.current} renderer={rendererRef.current} roots={partRootsRef} controls={controlsRef.current} generation={gripGeneration} />
+            {adminMode && <button type="button" className={`viewport-quality-toggle ${lowQuality ? 'is-low' : ''}`} role="switch" aria-checked={!lowQuality} aria-label="High quality viewport" title={lowQuality ? 'Low Quality — click for High Quality' : 'High Quality — click for Low Quality'} onClick={() => setLowQuality(value => !value)}><span>High</span><span className="viewport-quality-track" aria-hidden="true" /><span>Low</span></button>}
+            {is3DLoading && <div className="viewport-loading-spinner" aria-hidden="true"><i className="fas fa-circle-notch fa-spin" /></div>}
+            {modelLoadError && <div className="viewport-model-loading" role="alert">{modelLoadError} <button type="button" className="btn btn-sm btn-light" onClick={() => setModelRetry(value => value + 1)} aria-label="Retry loading models" title="Retry"><i className="fas fa-redo" aria-hidden="true" /></button></div>}
+            <Suspense fallback={<div className="viewport-model-loading" role="status">Loading renderer…</div>}>
+            {renderDialog === 'pathtrace' ? <PathTraceDialog hideCloseButton={!adminMode} source={sceneRef.current} camera={cameraRef.current} previewSize={{ width: rendererRef.current.domElement.width, height: rendererRef.current.domElement.height, cssWidth: rendererRef.current.domElement.clientWidth, cssHeight: rendererRef.current.domElement.clientHeight }} exposure={rendererRef.current?.toneMappingExposure || 1.15} samples={qualityRef.current.renderSamples || 128} bounces={qualityRef.current.renderBounces || 8} onClose={() => setRenderDialog(null)} /> : renderDialog && <RenderDialog hideCloseButton={!adminMode} mode={renderDialog} capture={captureForDialog} render={renderForDialog} onClose={() => setRenderDialog(null)} />}
+            </Suspense>
             {/* Live Interactive Three.js WebGL Container */}
             <div
                 id="threejs-container"
@@ -1093,43 +80,47 @@ export default function ThreeViewer() {
             />
 
             {/* Fullscreen Expand Button */}
-            <button
+            {adminMode && <button
                 type="button"
                 className="viewport-fullscreen-toggle"
                 onClick={() => setShow3DModal(true)}
-                title="Phóng to toàn màn hình"
             >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                     <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" />
                 </svg>
-            </button>
+            </button>}
 
-            {/* Floating Technical Specs HUD */}
-            {viewportMode === 'studio-render' && showSpecsHUD && (
-                <div className="studio-specs-hud">
-                    <div className="specs-hud-header">
-                        <span className="specs-brand">AARDWOLF VACUUM LIFTER</span>
-                        <span className="specs-status">STUDIO HD</span>
+            {adminMode && <button type="button" className="btn btn-danger viewport-render-action" title="Photorealistic render: usually takes about 1 to 5 minutes, depending on quality and scene size" aria-label="Render" onClick={() => window.dispatchEvent(new CustomEvent("aardwolf-render-dialog", { detail: "realistic" }))}><i className="fas fa-camera" aria-hidden="true" /> Render</button>}
+            {adminMode && <button type="button" className="btn viewport-pathtrace-action" aria-label="Path Tracing" onClick={() => window.dispatchEvent(new CustomEvent("aardwolf-render-dialog", { detail: "pathtrace" }))}>Path Tracing</button>}
+            {adminMode && <button type="button" className="viewport-reload-scene" title="Reload 3D scene from files" aria-label="Reload 3D scene" disabled={is3DLoading || !!renderDialog} onClick={reloadScene}><i className="fas fa-sync-alt" aria-hidden="true" /></button>}
+            {adminMode && <button type="button" className="viewport-capture" title="Capture viewport as PNG" aria-label="Capture viewport" disabled={is3DLoading} onClick={async () => {
+                const dataUrl = await takeSnapshotRef.current?.();
+                if (!dataUrl) return;
+                const link = document.createElement('a');
+                link.href = dataUrl;
+                link.download = `aardwolf-capture-${new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-')}.png`;
+                link.click();
+            }}><i className="fas fa-image" aria-hidden="true" /></button>}
+            {adminMode && <button type="button" className="viewport-copy-settings" title="Camera & Copy JSON" aria-label="Camera & Copy JSON" onClick={() => setCameraInfoOpen(true)}>{'<>'}</button>}
+            {adminMode && cameraInfoOpen && <div style={{ position: 'fixed', inset: 0, zIndex: 10000, background: '#0005', display: 'grid', placeItems: 'center' }} onClick={() => setCameraInfoOpen(false)}>
+                <section role="dialog" aria-modal="true" aria-label="Camera & Copy JSON" style={{ background: '#fff', borderRadius: 12, padding: 20, width: 'min(440px, 95vw)' }} onClick={e => e.stopPropagation()}>
+                    <div className="d-flex justify-content-between mb-3"><strong>Camera Telemetry</strong><button type="button" aria-label="Close" onClick={() => setCameraInfoOpen(false)}>×</button></div>
+                    <div>Position (XYZ): {cameraTelemetry.posX}, {cameraTelemetry.posY}, {cameraTelemetry.posZ}</div>
+                    <div>Target: {cameraTelemetry.targetX}, {cameraTelemetry.targetY}, {cameraTelemetry.targetZ}</div>
+                    <div>Distance: {cameraTelemetry.distance} mm</div>
+                    <div>Field of View: {cameraTelemetry.fov}° ({cameraTelemetry.preset})</div>
+                    <div className="d-flex gap-2 mt-3">
+                        <button type="button" className="btn btn-outline-primary btn-sm" onClick={() => navigator.clipboard.writeText(JSON.stringify(cameraTelemetry, null, 2))}>Copy Coordinates</button>
+                        <button type="button" className="btn btn-primary btn-sm" onClick={async () => {
+                            await navigator.clipboard.writeText(JSON.stringify({ unit, craneType, jibLength, workLoadLimit, environment, surfaceType: userSurfaceType, actualLoad, suctionHeadId, handleId, suctionModelVariant, customNotes, camera: cameraTelemetry }, null, 2));
+                            setSettingsCopied(true); setTimeout(() => setSettingsCopied(false), 2000);
+                        }}>{settingsCopied ? 'Copied' : 'Copy JSON'}</button>
                     </div>
-                    <div className="specs-hud-body">
-                        <div className="specs-item">
-                            <span className="specs-lbl">Configuration:</span>
-                            <span className="specs-val">{config3D.crane ? config3D.crane.name.split('@')[0] : 'Jib Crane'}</span>
-                        </div>
-                        <div className="specs-item">
-                            <span className="specs-lbl">Capacity:</span>
-                            <span className="specs-val font-weight-bold">{workLoadLimit.toUpperCase()}</span>
-                        </div>
-                        <div className="specs-item">
-                            <span className="specs-lbl">Workpiece:</span>
-                            <span className="specs-val">{actualLoad.length} × {actualLoad.width} × {actualLoad.height} mm ({actualLoad.weight} kg)</span>
-                        </div>
-                    </div>
-                </div>
-            )}
+                </section>
+            </div>}
 
             {/* 3D Click Pin Feedback */}
-            {clickedPin && (
+            {adminMode && clickedPin && (
                 <div
                     className="lumion-click-pin"
                     style={{ left: `${clickedPin.x}px`, top: `${clickedPin.y}px` }}
@@ -1142,48 +133,30 @@ export default function ThreeViewer() {
                 </div>
             )}
 
-            {/* Floating 3ds Max Style Transform Gizmo Viewport Pill */}
-            {selectedPart && (
-                <div className="viewport-gizmo-pill">
-                    <div className="gizmo-pill-header">
-                        <span className="gizmo-pill-icon">{PART_ICONS[selectedPart]}</span>
-                        <span className="gizmo-pill-title">{PART_LABELS[selectedPart]}</span>
-                        <span className="gizmo-pill-badge">3D Gizmo</span>
-                    </div>
-                    <div className="gizmo-pill-coords">
-                        <span className="coord-chip coord-x">
-                            <span className="axis-dot dot-x" />
-                            X: {Math.round((basePositions[selectedPart]?.x || 0) + (partOffsets[selectedPart]?.x || 0))}
-                        </span>
-                        <span className="coord-chip coord-y">
-                            <span className="axis-dot dot-y" />
-                            Y: {Math.round((basePositions[selectedPart]?.y || 0) + (partOffsets[selectedPart]?.y || 0))}
-                        </span>
-                        <span className="coord-chip coord-z">
-                            <span className="axis-dot dot-z" />
-                            Z: {Math.round((basePositions[selectedPart]?.z || 0) + (partOffsets[selectedPart]?.z || 0))}
-                        </span>
-                    </div>
-                    <div className="gizmo-pill-actions">
-                        <button
-                            type="button"
-                            className={`gizmo-btn ${gizmoEnabled ? 'active' : ''}`}
-                            onClick={() => setGizmoEnabled(!gizmoEnabled)}
-                            title={gizmoEnabled ? "Ẩn Gizmo 3 trục" : "Hiện Gizmo 3 trục"}
-                        >
-                            {gizmoEnabled ? "Gizmo: ON" : "Gizmo: OFF"}
-                        </button>
-                        <button
-                            type="button"
-                            className="gizmo-btn"
-                            onClick={() => resetPartOffset(selectedPart)}
-                            title="Reset vị trí chuẩn cấu kiện này"
-                        >
-                            ↺ Reset
-                        </button>
-                    </div>
-                </div>
-            )}
+            <div className="viewport-history-controls" role="group" aria-label="Edit history" style={!adminMode ? { display: 'none' } : undefined}>
+                {exportProgress !== null && <button type="button" className="gizmo-btn" onClick={() => exportAbortRef.current?.abort()}>Cancel 4K · {exportProgress}%</button>}
+                <button type="button" className="gizmo-btn settings-save-button" aria-label="Save Settings" title={settingsSaving ? 'Saving…' : settingsDirty ? 'Unsaved changes' : settingsSaved ? 'Saved' : 'Save Settings'} disabled={settingsSaving} onClick={saveAllSettings}>
+                    {settingsDirty && <span className="settings-dirty-dot" aria-label="Unsaved changes" />}
+                    {settingsSaved && !settingsDirty && !settingsSaving && <span className="settings-saved-check" aria-label="Settings saved"><i className="fas fa-check" aria-hidden="true" /></span>}
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h12l4 4v12a2 2 0 0 1-2 2Z" />
+                        <path d="M7 3v6h10V3M7 21v-8h10v8" />
+                    </svg>
+                </button>
+                {settingsStatus && <span className="settings-save-status" role="status">{settingsStatus}</span>}
+                <button type="button" className="gizmo-btn" aria-label="Undo" onClick={undoEdit} disabled={!canUndo}>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <path d="M9 4 4 9l5 5" />
+                        <path d="M4 9h10a6 6 0 0 1 0 12h-3" />
+                    </svg>
+                </button>
+                <button type="button" className="gizmo-btn" aria-label="Redo" onClick={redoEdit} disabled={!canRedo}>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <path d="m15 4 5 5-5 5" />
+                        <path d="M20 9H10a6 6 0 0 0 0 12h3" />
+                    </svg>
+                </button>
+            </div>
         </div>
     );
 }

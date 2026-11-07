@@ -5,8 +5,8 @@ import ConfiguratorPage from './pages/ConfiguratorPage.jsx';
 import SpecificationPage from './pages/SpecificationPage.jsx';
 import ThreeViewer from './components/ThreeViewer.jsx';
 import ViewControls from './components/ViewControls.jsx';
-import ProgressBar from './components/ProgressBar.jsx';
 import Footer from './components/Footer.jsx';
+import AdminPage from './pages/AdminPage.jsx';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './styles/page.css';
@@ -27,7 +27,6 @@ function MainApp() {
                 )}
             </main>
 
-            <ProgressBar />
             <ThreeViewer />
             <ViewControls />
             <Footer />
@@ -36,6 +35,7 @@ function MainApp() {
 }
 
 export default function App() {
+    if (window.location.pathname === '/admin') return <AdminPage />;
     return (
         <ConfiguratorProvider>
             <MainApp />

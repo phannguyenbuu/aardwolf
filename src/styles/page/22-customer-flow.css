@@ -1,0 +1,41 @@
+/* Customer configuration uses five sections and a shared image-card system. */
+.tab-user-settings .user-setting-group-body { padding-left: 0; }
+.tab-user-settings .user-setting-group-heading { padding: 18px 0; min-height: 68px; }
+.tab-user-settings .selection-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 8px 0 20px; }
+.tab-user-settings .selection-card { display: flex; flex-direction: column; min-width: 0; position: relative; margin: 0; cursor: pointer; white-space: normal; }
+.selection-card > input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.selection-card-body { position: relative; display: flex; flex: 1; flex-direction: column; border: 2px solid #e2e8f0; border-radius: 8px; overflow: hidden; background: #fff; }
+.selection-card img { display: block; width: 100%; aspect-ratio: 1; object-fit: contain; padding: 8px; }
+.tab-user-settings .selection-card-label { flex: 1; display: flex; align-items: center; justify-content: center; padding: 10px 6px; min-height: 52px; text-align: center; white-space: normal; line-height: 1.4; font-size: 12px !important; color: #172033; }
+.selection-card-check { display: none; position: absolute; right: 6px; top: 6px; width: 22px; height: 22px; border-radius: 50%; background: #f5c43e; color: #171717; text-align: center; line-height: 22px; }
+.selection-card > input:checked + .selection-card-body { border-color: #e9be3e; }
+.selection-card > input:checked + .selection-card-body .selection-card-label { background: #fff8df; }
+.selection-card > input:checked + .selection-card-body .selection-card-check { display: block; }
+.selection-card > input:focus-visible + .selection-card-body { outline: 2px solid #1769e8; outline-offset: 3px; }
+.selection-card:not(.is-disabled):hover .selection-card-body { border-color: #c9a035; }
+.selection-card.is-disabled { cursor: not-allowed; }
+.selection-card.is-disabled .selection-card-body { opacity: .42; }
+.selection-card-reason { display: none; position: absolute; top: calc(100% + 4px); left: 0; right: 0; z-index: 10; padding: 8px; border: 1px solid #e2e8f0; border-radius: 4px; background: #fff; box-shadow: 0 4px 12px #0002; color: #555; font-size: 11px; white-space: normal; overflow-wrap: anywhere; }
+.selection-card:is(:hover, :focus-visible) .selection-card-reason { display: block; }
+.tab-user-settings .load-type-options { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 8px 0 24px; }
+.load-type-options label { padding: 12px; border: 1px solid #e2e8f0; border-radius: 6px; display: flex; align-items: center; gap: 8px; }
+.load-type-options label:has(input:checked) { background: #fff8df; border-color: #e9be3e; }
+.load-type-options label:has(input:disabled) { opacity: .45; }
+.tab-user-settings .workpiece-dimensions-row { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; align-items: start; }
+.tab-user-settings .dimension-hint { display: block; margin-top: 6px; color: #888; }
+.tab-user-settings .selection-subtitle { display: block; margin: 20px 0 10px; font-weight: 700; }
+.tab-user-settings .head-selection-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.tab-user-settings .head-selection-grid .selection-card img { max-height: 220px; }
+.tab-user-settings .user-setting-actions:has(.user-quote-buttons:empty) { display: none; }
+.tab-user-settings .user-quote-buttons button { border: 0; cursor: pointer; font-weight: 700; }
+.tab-user-settings .user-quote-buttons button:hover { background: #eab72d; }
+.three-viewport-wrapper.is-user-mode { bottom: 12px; }
+@media (min-width: 992px) {
+    .configurator-layout:has(.tab-user-settings) .content__left { flex: 0 0 45%; width: 45%; }
+}
+@media (max-width: 575px) {
+    .tab-user-settings .selection-grid { gap: 7px; }
+    .tab-user-settings .pad-selection-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .tab-user-settings .selection-card-label { padding: 8px 4px; }
+    .tab-user-settings .load-type-options { gap: 8px; }
+}

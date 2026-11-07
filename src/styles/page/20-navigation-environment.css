@@ -1,0 +1,26 @@
+/* Keep the same navigation style on every configurator tab. */
+.configurator-layout .column-tabs-nav { position:sticky; top:var(--configurator-header-height, 0px); z-index:1001; background:#fff; gap:0; padding:0; border-bottom:1px solid #eee; }
+.configurator-layout .column-tabs-nav .col-tab-btn { flex:1; justify-content:center; min-width:0; padding:12px 5px; border:0; border-bottom:2px solid transparent; border-radius:0; background:#fff; color:#666; box-shadow:none; text-transform:uppercase; font-size:9.375px; font-weight:400; }
+.configurator-layout .column-tabs-nav .col-tab-btn.active { background:#fff; border-bottom-color:#e9be3e; color:#171717; }
+
+/* Shared slider presentation throughout Environment. */
+.tab-environment .pbr-slider-group .slider-label-row,
+.tab-environment .pbr-slider-group > label {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 4px 8px;
+    color: #003366;
+    font-size: 12px;
+    font-weight: 400;
+    margin-bottom: 0;
+}
+.tab-environment .pbr-slider-group strong { font-weight: 700; }
+.tab-environment input[type="range"].form-range {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+}

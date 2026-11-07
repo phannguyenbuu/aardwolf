@@ -1,0 +1,1 @@
+venice_sunset_1k.hdr copied from https://github.com/mrdoob/three.js/blob/dev/examples/textures/equirectangular/venice_sunset_1k.hdr (Three.js example environment, Venice Sunset / Poly Haven). Used as equirectangular HDR background and environment only in the Path Tracing dialog.

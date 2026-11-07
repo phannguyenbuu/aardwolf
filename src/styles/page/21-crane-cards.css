@@ -1,0 +1,33 @@
+/* Equal-height crane cards with square thumbnails and captions below. */
+.tab-user-settings .crane-image-options {
+    display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; width: 100%; align-items: stretch;
+}
+.tab-user-settings .crane-image-options .crane-image-option {
+    position: relative; display: flex; align-items: stretch; width: 100%; min-width: 0; padding: 0;
+}
+.tab-user-settings .crane-image-option > input {
+    position: absolute; opacity: 0; width: 1px; height: 1px;
+}
+.tab-user-settings .crane-image-options .crane-image-card {
+    position: relative; display: flex; flex-direction: column; width: 100%; height: 100%; aspect-ratio: auto;
+    overflow: hidden; margin: 0; border: 2px solid #e2e8f0; border-radius: 8px;
+    background: #fff; cursor: pointer; white-space: normal;
+    transition: border-color .18s, box-shadow .18s;
+}
+.crane-image-card img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center; transition: transform .2s; }
+.tab-user-settings .crane-image-card img { aspect-ratio: 1; height: auto; object-fit: cover; flex: 0 0 auto; }
+.tab-user-settings .crane-image-card .crane-image-caption {
+    position: static; inset: auto 0 0; padding: 8px 5px;
+    background: #fff; color: #172033;
+    flex: 1; display: flex; align-items: center; justify-content: center;
+    min-height: calc(3 * 1.3em + 16px);
+    font-size: 11px; font-weight: 600; line-height: 1.3; text-align: center;
+}
+.crane-image-check { position: absolute; top: 5px; right: 5px; display: grid; place-items: center; width: 19px; height: 19px; border-radius: 50%; background: #e9be3e; color: #171717; opacity: 0; font-weight: 700; }
+.tab-user-settings .crane-image-card:hover { border-color: #e9be3e; box-shadow: 0 3px 10px #0002; }
+.crane-image-card:hover img { transform: scale(1.04); }
+.tab-user-settings .crane-image-option > input:checked + .crane-image-card { border-color: #e9be3e; box-shadow: 0 0 0 2px #e9be3e40; }
+.crane-image-option > input:checked + .crane-image-card .crane-image-check { opacity: 1; }
+.tab-user-settings .crane-image-option > input:focus-visible + .crane-image-card { outline: 2px solid #1769e8; outline-offset: 3px; }
+
+.tab-user-settings .crane-image-option > input:checked + .crane-image-card .crane-image-caption { background: #fff8df; }

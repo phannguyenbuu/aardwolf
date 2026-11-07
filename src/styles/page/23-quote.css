@@ -1,0 +1,10 @@
+/* Quote keeps its table borders and text hierarchy on a white surface. */
+body:has(.quote-page) { background: #fff !important; }
+.quote-page,
+.quote-page .content__left,
+.quote-page .content__left--title,
+.quote-page .content__left--content,
+.quote-page .content__left--content--item,
+.quote-page .content__left--content--item-1,
+.quote-page .content__left--content--item-2,
+.quote-page .content__left--content--item-3 { background: #fff; }

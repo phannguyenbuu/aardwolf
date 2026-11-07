@@ -1,0 +1,1203 @@
+{
+  "assets": [
+    {
+      "name": "cf2-comfort_grip",
+      "file": "/models/cf2-comfort_grip.fbx",
+      "source": "ref\\3D Step\\3D Step\\Head Control\\OBJ\\cf2-comfort_grip_opt.obj",
+      "importedOpt": true,
+      "heightMm": 395.04399993219204,
+      "boundsMm": {
+        "min": [
+          69.96600341796875,
+          -99.68198713276753,
+          24.96098601946114
+        ],
+        "max": [
+          245.4530029296875,
+          295.3620127994245,
+          259.96199976248505
+        ]
+      }
+    },
+    {
+      "name": "ethv2-high_reach",
+      "file": "/models/ethv2-high_reach.fbx",
+      "source": "ref\\3D Step\\3D Step\\Head Control\\OBJ\\ethv2-high_reach_opt.obj",
+      "importedOpt": true,
+      "heightMm": 970.5000412438959,
+      "boundsMm": {
+        "min": [
+          -293.3890075683594,
+          -110.00001502408202,
+          -229.00000792720348
+        ],
+        "max": [
+          278,
+          860.5000262198139,
+          370.7379520480365
+        ]
+      }
+    },
+    {
+      "name": "ethv3-long_reach",
+      "file": "/models/ethv3-long_reach.fbx",
+      "source": "ref\\3D Step\\3D Step\\Head Control\\OBJ\\ethv3-long_reach_opt.obj",
+      "importedOpt": true,
+      "heightMm": 899.6960371162086,
+      "boundsMm": {
+        "min": [
+          -267.25,
+          -110.00001502408202,
+          -229.00000792720348
+        ],
+        "max": [
+          267.25,
+          789.6960220921266,
+          506.0459392030979
+        ]
+      }
+    },
+    {
+      "name": "mhc-one_hand",
+      "file": "/models/mhc-one_hand.fbx",
+      "source": "ref\\3D Step\\3D Step\\Head Control\\OBJ\\mhc-one_hand_opt.obj",
+      "importedOpt": true,
+      "heightMm": 496.7319998450545,
+      "boundsMm": {
+        "min": [
+          -66.02899932861328,
+          -270.0159856911342,
+          39.163984801248596
+        ],
+        "max": [
+          95.31700134277344,
+          226.7160141539203,
+          196.16399008610122
+        ]
+      }
+    },
+    {
+      "name": "bellow_cups_1x_200",
+      "file": "/models/bellow_cups_1x_200.fbx",
+      "source": "ref\\3D Step\\3D Step\\Suction Cup\\OBJ\\bellow_cups_1x_200_opt.obj",
+      "importedOpt": true,
+      "heightMm": 101.00000748318534,
+      "boundsMm": {
+        "min": [
+          -21.454999923706055,
+          54.60500039732541,
+          11.32599178767949
+        ],
+        "max": [
+          225.9709930419922,
+          155.60500788051075,
+          258.8149983188426
+        ]
+      }
+    },
+    {
+      "name": "bellow_cups_1x_250",
+      "file": "/models/bellow_cups_1x_250.fbx",
+      "source": "ref\\3D Step\\3D Step\\Suction Cup\\OBJ\\bellow_cups_1x_250_opt.obj",
+      "importedOpt": true,
+      "heightMm": 101.00000748318534,
+      "boundsMm": {
+        "min": [
+          -21.454999923706055,
+          54.60500039732541,
+          11.32599178767949
+        ],
+        "max": [
+          225.9709930419922,
+          155.60500788051075,
+          258.8149983188426
+        ]
+      }
+    },
+    {
+      "name": "bellow_cups_1x_300",
+      "file": "/models/bellow_cups_1x_300.fbx",
+      "source": "ref\\3D Step\\3D Step\\Suction Cup\\OBJ\\bellow_cups_1x_300_opt.obj",
+      "importedOpt": true,
+      "heightMm": 101.00000748318534,
+      "boundsMm": {
+        "min": [
+          -21.454999923706055,
+          54.60500039732541,
+          11.32599178767949
+        ],
+        "max": [
+          225.9709930419922,
+          155.60500788051075,
+          258.8149983188426
+        ]
+      }
+    },
+    {
+      "name": "bellow_cups_2x_100",
+      "file": "/models/bellow_cups_2x_100.fbx",
+      "source": "ref\\3D Step\\3D Step\\Suction Cup\\OBJ\\bellow_cups_2x_100_opt.obj",
+      "importedOpt": true,
+      "heightMm": 139.51799159298326,
+      "boundsMm": {
+        "min": [
+          21.472000122070312,
+          50.02202263460513,
+          58.2989914408387
+        ],
+        "max": [
+          153.72300720214844,
+          189.5400142275884,
+          440.5280113601615
+        ]
+      }
+    },
+    {
+      "name": "bellow_cups_2x_125",
+      "file": "/models/bellow_cups_2x_125.fbx",
+      "source": "ref\\3D Step\\3D Step\\Suction Cup\\OBJ\\bellow_cups_2x_125_opt.obj",
+      "importedOpt": true,
+      "heightMm": 139.51799159298326,
+      "boundsMm": {
+        "min": [
+          21.472000122070312,
+          50.02202263460513,
+          58.2989914408387
+        ],
+        "max": [
+          153.72300720214844,
+          189.5400142275884,
+          440.5280113601615
+        ]
+      }
+    },
+    {
+      "name": "bellow_cups_2x_250",
+      "file": "/models/bellow_cups_2x_250.fbx",
+      "source": "ref\\3D Step\\3D Step\\Suction Cup\\OBJ\\bellow_cups_2x_250_opt.obj",
+      "importedOpt": true,
+      "heightMm": 150.0080212574964,
+      "boundsMm": {
+        "min": [
+          -10.432999610900879,
+          50.00100213478469,
+          35.55199006000128
+        ],
+        "max": [
+          186.80599975585938,
+          200.0090233922811,
+          463.0249901215125
+        ]
+      }
+    },
+    {
+      "name": "bellow_cups_4x_100",
+      "file": "/models/bellow_cups_4x_100.fbx",
+      "source": "ref\\3D Step\\3D Step\\Suction Cup\\OBJ\\bellow_cups_4x_100_opt.obj",
+      "importedOpt": true,
+      "heightMm": 424.2150066276343,
+      "boundsMm": {
+        "min": [
+          -27.829999923706055,
+          20.58702308946469,
+          226.24497544832235
+        ],
+        "max": [
+          220.40499877929688,
+          444.802029717099,
+          367.74499356291113
+        ]
+      }
+    },
+    {
+      "name": "bellow_cups_4x_125",
+      "file": "/models/bellow_cups_4x_125.fbx",
+      "source": "ref\\3D Step\\3D Step\\Suction Cup\\OBJ\\bellow_cups_4x_125_opt.obj",
+      "importedOpt": true,
+      "heightMm": 424.2150066276343,
+      "boundsMm": {
+        "min": [
+          -27.829999923706055,
+          20.58702308946469,
+          226.24497544832235
+        ],
+        "max": [
+          220.40499877929688,
+          444.802029717099,
+          367.74499356291113
+        ]
+      }
+    },
+    {
+      "name": "bellow_cups_4x",
+      "file": "/models/bellow_cups_4x.fbx",
+      "source": "ref\\3D Step\\3D Step\\Suction Cup\\OBJ\\bellow_cups_4x_opt.obj",
+      "importedOpt": true,
+      "heightMm": 289.39600066144817,
+      "boundsMm": {
+        "min": [
+          -35.53200149536133,
+          87.94402344041663,
+          217.97898447225828
+        ],
+        "max": [
+          228.03900146484375,
+          377.3400241018648,
+          367.74498847759895
+        ]
+      }
+    },
+    {
+      "name": "bellow_cups_6x",
+      "file": "/models/bellow_cups_6x.fbx",
+      "source": "ref\\3D Step\\3D Step\\Suction Cup\\OBJ\\bellow_cups_6x_opt.obj",
+      "importedOpt": true,
+      "heightMm": 479.45900801618393,
+      "boundsMm": {
+        "min": [
+          -35.50600051879883,
+          -17.104976345960004,
+          218.13697397285432
+        ],
+        "max": [
+          228.0279998779297,
+          462.35403167022395,
+          367.744996408578
+        ]
+      }
+    },
+    {
+      "name": "multi_cup_matrix",
+      "file": "/models/multi_cup_matrix.fbx",
+      "source": "ref\\3D Step\\3D Step\\Suction Cup\\OBJ\\multi_cup_matrix_opt.obj",
+      "importedOpt": true,
+      "heightMm": 134.50001736278082,
+      "boundsMm": {
+        "min": [
+          -93.625,
+          167.10401486862057,
+          140.1789820099133
+        ],
+        "max": [
+          206.37399291992188,
+          301.6040322314014,
+          490.17799260455604
+        ]
+      }
+    },
+    {
+      "name": "oval_foam_suction_300x200mm",
+      "file": "/models/oval_foam_suction_300x200mm.fbx",
+      "source": "ref\\3D Step\\3D Step\\Suction Cup\\OBJ\\oval_foam_suction_300x200mm_opt.obj",
+      "importedOpt": true,
+      "heightMm": 131.9990172772345,
+      "boundsMm": {
+        "min": [
+          -150.0709991455078,
+          -42.85900714808589,
+          -84.28700612259824
+        ],
+        "max": [
+          182.91600036621094,
+          89.14001012914859,
+          248.69999791906898
+        ]
+      }
+    },
+    {
+      "name": "oval_foam_suction_380x220mm",
+      "file": "/models/oval_foam_suction_380x220mm.fbx",
+      "source": "ref\\3D Step\\3D Step\\Suction Cup\\OBJ\\oval_foam_suction_380x220mm_opt.obj",
+      "importedOpt": true,
+      "heightMm": 131.9990172772345,
+      "boundsMm": {
+        "min": [
+          -150.0709991455078,
+          -42.85900714808589,
+          -84.28700612259824
+        ],
+        "max": [
+          182.91600036621094,
+          89.14001012914859,
+          248.69999791906898
+        ]
+      }
+    },
+    {
+      "name": "rectangular_pads_2_125x325mm",
+      "file": "/models/rectangular_pads_2_125x325mm.fbx",
+      "source": "ref\\3D Step\\3D Step\\Suction Cup\\OBJ\\rectangular_pads_2_125x325mm_opt.obj",
+      "importedOpt": true,
+      "heightMm": 356.0000020370078,
+      "boundsMm": {
+        "min": [
+          -162.5,
+          -178.0000010178622,
+          -87.04001242895703
+        ],
+        "max": [
+          162.5,
+          178.0000010191456,
+          84.00000211386552
+        ]
+      }
+    },
+    {
+      "name": "rectangular_pads_frame_4_125x325mm",
+      "file": "/models/rectangular_pads_frame_4_125x325mm.fbx",
+      "source": "ref\\3D Step\\3D Step\\Suction Cup\\OBJ\\rectangular_pads_frame_4_125x325mm_opt.obj",
+      "importedOpt": true,
+      "heightMm": 374.9989942810723,
+      "boundsMm": {
+        "min": [
+          -337.5,
+          -187.50000936362676,
+          -124.02501568165899
+        ],
+        "max": [
+          337.5,
+          187.4989849174456,
+          89.0000021138655
+        ]
+      }
+    },
+    {
+      "name": "rectangular_pads_in_line_4_125x325mm",
+      "file": "/models/rectangular_pads_in_line_4_125x325mm.fbx",
+      "source": "ref\\3D Step\\3D Step\\Suction Cup\\OBJ\\rectangular_pads_in_line_4_125x325mm_opt.obj",
+      "importedOpt": true,
+      "heightMm": 616.0000020370071,
+      "boundsMm": {
+        "min": [
+          -162.5,
+          -308.00000101786185,
+          -87.02402415833117
+        ],
+        "max": [
+          162.5,
+          308.0000010191452,
+          84.00000211386552
+        ]
+      }
+    },
+    {
+      "name": "TUBE LIFT ID 120",
+      "file": "/models/TUBE LIFT ID 120.fbx",
+      "source": "ref\\3D Step\\3D Step\\Tube\\OBJ\\TUBE LIFT ID 120_opt.obj",
+      "importedOpt": true,
+      "heightMm": 1949.3830326650852,
+      "boundsMm": {
+        "min": [
+          -23.135000228881836,
+          -1713.697016211974,
+          66.06199047282603
+        ],
+        "max": [
+          193.95700073242188,
+          235.6860164531112,
+          198.60812897557108
+        ]
+      }
+    },
+    {
+      "name": "TUBE LIFT ID 140",
+      "file": "/models/TUBE LIFT ID 140.fbx",
+      "source": "ref\\3D Step\\3D Step\\Tube\\OBJ\\TUBE LIFT ID 140_opt.obj",
+      "importedOpt": true,
+      "heightMm": 1949.3830334200643,
+      "boundsMm": {
+        "min": [
+          -33.1349983215332,
+          -1713.697016966953,
+          55.83499309733777
+        ],
+        "max": [
+          193.95700073242188,
+          235.6860164531112,
+          208.83513398045386
+        ]
+      }
+    },
+    {
+      "name": "TUBE LIFT ID 160",
+      "file": "/models/TUBE LIFT ID 160.fbx",
+      "source": "ref\\3D Step\\3D Step\\Tube\\OBJ\\TUBE LIFT ID 160_opt.obj",
+      "importedOpt": true,
+      "heightMm": 1949.3830345525328,
+      "boundsMm": {
+        "min": [
+          -48.1349983215332,
+          -1713.6970180994215,
+          40.83499309733782
+        ],
+        "max": [
+          193.95700073242188,
+          235.6860164531112,
+          223.8351339804538
+        ]
+      }
+    },
+    {
+      "name": "TUBE LIFT ID 180",
+      "file": "/models/TUBE LIFT ID 180.fbx",
+      "source": "ref\\3D Step\\3D Step\\Tube\\OBJ\\TUBE LIFT ID 180_opt.obj",
+      "importedOpt": true,
+      "heightMm": 1949.3830353075118,
+      "boundsMm": {
+        "min": [
+          -58.1349983215332,
+          -1713.6970188544005,
+          31.071994516405233
+        ],
+        "max": [
+          193.95700073242188,
+          235.6860164531112,
+          233.5991262900241
+        ]
+      }
+    },
+    {
+      "name": "TUBE LIFT ID 200",
+      "file": "/models/TUBE LIFT ID 200.fbx",
+      "source": "ref\\3D Step\\3D Step\\Tube\\OBJ\\TUBE LIFT ID 200_opt.obj",
+      "importedOpt": true,
+      "heightMm": 1949.3830360624906,
+      "boundsMm": {
+        "min": [
+          -68.13500213623047,
+          -1713.6970196093794,
+          20.83499309733788
+        ],
+        "max": [
+          193.95700073242188,
+          235.6860164531112,
+          243.83513398045375
+        ]
+      }
+    }
+  ],
+  "handles": [
+    {
+      "key": "MHC",
+      "name": "mhc-one_hand",
+      "label": "MHC — one hand",
+      "price": 424,
+      "legacyKey": "single_control_head",
+      "file": "/models/mhc-one_hand.fbx",
+      "source": "ref\\3D Step\\3D Step\\Head Control\\OBJ\\mhc-one_hand_opt.obj",
+      "importedOpt": true,
+      "heightMm": 496.7319998450545,
+      "boundsMm": {
+        "min": [
+          -66.02899932861328,
+          -270.0159856911342,
+          39.163984801248596
+        ],
+        "max": [
+          95.31700134277344,
+          226.7160141539203,
+          196.16399008610122
+        ]
+      }
+    },
+    {
+      "key": "CF2",
+      "name": "cf2-comfort_grip",
+      "label": "CF2 — comfort grip",
+      "price": 226,
+      "legacyKey": "comfort_control_head",
+      "file": "/models/cf2-comfort_grip.fbx",
+      "source": "ref\\3D Step\\3D Step\\Head Control\\OBJ\\cf2-comfort_grip_opt.obj",
+      "importedOpt": true,
+      "heightMm": 395.04399993219204,
+      "boundsMm": {
+        "min": [
+          69.96600341796875,
+          -99.68198713276753,
+          24.96098601946114
+        ],
+        "max": [
+          245.4530029296875,
+          295.3620127994245,
+          259.96199976248505
+        ]
+      }
+    },
+    {
+      "key": "ETHV3",
+      "name": "ethv3-long_reach",
+      "label": "ETHV3 — long reach",
+      "price": 371,
+      "legacyKey": "extra_hand",
+      "file": "/models/ethv3-long_reach.fbx",
+      "source": "ref\\3D Step\\3D Step\\Head Control\\OBJ\\ethv3-long_reach_opt.obj",
+      "importedOpt": true,
+      "heightMm": 899.6960371162086,
+      "boundsMm": {
+        "min": [
+          -267.25,
+          -110.00001502408202,
+          -229.00000792720348
+        ],
+        "max": [
+          267.25,
+          789.6960220921266,
+          506.0459392030979
+        ]
+      }
+    },
+    {
+      "key": "ETHV2",
+      "name": "ethv2-high_reach",
+      "label": "ETHV2 — high reach",
+      "price": 546,
+      "legacyKey": "hight_stack",
+      "file": "/models/ethv2-high_reach.fbx",
+      "source": "ref\\3D Step\\3D Step\\Head Control\\OBJ\\ethv2-high_reach_opt.obj",
+      "importedOpt": true,
+      "heightMm": 970.5000412438959,
+      "boundsMm": {
+        "min": [
+          -293.3890075683594,
+          -110.00001502408202,
+          -229.00000792720348
+        ],
+        "max": [
+          278,
+          860.5000262198139,
+          370.7379520480365
+        ]
+      }
+    }
+  ],
+  "suctionPads": [
+    {
+      "id": "bellow_cups_1x_200",
+      "key": "bellow_cups_1x_200",
+      "name": "1x BELLOWS CUP Φ200",
+      "model": "bellow_cups_1x_200",
+      "asset": {
+        "name": "bellow_cups_1x_200",
+        "file": "/models/bellow_cups_1x_200.fbx",
+        "source": "ref\\3D Step\\3D Step\\Suction Cup\\OBJ\\bellow_cups_1x_200_opt.obj",
+        "importedOpt": true,
+        "heightMm": 101.00000748318534,
+        "boundsMm": {
+          "min": [
+            -21.454999923706055,
+            54.60500039732541,
+            11.32599178767949
+          ],
+          "max": [
+            225.9709930419922,
+            155.60500788051075,
+            258.8149983188426
+          ]
+        }
+      },
+      "nonporousKg": 35,
+      "porousKg": 17.5,
+      "minWidthMm": 215.0,
+      "minLengthMm": 215.0,
+      "price": 226.4,
+      "priceSource": "pricing Thao 1.rar / hình ảnh (8).png",
+      "source": "SUCTION CUP TABLE latest 13-OCT 2.xlsx / suction pad .new!A7:G7",
+      "status": "ready",
+      "type": "round"
+    },
+    {
+      "id": "bellow_cups_1x_250",
+      "key": "bellow_cups_1x_250",
+      "name": "1x BELLOWS CUP Φ250",
+      "model": "bellow_cups_1x_250",
+      "asset": {
+        "name": "bellow_cups_1x_250",
+        "file": "/models/bellow_cups_1x_250.fbx",
+        "source": "ref\\3D Step\\3D Step\\Suction Cup\\OBJ\\bellow_cups_1x_250_opt.obj",
+        "importedOpt": true,
+        "heightMm": 101.00000748318534,
+        "boundsMm": {
+          "min": [
+            -21.454999923706055,
+            54.60500039732541,
+            11.32599178767949
+          ],
+          "max": [
+            225.9709930419922,
+            155.60500788051075,
+            258.8149983188426
+          ]
+        }
+      },
+      "nonporousKg": 54,
+      "porousKg": 27,
+      "minWidthMm": 265.0,
+      "minLengthMm": 265.0,
+      "price": 248.1,
+      "priceSource": "pricing Thao 1.rar / hình ảnh (8).png",
+      "source": "SUCTION CUP TABLE latest 13-OCT 2.xlsx / suction pad .new!A8:G8",
+      "status": "ready",
+      "type": "round"
+    },
+    {
+      "id": "bellow_cups_1x_300",
+      "key": "bellow_cups_1x_300",
+      "name": "1x BELLOWS CUP Φ300",
+      "model": "bellow_cups_1x_300",
+      "asset": {
+        "name": "bellow_cups_1x_300",
+        "file": "/models/bellow_cups_1x_300.fbx",
+        "source": "ref\\3D Step\\3D Step\\Suction Cup\\OBJ\\bellow_cups_1x_300_opt.obj",
+        "importedOpt": true,
+        "heightMm": 101.00000748318534,
+        "boundsMm": {
+          "min": [
+            -21.454999923706055,
+            54.60500039732541,
+            11.32599178767949
+          ],
+          "max": [
+            225.9709930419922,
+            155.60500788051075,
+            258.8149983188426
+          ]
+        }
+      },
+      "nonporousKg": 78,
+      "porousKg": 39,
+      "minWidthMm": 315.0,
+      "minLengthMm": 315.0,
+      "price": 274.6,
+      "priceSource": "pricing Thao 1.rar / hình ảnh (8).png",
+      "source": "SUCTION CUP TABLE latest 13-OCT 2.xlsx / suction pad .new!A9:G9",
+      "status": "ready",
+      "type": "round"
+    },
+    {
+      "id": "bellow_cups_2x_100",
+      "key": "bellow_cups_2x_100",
+      "name": "2x BELLOWS CUPS Φ100",
+      "model": "bellow_cups_2x_100",
+      "asset": {
+        "name": "bellow_cups_2x_100",
+        "file": "/models/bellow_cups_2x_100.fbx",
+        "source": "ref\\3D Step\\3D Step\\Suction Cup\\OBJ\\bellow_cups_2x_100_opt.obj",
+        "importedOpt": true,
+        "heightMm": 139.51799159298326,
+        "boundsMm": {
+          "min": [
+            21.472000122070312,
+            50.02202263460513,
+            58.2989914408387
+          ],
+          "max": [
+            153.72300720214844,
+            189.5400142275884,
+            440.5280113601615
+          ]
+        }
+      },
+      "nonporousKg": 17,
+      "porousKg": 8.5,
+      "minWidthMm": 115.0,
+      "minLengthMm": 250.0,
+      "price": 134.9,
+      "priceSource": "pricing Thao 1.rar / hình ảnh (8).png",
+      "source": "SUCTION CUP TABLE latest 13-OCT 2.xlsx / suction pad .new!A10:G10",
+      "status": "ready",
+      "type": "round"
+    },
+    {
+      "id": "bellow_cups_2x_125",
+      "key": "bellow_cups_2x_125",
+      "name": "2x BELLOWS CUPS Φ125",
+      "model": "bellow_cups_2x_125",
+      "asset": {
+        "name": "bellow_cups_2x_125",
+        "file": "/models/bellow_cups_2x_125.fbx",
+        "source": "ref\\3D Step\\3D Step\\Suction Cup\\OBJ\\bellow_cups_2x_125_opt.obj",
+        "importedOpt": true,
+        "heightMm": 139.51799159298326,
+        "boundsMm": {
+          "min": [
+            21.472000122070312,
+            50.02202263460513,
+            58.2989914408387
+          ],
+          "max": [
+            153.72300720214844,
+            189.5400142275884,
+            440.5280113601615
+          ]
+        }
+      },
+      "nonporousKg": 27,
+      "porousKg": 13.5,
+      "minWidthMm": 140.0,
+      "minLengthMm": 280.0,
+      "price": 155.1,
+      "priceSource": "pricing Thao 1.rar / hình ảnh (8).png",
+      "source": "SUCTION CUP TABLE latest 13-OCT 2.xlsx / suction pad .new!A11:G11",
+      "status": "ready",
+      "type": "round"
+    },
+    {
+      "id": "bellow_cups_2x_200",
+      "key": "bellow_cups_2x_200",
+      "name": "2x BELLOWS CUPS Φ200",
+      "model": null,
+      "asset": null,
+      "nonporousKg": 70,
+      "porousKg": 35,
+      "minWidthMm": 220.0,
+      "minLengthMm": 440.0,
+      "price": 367.1,
+      "priceSource": "pricing Thao 1.rar / hình ảnh (8).png",
+      "source": "SUCTION CUP TABLE latest 13-OCT 2.xlsx / suction pad .new!A12:G12",
+      "status": "missing_model",
+      "type": "round"
+    },
+    {
+      "id": "bellow_cups_2x_250",
+      "key": "bellow_cups_2x_250",
+      "name": "2x BELLOWS CUPS Φ250",
+      "model": "bellow_cups_2x_250",
+      "asset": {
+        "name": "bellow_cups_2x_250",
+        "file": "/models/bellow_cups_2x_250.fbx",
+        "source": "ref\\3D Step\\3D Step\\Suction Cup\\OBJ\\bellow_cups_2x_250_opt.obj",
+        "importedOpt": true,
+        "heightMm": 150.0080212574964,
+        "boundsMm": {
+          "min": [
+            -10.432999610900879,
+            50.00100213478469,
+            35.55199006000128
+          ],
+          "max": [
+            186.80599975585938,
+            200.0090233922811,
+            463.0249901215125
+          ]
+        }
+      },
+      "nonporousKg": 80,
+      "porousKg": 54,
+      "minWidthMm": 270.0,
+      "minLengthMm": 540.0,
+      "price": 410.6,
+      "priceSource": "pricing Thao 1.rar / hình ảnh (8).png",
+      "source": "SUCTION CUP TABLE latest 13-OCT 2.xlsx / suction pad .new!A13:G13",
+      "status": "ready",
+      "type": "round"
+    },
+    {
+      "id": "bellow_cups_2x_300",
+      "key": "bellow_cups_2x_300",
+      "name": "2x BELLOWS CUPS Φ300",
+      "model": null,
+      "asset": null,
+      "nonporousKg": 80,
+      "porousKg": 78,
+      "minWidthMm": 320.0,
+      "minLengthMm": 640.0,
+      "price": 463.5,
+      "priceSource": "pricing Thao 1.rar / hình ảnh (8).png",
+      "source": "SUCTION CUP TABLE latest 13-OCT 2.xlsx / suction pad .new!A14:G14",
+      "status": "missing_model",
+      "type": "round"
+    },
+    {
+      "id": "bellow_cups_4x_100",
+      "key": "bellow_cups_4x_100",
+      "name": "4x BELLOWS CUPS Φ100",
+      "model": "bellow_cups_4x_100",
+      "asset": {
+        "name": "bellow_cups_4x_100",
+        "file": "/models/bellow_cups_4x_100.fbx",
+        "source": "ref\\3D Step\\3D Step\\Suction Cup\\OBJ\\bellow_cups_4x_100_opt.obj",
+        "importedOpt": true,
+        "heightMm": 424.2150066276343,
+        "boundsMm": {
+          "min": [
+            -27.829999923706055,
+            20.58702308946469,
+            226.24497544832235
+          ],
+          "max": [
+            220.40499877929688,
+            444.802029717099,
+            367.74499356291113
+          ]
+        }
+      },
+      "nonporousKg": 34.5,
+      "porousKg": 17.25,
+      "minWidthMm": 250.0,
+      "minLengthMm": 250.0,
+      "price": 244.8,
+      "priceSource": "pricing Thao 1.rar / hình ảnh (8).png",
+      "source": "SUCTION CUP TABLE latest 13-OCT 2.xlsx / suction pad .new!A15:G15",
+      "status": "ready",
+      "type": "multi"
+    },
+    {
+      "id": "bellow_cups_4x_125",
+      "key": "bellow_cups_4x_125",
+      "name": "4x BELLOWS CUPS Φ125",
+      "model": "bellow_cups_4x_125",
+      "asset": {
+        "name": "bellow_cups_4x_125",
+        "file": "/models/bellow_cups_4x_125.fbx",
+        "source": "ref\\3D Step\\3D Step\\Suction Cup\\OBJ\\bellow_cups_4x_125_opt.obj",
+        "importedOpt": true,
+        "heightMm": 424.2150066276343,
+        "boundsMm": {
+          "min": [
+            -27.829999923706055,
+            20.58702308946469,
+            226.24497544832235
+          ],
+          "max": [
+            220.40499877929688,
+            444.802029717099,
+            367.74499356291113
+          ]
+        }
+      },
+      "nonporousKg": 54,
+      "porousKg": 27,
+      "minWidthMm": 280.0,
+      "minLengthMm": 280.0,
+      "price": 285.1,
+      "priceSource": "pricing Thao 1.rar / hình ảnh (8).png",
+      "source": "SUCTION CUP TABLE latest 13-OCT 2.xlsx / suction pad .new!A16:G16",
+      "status": "ready",
+      "type": "multi"
+    },
+    {
+      "id": "bellow_cups_6x_100",
+      "key": "bellow_cups_6x_100",
+      "name": "6x BELLOWS CUPS Φ100",
+      "model": "bellow_cups_6x",
+      "asset": {
+        "name": "bellow_cups_6x",
+        "file": "/models/bellow_cups_6x.fbx",
+        "source": "ref\\3D Step\\3D Step\\Suction Cup\\OBJ\\bellow_cups_6x_opt.obj",
+        "importedOpt": true,
+        "heightMm": 479.45900801618393,
+        "boundsMm": {
+          "min": [
+            -35.50600051879883,
+            -17.104976345960004,
+            218.13697397285432
+          ],
+          "max": [
+            228.0279998779297,
+            462.35403167022395,
+            367.744996408578
+          ]
+        }
+      },
+      "nonporousKg": 51.75,
+      "porousKg": 26,
+      "minWidthMm": 250.0,
+      "minLengthMm": 360.0,
+      "price": 339,
+      "priceSource": "pricing Thao 1.rar / hình ảnh (8).png",
+      "source": "SUCTION CUP TABLE latest 13-OCT 2.xlsx / suction pad .new!A17:G17",
+      "status": "ready",
+      "type": "multi"
+    },
+    {
+      "id": "bellow_cups_6x_125",
+      "key": "bellow_cups_6x_125",
+      "name": "6x BELLOWS CUPS Φ125",
+      "model": "bellow_cups_6x",
+      "asset": {
+        "name": "bellow_cups_6x",
+        "file": "/models/bellow_cups_6x.fbx",
+        "source": "ref\\3D Step\\3D Step\\Suction Cup\\OBJ\\bellow_cups_6x_opt.obj",
+        "importedOpt": true,
+        "heightMm": 479.45900801618393,
+        "boundsMm": {
+          "min": [
+            -35.50600051879883,
+            -17.104976345960004,
+            218.13697397285432
+          ],
+          "max": [
+            228.0279998779297,
+            462.35403167022395,
+            367.744996408578
+          ]
+        }
+      },
+      "nonporousKg": 80,
+      "porousKg": 40,
+      "minWidthMm": 280.0,
+      "minLengthMm": 415.0,
+      "price": 399.5,
+      "priceSource": "pricing Thao 1.rar / hình ảnh (8).png",
+      "source": "SUCTION CUP TABLE latest 13-OCT 2.xlsx / suction pad .new!A18:G18",
+      "status": "ready",
+      "type": "multi"
+    },
+    {
+      "id": "oval_foam_suction_380x220mm",
+      "key": "oval_foam_suction_380x220mm",
+      "name": "1x OVAL FOAM PAD 380x220mm",
+      "model": "oval_foam_suction_380x220mm",
+      "asset": {
+        "name": "oval_foam_suction_380x220mm",
+        "file": "/models/oval_foam_suction_380x220mm.fbx",
+        "source": "ref\\3D Step\\3D Step\\Suction Cup\\OBJ\\oval_foam_suction_380x220mm_opt.obj",
+        "importedOpt": true,
+        "heightMm": 131.9990172772345,
+        "boundsMm": {
+          "min": [
+            -150.0709991455078,
+            -42.85900714808589,
+            -84.28700612259824
+          ],
+          "max": [
+            182.91600036621094,
+            89.14001012914859,
+            248.69999791906898
+          ]
+        }
+      },
+      "nonporousKg": 59.6574,
+      "porousKg": 29.8287,
+      "minWidthMm": 390.0,
+      "minLengthMm": 230.0,
+      "price": 378.3,
+      "priceSource": "pricing Thao 1.rar / hình ảnh (8).png",
+      "source": "SUCTION CUP TABLE latest 13-OCT 2.xlsx / suction pad .new!A19:G19",
+      "status": "ready",
+      "type": "foam"
+    },
+    {
+      "id": "oval_foam_suction_300x200mm",
+      "key": "oval_foam_suction_300x200mm",
+      "name": "1x OVAL FOAM PAD 300x200mm",
+      "model": "oval_foam_suction_300x200mm",
+      "asset": {
+        "name": "oval_foam_suction_300x200mm",
+        "file": "/models/oval_foam_suction_300x200mm.fbx",
+        "source": "ref\\3D Step\\3D Step\\Suction Cup\\OBJ\\oval_foam_suction_300x200mm_opt.obj",
+        "importedOpt": true,
+        "heightMm": 131.9990172772345,
+        "boundsMm": {
+          "min": [
+            -150.0709991455078,
+            -42.85900714808589,
+            -84.28700612259824
+          ],
+          "max": [
+            182.91600036621094,
+            89.14001012914859,
+            248.69999791906898
+          ]
+        }
+      },
+      "nonporousKg": 39.705600000000004,
+      "porousKg": 19.852800000000002,
+      "minWidthMm": 210.0,
+      "minLengthMm": 210.0,
+      "price": 360.4,
+      "priceSource": "pricing Thao 1.rar / hình ảnh (8).png",
+      "source": "SUCTION CUP TABLE latest 13-OCT 2.xlsx / suction pad .new!A20:G20",
+      "status": "ready",
+      "type": "foam"
+    },
+    {
+      "id": "rectangular_pads_2_125x325mm",
+      "key": "rectangular_pads_2_125x325mm",
+      "name": "2xRECTANGULAR PADS 125x325mm",
+      "model": "rectangular_pads_2_125x325mm",
+      "asset": {
+        "name": "rectangular_pads_2_125x325mm",
+        "file": "/models/rectangular_pads_2_125x325mm.fbx",
+        "source": "ref\\3D Step\\3D Step\\Suction Cup\\OBJ\\rectangular_pads_2_125x325mm_opt.obj",
+        "importedOpt": true,
+        "heightMm": 356.0000020370078,
+        "boundsMm": {
+          "min": [
+            -162.5,
+            -178.0000010178622,
+            -87.04001242895703
+          ],
+          "max": [
+            162.5,
+            178.0000010191456,
+            84.00000211386552
+          ]
+        }
+      },
+      "nonporousKg": 80,
+      "porousKg": 50,
+      "minWidthMm": 300.0,
+      "minLengthMm": 340.0,
+      "price": 95,
+      "priceSource": "pricing Thao 1.rar / hình ảnh (8).png",
+      "source": "SUCTION CUP TABLE latest 13-OCT 2.xlsx / suction pad .new!A22:G22",
+      "status": "ready",
+      "type": "rectangular"
+    },
+    {
+      "id": "rectangular_pads_in_line_4_125x325mm",
+      "key": "rectangular_pads_in_line_4_125x325mm",
+      "name": "4x RETANGULAR PADS IN-LINE 125x325mm",
+      "model": "rectangular_pads_in_line_4_125x325mm",
+      "asset": {
+        "name": "rectangular_pads_in_line_4_125x325mm",
+        "file": "/models/rectangular_pads_in_line_4_125x325mm.fbx",
+        "source": "ref\\3D Step\\3D Step\\Suction Cup\\OBJ\\rectangular_pads_in_line_4_125x325mm_opt.obj",
+        "importedOpt": true,
+        "heightMm": 616.0000020370071,
+        "boundsMm": {
+          "min": [
+            -162.5,
+            -308.00000101786185,
+            -87.02402415833117
+          ],
+          "max": [
+            162.5,
+            308.0000010191452,
+            84.00000211386552
+          ]
+        }
+      },
+      "nonporousKg": 80,
+      "porousKg": 80,
+      "minWidthMm": 340.0,
+      "minLengthMm": 600.0,
+      "price": 175.4,
+      "priceSource": "pricing Thao 1.rar / hình ảnh (8).png",
+      "source": "SUCTION CUP TABLE latest 13-OCT 2.xlsx / suction pad .new!A23:G23",
+      "status": "ready",
+      "type": "rectangular"
+    },
+    {
+      "id": "rectangular_pads_frame_4_125x325mm",
+      "key": "rectangular_pads_frame_4_125x325mm",
+      "name": "4x RECTANGULAR PADS-FRAME 125x325mm",
+      "model": "rectangular_pads_frame_4_125x325mm",
+      "asset": {
+        "name": "rectangular_pads_frame_4_125x325mm",
+        "file": "/models/rectangular_pads_frame_4_125x325mm.fbx",
+        "source": "ref\\3D Step\\3D Step\\Suction Cup\\OBJ\\rectangular_pads_frame_4_125x325mm_opt.obj",
+        "importedOpt": true,
+        "heightMm": 374.9989942810723,
+        "boundsMm": {
+          "min": [
+            -337.5,
+            -187.50000936362676,
+            -124.02501568165899
+          ],
+          "max": [
+            337.5,
+            187.4989849174456,
+            89.0000021138655
+          ]
+        }
+      },
+      "nonporousKg": 150,
+      "porousKg": 80,
+      "minWidthMm": 400.0,
+      "minLengthMm": 700.0,
+      "price": 188.4,
+      "priceSource": "pricing Thao 1.rar / hình ảnh (8).png",
+      "source": "SUCTION CUP TABLE latest 13-OCT 2.xlsx / suction pad .new!A24:G24",
+      "status": "ready",
+      "type": "rectangular"
+    },
+    {
+      "id": "multi_cup_matrix",
+      "key": "multi_cup_matrix",
+      "name": "MULTI-CUP MATRIX ",
+      "model": "multi_cup_matrix",
+      "asset": {
+        "name": "multi_cup_matrix",
+        "file": "/models/multi_cup_matrix.fbx",
+        "source": "ref\\3D Step\\3D Step\\Suction Cup\\OBJ\\multi_cup_matrix_opt.obj",
+        "importedOpt": true,
+        "heightMm": 134.50001736278082,
+        "boundsMm": {
+          "min": [
+            -93.625,
+            167.10401486862057,
+            140.1789820099133
+          ],
+          "max": [
+            206.37399291992188,
+            301.6040322314014,
+            490.17799260455604
+          ]
+        }
+      },
+      "nonporousKg": 50,
+      "porousKg": 25,
+      "minWidthMm": 300.0,
+      "minLengthMm": 300.0,
+      "price": 578.3,
+      "priceSource": "pricing Thao 1.rar / hình ảnh (8).png",
+      "source": "SUCTION CUP TABLE latest 13-OCT 2.xlsx / suction pad .new!A25:G25",
+      "status": "ready",
+      "type": "multi"
+    }
+  ],
+  "tubePrices": {
+    "100": 338.8,
+    "120": 327.8,
+    "140": 376.2,
+    "160": 356.4,
+    "180": 468.6,
+    "200": 837.32,
+    "250": 1007.62,
+    "300": 1256
+  },
+  "motorPrices": {
+    "3.3": 2636,
+    "4": 3290,
+    "5.5": 4202,
+    "7.5": 4836
+  },
+  "priceSources": {
+    "tube": "tube price.png (includes 300x2500); pricing Thao 1.rar / hình ảnh (1).png",
+    "handles": "CONTROL HEAD'S 13 OCT 2.xlsx / control heads; pricing Thao 1.rar / hình ảnh (10).png",
+    "pads": "pricing Thao 1.rar / hình ảnh (8).png",
+    "motor": "pricing Thao 1.rar / hình ảnh (9).png"
+  },
+  "missingModels": [
+    "tube_230",
+    "tube_254",
+    "tube_305",
+    "bellows_2x_200",
+    "bellows_2x_300",
+    "rectangular_single_125x325",
+    "flat_cup_25mm",
+    "rectangular_flat_25mm"
+  ],
+  "pendingProducts": [
+    {
+      "id": "rectangular_single_125x325",
+      "name": "1x RECTANGULAR PAD 125x325mm",
+      "price": 39.9,
+      "status": "missing_model"
+    },
+    {
+      "id": "flat_cup_25mm",
+      "name": "1x FLAT CUP 25mm thick",
+      "price": 41.5,
+      "status": "missing_model"
+    },
+    {
+      "id": "rectangular_flat_25mm",
+      "name": "1x RECTANGULAR FLAT PAD 25mm thick",
+      "price": 41.5,
+      "status": "missing_model"
+    }
+  ]
+}

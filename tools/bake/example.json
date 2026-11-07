@@ -1,0 +1,11 @@
+{
+  "input": "../../models/TUBE LIFT ID 200.fbx",
+  "output": "../../work/bake-example",
+  "resolution": 1024,
+  "samples": 128,
+  "margin": 16,
+  "passes": ["baseColor", "roughness", "normal", "ao", "irradiance"],
+  "worldStrength": 0.35,
+  "lights": [{"position": [3, 10, 4], "target": [0, 0, 0], "power": 1500, "size": 5}],
+  "materials": {}
+}

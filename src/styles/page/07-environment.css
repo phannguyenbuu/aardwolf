@@ -1,0 +1,206 @@
+/* =========================================================================
+   TAB: ENVIRONMENT (CORNELL BOX, DOWNLIGHT, WALL COLORS & BLEED)
+   ========================================================================= */
+.pane-environment {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.env-section-card {
+    background: rgba(30, 41, 59, 0.45);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.env-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.env-sec-title {
+    font-size: 12px;
+    font-weight: 800;
+    color: #e2e8f0;
+}
+
+.env-sec-sub {
+    font-size: 12px;
+    color: #94a3b8;
+}
+
+.btn-toggle-downlight {
+    background: rgba(15, 23, 42, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #94a3b8;
+    padding: 3px 10px;
+    border-radius: 16px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-toggle-downlight:hover {
+    border-color: #38bdf8;
+    color: #fff;
+}
+
+.btn-toggle-downlight.active {
+    background: #0284c7;
+    border-color: #38bdf8;
+    color: #ffffff;
+    box-shadow: 0 0 12px rgba(56, 189, 248, 0.4);
+}
+
+.env-grid-2col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    align-items: center;
+}
+
+.env-slider-line {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.env-slider-line .param-label-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #cbd5e1;
+}
+
+.env-slider-line .param-label-row strong {
+    color: #38bdf8;
+}
+
+.env-slider-line input[type="range"] {
+    width: 100%;
+    accent-color: #38bdf8;
+    cursor: pointer;
+}
+
+.env-temp-col {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.env-sub-label {
+    font-size: 12px;
+    color: #94a3b8;
+}
+
+.env-temp-pills {
+    display: flex;
+    gap: 6px;
+}
+
+.env-temp-btn {
+    flex: 1;
+    background: rgba(15, 23, 42, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: #cbd5e1;
+    padding: 4px 6px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    text-align: center;
+}
+
+.env-temp-btn:hover {
+    border-color: #38bdf8;
+    color: #fff;
+}
+
+.env-temp-btn.active {
+    background: #0284c7;
+    border-color: #7dd3fc;
+    color: #ffffff;
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.35);
+}
+
+.env-wall-pickers-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.wall-picker-card {
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    padding: 8px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.picker-input-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.env-native-picker {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 30px;
+    height: 30px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    cursor: pointer;
+    background: none;
+    padding: 0;
+}
+
+.env-native-picker::-webkit-color-swatch-wrapper {
+    padding: 0;
+}
+
+.env-native-picker::-webkit-color-swatch {
+    border: none;
+    border-radius: 6px;
+}
+
+.wall-swatches {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex-wrap: wrap;
+}
+
+.wall-mini-dot {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(255, 255, 255, 0.25);
+    cursor: pointer;
+    transition: transform 0.15s ease;
+    padding: 0;
+}
+
+.wall-mini-dot:hover {
+    transform: scale(1.2);
+    border-color: #ffffff;
+}
+
+.env-footer-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-top: 4px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}

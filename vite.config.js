@@ -1,4 +1,4 @@
-import { defineConfig } from 'vite';
+import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -28,10 +28,27 @@ function staticAssetsPlugin() {
   };
 }
 
-export default defineConfig({
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), '');
+  return {
   plugins: [react(), staticAssetsPlugin()],
   server: {
+    proxy: {
+      '/api': {
+        target: 'https://vacumn.pkld.online',
+        changeOrigin: true,
+        secure: true,
+        configure(proxy) {
+          proxy.on('proxyReq', (proxyReq, req) => {
+            if (((req.method === 'PUT' && req.url.split('?')[0] === '/api/settings') || (req.method === 'POST' && req.url === '/api/textures') || req.url.startsWith('/api/genai/jobs/')) && env.DEV_SETTINGS_TOKEN) {
+              proxyReq.setHeader('Authorization', `Bearer ${env.DEV_SETTINGS_TOKEN}`);
+            }
+          });
+        }
+      }
+    },
     port: 3000,
     open: true
   }
+};
 });

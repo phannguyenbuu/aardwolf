@@ -1,0 +1,49 @@
+/* Accordion height changes must not shift/animate the WebGL drawing buffer. */
+html { scrollbar-gutter: stable; }
+.three-viewport-wrapper { transition: background-color .2s ease; }
+
+.viewport-render-action.btn { min-height: 46px; height: 46px; background: #f5c43e; color: #171717; border: 0; border-radius: 0; font-size: 14px; font-weight: 700; box-shadow: none; }
+.viewport-render-action.btn:hover, .viewport-render-action.btn:active, .viewport-render-action.btn:focus-visible { background: #eab72d; color: #171717; border-color: transparent; }
+
+.viewport-render-action.btn { width: var(--quote-button-width, 110px); }
+/* Viewport sits 12px above the window bottom; Quote ends 29px above it (24px bar padding + 5px margin). */
+@media (min-width: 769px) {
+    .three-viewport-wrapper :is(.viewport-render-action, .viewport-pathtrace-action, .viewport-capture, .viewport-copy-settings, .viewport-reload-scene) { bottom: 12px; }
+}
+.three-viewport-wrapper.is-user-mode .viewport-capture { height: 46px; }
+.three-viewport-wrapper.is-admin-mode .viewport-copy-settings { left: calc(16px + var(--quote-button-width, 110px) + 8px); }
+.three-viewport-wrapper.is-admin-mode .viewport-reload-scene { left: calc(16px + var(--quote-button-width, 110px) + 52px); }
+.three-viewport-wrapper.is-admin-mode .viewport-capture { left: calc(16px + var(--quote-button-width, 110px) + 96px); }
+.tab-user-settings input.weight-corrected:focus { border-color: #e0ad19; background: #fff9df; box-shadow: 0 0 0 3px #f5c43e55; }
+.tab-user-settings .user-setting-group-heading .step-title, .tab-user-settings .user-setting-group-heading .step-title * { font-family: Arial, sans-serif !important; font-size: 14px !important; font-weight: 700 !important; line-height: 1.5 !important; }
+.viewport-quality-toggle, .viewport-quality-toggle > span:not(.viewport-quality-track) { color: #a1a1aa; }
+
+.viewport-loading-spinner { position: absolute; inset: 0; z-index: 998; display: grid; place-items: center; pointer-events: none; color: #f5c43e; font-size: 48px; }
+
+/* Separate the working-environment and workpiece-material choices inside step 4. */
+.tab-user-settings .surface-group-label { display: block; margin-top: 28px; padding-top: 20px; border-top: 1px solid #e5e5e5; }
+.tab-user-settings .step-locked-hint { display: block; margin-bottom: 8px; color: #a1a1aa; font-size: 12px; }
+
+.viewport-pathtrace-action.btn { position: absolute; bottom: 12px; left: calc(16px + var(--quote-button-width, 110px) + 8px); z-index: 999; width: var(--quote-button-width, 110px); height: 46px; padding: 0; border: 0; border-radius: 0; background: #f5c43e; color: #171717; font-size: 14px; font-weight: 700; }
+.viewport-pathtrace-action.btn:hover { background: #eab72d; }
+.three-viewport-wrapper.is-user-mode .viewport-capture { left: calc(16px + var(--quote-button-width, 110px) + 8px); }
+.three-viewport-wrapper.is-admin-mode .viewport-copy-settings { left: calc(16px + 2 * var(--quote-button-width, 110px) + 16px); }
+.three-viewport-wrapper.is-admin-mode .viewport-reload-scene { left: calc(16px + 2 * var(--quote-button-width, 110px) + 60px); }
+.three-viewport-wrapper.is-admin-mode .viewport-capture { left: calc(16px + 2 * var(--quote-button-width, 110px) + 104px); }
+@media (max-width: 575px) { .viewport-pathtrace-action.btn { width: 110px; } .three-viewport-wrapper.is-user-mode .viewport-capture { left: calc(16px + var(--quote-button-width, 110px) + 8px); } }
+/* Compact configurator navigation: 75% of the original tab dimensions. */
+.configurator-layout .column-tabs-nav { gap: 4.5px; padding-bottom: 4.5px; }
+.configurator-layout .column-tabs-nav .col-tab-btn {
+    padding: 6px 10.5px;
+    border-radius: 6px;
+    gap: 4.5px;
+}
+.configurator-layout .column-tabs-nav .col-tab-text { font-size: inherit; font-weight: 400; }
+.tab-material-lib { display: flex; flex-direction: column; min-height: 280px; }
+.tab-material-lib > .tab-section-card { display: flex; flex-direction: column; flex: 1; min-height: 0; margin-bottom: 0 !important; }
+.tab-material-lib .materials-catalog-grid { flex: 1; min-height: 0; max-height: none; align-content: start; overflow-y: auto; }
+.tab-material-lib .mat-catalog-card { flex-shrink: 0; }
+.material-control-row { display: flex; align-items: start; gap: 14px; overflow-x: auto; padding-top: 10px; padding-bottom: 8px; }
+.material-color-control { display: flex; flex-direction: column; gap: 6px; flex: 0 0 58px; }
+.material-slider-control { flex: 0 0 130px; min-width: 0; }
+.material-slider-control label { gap: 8px; white-space: nowrap; }

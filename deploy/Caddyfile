@@ -1,0 +1,4 @@
+vacumn.pkld.online {
+    encode gzip
+    reverse_proxy app:3001
+}

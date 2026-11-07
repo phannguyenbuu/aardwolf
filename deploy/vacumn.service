@@ -1,0 +1,25 @@
+[Unit]
+Description=Aardwolf Vacuum Configurator Backend
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/vacumn.pkld.online
+Environment=NODE_ENV=production
+Environment=HOST=127.0.0.1
+Environment=PORT=3017
+Environment=SETTINGS_DIR=/var/lib/vacumn
+StateDirectory=vacumn
+ReadWritePaths=/var/lib/vacumn
+ExecStart=/usr/bin/node server/index.js
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

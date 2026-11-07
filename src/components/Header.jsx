@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useConfigurator } from '../context/ConfiguratorContext.jsx';
 
 export default function Header() {
-    const { userName, login, logout } = useConfigurator();
+    const { userName, login, logout, adminMode, toggleAdminMode } = useConfigurator();
 
     const [desktopUsername, setDesktopUsername] = useState('');
     const [desktopPassword, setDesktopPassword] = useState('');
@@ -25,6 +25,7 @@ export default function Header() {
 
     return (
         <div className="header">
+            {new URLSearchParams(window.location.search).get('admin') === '1' && <label className="ui-mode-switch"><span>{adminMode ? 'Admin' : 'User'}</span><input type="checkbox" role="switch" aria-label="Admin mode" checked={adminMode} onChange={toggleAdminMode} /><span className="ui-mode-track" aria-hidden="true" /></label>}
             <div className="container">
                 <div className="d-flex justify-content-between align-items-center">
                     <img src="/assets/images/logo.png" alt="logo" className="logo" />

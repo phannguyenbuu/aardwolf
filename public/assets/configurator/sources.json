@@ -1,0 +1,189 @@
+[
+  {
+    "image": "crane-floor.png",
+    "workbook": "1. BANG CHON APP 21 OCT.xlsx",
+    "sheet": "Sheet1",
+    "anchor": [
+      3,
+      5
+    ]
+  },
+  {
+    "image": "crane-mobile.png",
+    "workbook": "1. BANG CHON APP 21 OCT.xlsx",
+    "sheet": "Sheet1",
+    "anchor": [
+      3,
+      9
+    ]
+  },
+  {
+    "image": "crane-wall.png",
+    "workbook": "1. BANG CHON APP 21 OCT.xlsx",
+    "sheet": "Sheet1",
+    "anchor": [
+      3,
+      11
+    ]
+  },
+  {
+    "image": "jib.png",
+    "workbook": "1. BANG CHON APP 21 OCT.xlsx",
+    "sheet": "Sheet1",
+    "anchor": [
+      3,
+      6
+    ]
+  },
+  {
+    "image": "handle-mhc.png",
+    "workbook": "1. BANG CHON APP 21 OCT.xlsx",
+    "sheet": "Sheet1",
+    "anchor": [
+      3,
+      14
+    ]
+  },
+  {
+    "image": "handle-cf2.png",
+    "workbook": "1. BANG CHON APP 21 OCT.xlsx",
+    "sheet": "Sheet1",
+    "anchor": [
+      3,
+      15
+    ]
+  },
+  {
+    "image": "handle-ethv2.png",
+    "workbook": "1. BANG CHON APP 21 OCT.xlsx",
+    "sheet": "Sheet1",
+    "anchor": [
+      3,
+      17
+    ]
+  },
+  {
+    "image": "handle-ethv3.png",
+    "workbook": "1. BANG CHON APP 21 OCT.xlsx",
+    "sheet": "Sheet1",
+    "anchor": [
+      3,
+      16
+    ]
+  },
+  {
+    "image": "pad-4x-bellows.png",
+    "workbook": "SUCTION CUP TABLE latest 13-OCT 2.xlsx",
+    "sheet": "suction pad .new",
+    "anchor": [
+      15,
+      1
+    ]
+  },
+  {
+    "image": "pad-6x-bellows.png",
+    "workbook": "SUCTION CUP TABLE latest 13-OCT 2.xlsx",
+    "sheet": "suction pad .new",
+    "anchor": [
+      17,
+      1
+    ]
+  },
+  {
+    "image": "pad-2x-bellows.png",
+    "workbook": "SUCTION CUP TABLE latest 13-OCT 2.xlsx",
+    "sheet": "suction pad .new",
+    "anchor": [
+      10,
+      1
+    ]
+  },
+  {
+    "image": "pad-1x-bellows.png",
+    "workbook": "SUCTION CUP TABLE latest 13-OCT 2.xlsx",
+    "sheet": "suction pad .new",
+    "anchor": [
+      7,
+      1
+    ]
+  },
+  {
+    "image": "pad-oval.png",
+    "workbook": "SUCTION CUP TABLE latest 13-OCT 2.xlsx",
+    "sheet": "suction pad .new",
+    "anchor": [
+      19,
+      1
+    ]
+  },
+  {
+    "image": "pad-inline.png",
+    "workbook": "SUCTION CUP TABLE latest 13-OCT 2.xlsx",
+    "sheet": "suction pad .new",
+    "anchor": [
+      23,
+      1
+    ]
+  },
+  {
+    "image": "pad-2x-rectangular.png",
+    "workbook": "SUCTION CUP TABLE latest 13-OCT 2.xlsx",
+    "sheet": "suction pad .new",
+    "anchor": [
+      22,
+      1
+    ]
+  },
+  {
+    "image": "pad-frame.png",
+    "workbook": "SUCTION CUP TABLE latest 13-OCT 2.xlsx",
+    "sheet": "suction pad .new",
+    "anchor": [
+      24,
+      1
+    ]
+  },
+  {
+    "image": "pad-matrix.png",
+    "workbook": "SUCTION CUP TABLE latest 13-OCT 2.xlsx",
+    "sheet": "suction pad .new",
+    "anchor": [
+      25,
+      1
+    ]
+  },
+  {
+    "image": "pad-flat.png",
+    "workbook": "SUCTION CUP TABLE latest 13-OCT 2.xlsx",
+    "sheet": "suction pad .new",
+    "anchor": [
+      27,
+      1
+    ]
+  },
+  {
+    "image": "pad-rectangular-flat.png",
+    "workbook": "SUCTION CUP TABLE latest 13-OCT 2.xlsx",
+    "sheet": "suction pad .new",
+    "anchor": [
+      33,
+      1
+    ]
+  },
+  {
+    "image": "handle-mhc.webp",
+    "source": "Client Visuals/Heads/One Hand.webp"
+  },
+  {
+    "image": "handle-cf2.webp",
+    "source": "Client Visuals/Heads/Comfort Grib.webp"
+  },
+  {
+    "image": "handle-ethv3.webp",
+    "source": "Client Visuals/Heads/long reach.webp"
+  },
+  {
+    "image": "handle-ethv2.webp",
+    "source": "Client Visuals/Heads/high reach.webp"
+  }
+]

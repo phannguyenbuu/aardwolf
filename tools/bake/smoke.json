@@ -1,0 +1,9 @@
+{
+  "output": "../../work/bake-smoke",
+  "resolution": 32,
+  "samples": 2,
+  "margin": 2,
+  "passes": ["baseColor", "roughness", "normal", "ao", "irradiance"],
+  "materials": {"SmokePaint": {"baseColor": "#ff9900", "roughness": 0.6, "metallic": 0}},
+  "lights": [{"position": [3, 6, 4], "power": 500, "size": 4}]
+}

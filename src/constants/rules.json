@@ -4,249 +4,844 @@
       "id": "floor-mounted-crane",
       "name": "Floor-Mounted Crane",
       "description": "Heavy-duty floor-mounted pillar jib crane with full 360° slewing range",
-      "allowedJibs": ["2.5m", "3m", "4m", "5m"]
+      "allowedJibs": [
+        "2.5m",
+        "3m",
+        "4m",
+        "5m"
+      ]
     },
     {
       "id": "mobile-crane",
       "name": "Mobile Crane",
       "description": "Counterbalanced mobile crane on wheels, easily relocated throughout the facility",
-      "allowedJibs": ["2.5m", "3m"],
+      "allowedJibs": [
+        "2.5m",
+        "3m"
+      ],
       "disabledJibsTooltip": "Mobile crane is only certified for jib lengths up to 3m to maintain counterweight stability."
     },
     {
       "id": "wall-mounted-crane",
       "name": "Wall-Mounted Crane",
       "description": "Wall bracket mounted jib crane maximizing available workshop floor space",
-      "allowedJibs": ["3m", "4m", "5m"],
+      "allowedJibs": [
+        "3m",
+        "4m",
+        "5m"
+      ],
       "disabledJibsTooltip": "Wall-mounted crane requires a minimum 3m reach for standard mounting bracket clearance."
     }
   ],
   "jibs": [
-    { "id": "2.5m", "name": "2.5m", "lengthM": 2.5, "labelM": "2.5 m (articulated jib crane)", "labelInch": "8'2\" (articulated jib crane)" },
-    { "id": "3m", "name": "3m", "lengthM": 3.0, "labelM": "3 m", "labelInch": "9'10\"" },
-    { "id": "4m", "name": "4m", "lengthM": 4.0, "labelM": "4 m", "labelInch": "13'1\"" },
-    { "id": "5m", "name": "5m", "lengthM": 5.0, "labelM": "5 m", "labelInch": "16'5\"" }
+    {
+      "id": "2.5m",
+      "name": "2.5m",
+      "lengthM": 2.5,
+      "labelM": "2.5 m (articulated jib crane)",
+      "labelInch": "8'2\" (articulated jib crane)"
+    },
+    {
+      "id": "3m",
+      "name": "3m",
+      "lengthM": 3,
+      "labelM": "3 m",
+      "labelInch": "9'10\""
+    },
+    {
+      "id": "4m",
+      "name": "4m",
+      "lengthM": 4,
+      "labelM": "4 m",
+      "labelInch": "13'1\""
+    },
+    {
+      "id": "5m",
+      "name": "5m",
+      "lengthM": 5,
+      "labelM": "5 m",
+      "labelInch": "16'5\""
+    }
   ],
   "wllLevels": [
     {
       "id": "30kg",
       "capacityKg": 30,
+      "code": "SM12",
+      "pump": "SM-3KW",
+      "diameterMm": 120,
+      "model": "TUBE LIFT ID 120",
+      "motorKw": 3.3,
+      "tubePriceKey": "120",
+      "allowedHandles": [
+        "MHC",
+        "CF2"
+      ],
+      "allowedCraneJibs": [
+        "FM 2.5 AJC",
+        "FM3",
+        "FM4",
+        "FM5",
+        "MC 2.5AJC",
+        "MBC3",
+        "WMC3",
+        "WMC4",
+        "WMC5"
+      ],
+      "mappingSource": "1. BANG CHON APP 21 OCT.xlsx; request 2026-10-23",
       "m": {
         "maxLiftingCapacity": "30 kg",
         "minLiftingCapacity": "5",
         "liftTube17": "1.7 m",
         "liftTube29": "2.9 m",
         "liftTubeSize": "120 mm",
-        "liftTubePower": "2.2/2.6 kw",
-        "priceLiftTubeSize": 290,
-        "priceLiftTubePower": 2.150
+        "liftTubePower": "SM-3KW (3.3 kW motor)",
+        "priceLiftTubeSize": 327.8,
+        "priceLiftTubePower": 2636
       }
     },
     {
-      "id": "45kg",
-      "capacityKg": 45,
+      "id": "40kg",
+      "capacityKg": 40,
+      "code": "SM14",
+      "pump": "SM-3KW",
+      "diameterMm": 140,
+      "model": "TUBE LIFT ID 140",
+      "motorKw": 3.3,
+      "tubePriceKey": "140",
+      "allowedHandles": [
+        "MHC",
+        "CF2",
+        "ETHV3",
+        "ETHV2"
+      ],
+      "allowedCraneJibs": [
+        "FM 2.5 AJC",
+        "FM3",
+        "FM4",
+        "FM5",
+        "MC 2.5AJC",
+        "MBC3",
+        "WMC3",
+        "WMC4",
+        "WMC5"
+      ],
+      "mappingSource": "1. BANG CHON APP 21 OCT.xlsx; request 2026-10-23",
       "m": {
-        "maxLiftingCapacity": "45 kg",
+        "maxLiftingCapacity": "40 kg",
+        "minLiftingCapacity": "10",
+        "liftTube17": "1.7 m",
+        "liftTube29": "2.9 m",
+        "liftTubeSize": "140 mm",
+        "liftTubePower": "SM-3KW (3.3 kW motor)",
+        "priceLiftTubeSize": 376.2,
+        "priceLiftTubePower": 2636
+      }
+    },
+    {
+      "id": "55kg",
+      "capacityKg": 55,
+      "code": "MD16",
+      "pump": "MD-4KW",
+      "diameterMm": 160,
+      "model": "TUBE LIFT ID 160",
+      "motorKw": 4,
+      "tubePriceKey": "160",
+      "allowedHandles": [
+        "MHC",
+        "CF2",
+        "ETHV3",
+        "ETHV2"
+      ],
+      "allowedCraneJibs": [
+        "FM 2.5 AJC",
+        "FM3",
+        "FM4",
+        "FM5",
+        "MC 2.5AJC",
+        "MBC3",
+        "WMC3",
+        "WMC4",
+        "WMC5"
+      ],
+      "mappingSource": "1. BANG CHON APP 21 OCT.xlsx; request 2026-10-23",
+      "m": {
+        "maxLiftingCapacity": "55 kg",
         "minLiftingCapacity": "10",
         "liftTube17": "1.7 m",
         "liftTube29": "2.9 m",
         "liftTubeSize": "160 mm",
-        "liftTubePower": "3.3/3.8 kw",
-        "priceLiftTubeSize": 356,
-        "priceLiftTubePower": 2.743
+        "liftTubePower": "MD-4KW (4 kW motor)",
+        "priceLiftTubeSize": 356.4,
+        "priceLiftTubePower": 3290
       }
     },
     {
-      "id": "70kg",
-      "capacityKg": 70,
+      "id": "65kg",
+      "capacityKg": 65,
+      "code": "MDH18",
+      "pump": "MD-4KW",
+      "diameterMm": 180,
+      "model": "TUBE LIFT ID 180",
+      "motorKw": 4,
+      "tubePriceKey": "180",
+      "allowedHandles": [
+        "CF2",
+        "ETHV3",
+        "ETHV2"
+      ],
+      "allowedCraneJibs": [
+        "FM 2.5 AJC",
+        "FM3",
+        "FM4",
+        "FM5",
+        "MC 2.5AJC",
+        "MBC3",
+        "WMC3",
+        "WMC4",
+        "WMC5"
+      ],
+      "mappingSource": "1. BANG CHON APP 21 OCT.xlsx; request 2026-10-23",
       "m": {
-        "maxLiftingCapacity": "70 kg",
-        "minLiftingCapacity": "10",
-        "liftTube17": "1.7 m",
-        "liftTube29": "2.9 m",
-        "liftTubeSize": "160 mm",
-        "liftTubePower": "4.0/4.6 kw",
-        "priceLiftTubeSize": 356,
-        "priceLiftTubePower": 3.424
-      }
-    },
-    {
-      "id": "80kg",
-      "capacityKg": 80,
-      "m": {
-        "maxLiftingCapacity": "80 kg",
+        "maxLiftingCapacity": "65 kg",
         "minLiftingCapacity": "10",
         "liftTube17": "1.7 m",
         "liftTube29": "2.9 m",
         "liftTubeSize": "180 mm",
-        "liftTubePower": "4.0/4.6 kw",
-        "priceLiftTubeSize": 469,
-        "priceLiftTubePower": 3.424
+        "liftTubePower": "MD-4KW (4 kW motor)",
+        "priceLiftTubeSize": 468.6,
+        "priceLiftTubePower": 3290
       }
     },
     {
-      "id": "120kg",
-      "capacityKg": 120,
+      "id": "100kg",
+      "capacityKg": 100,
+      "code": "HS20",
+      "pump": "HS-7.5KW",
+      "diameterMm": 200,
+      "model": "TUBE LIFT ID 200",
+      "motorKw": 7.5,
+      "tubePriceKey": "200",
+      "allowedHandles": [
+        "CF2",
+        "ETHV3",
+        "ETHV2"
+      ],
+      "allowedCraneJibs": [
+        "FM 2.5 AJC",
+        "FM3",
+        "FM4",
+        "MC 2.5AJC",
+        "MBC3",
+        "WMC3",
+        "WMC4",
+        "WMC5"
+      ],
+      "mappingSource": "1. BANG CHON APP 21 OCT.xlsx; request 2026-10-23",
       "m": {
-        "maxLiftingCapacity": "120 kg",
+        "maxLiftingCapacity": "100 kg",
         "minLiftingCapacity": "10",
         "liftTube17": "1.7 m",
         "liftTube29": "2.9 m",
         "liftTubeSize": "200 mm",
-        "liftTubePower": "5.7/6.6 kw",
-        "priceLiftTubeSize": 328,
-        "priceLiftTubePower": 3.857
+        "liftTubePower": "HS-7.5KW (7.5 kW motor)",
+        "priceLiftTubeSize": 837.32,
+        "priceLiftTubePower": 4836
       }
     },
     {
-      "id": "150kg",
-      "capacityKg": 150,
+      "id": "140kg",
+      "capacityKg": 140,
+      "code": "HS23",
+      "pump": "HS-7.5KW",
+      "diameterMm": 230,
+      "model": null,
+      "motorKw": 7.5,
+      "tubePriceKey": null,
+      "allowedHandles": [
+        "CF2",
+        "ETHV3",
+        "ETHV2"
+      ],
+      "allowedCraneJibs": [
+        "FM 2.5 AJC",
+        "FM3",
+        "FM4",
+        "MC 2.5AJC",
+        "MBC3",
+        "WMC3",
+        "WMC4"
+      ],
+      "mappingSource": "1. BANG CHON APP 21 OCT.xlsx; request 2026-10-23",
       "m": {
-        "maxLiftingCapacity": "150 kg",
+        "maxLiftingCapacity": "140 kg",
         "minLiftingCapacity": "10",
         "liftTube17": "1.7 m",
         "liftTube29": "2.9 m",
-        "liftTubeSize": "250 mm",
-        "liftTubePower": "7.5/8.0 kw",
-        "priceLiftTubeSize": 376,
-        "priceLiftTubePower": 5.033
+        "liftTubeSize": "230 mm",
+        "liftTubePower": "HS-7.5KW (7.5 kW motor)",
+        "priceLiftTubeSize": null,
+        "priceLiftTubePower": 4836
+      }
+    },
+    {
+      "id": "160kg",
+      "capacityKg": 160,
+      "code": "HS25",
+      "pump": "HS-7.5KW",
+      "diameterMm": 254,
+      "model": null,
+      "motorKw": 7.5,
+      "tubePriceKey": "250",
+      "allowedHandles": [
+        "CF2",
+        "ETHV3",
+        "ETHV2"
+      ],
+      "allowedCraneJibs": [
+        "FM 2.5 AJC",
+        "FM3",
+        "FM4",
+        "WMC3"
+      ],
+      "mappingSource": "1. BANG CHON APP 21 OCT.xlsx; request 2026-10-23",
+      "m": {
+        "maxLiftingCapacity": "160 kg",
+        "minLiftingCapacity": "10",
+        "liftTube17": "1.7 m",
+        "liftTube29": "2.9 m",
+        "liftTubeSize": "254 mm",
+        "liftTubePower": "HS-7.5KW (7.5 kW motor)",
+        "priceLiftTubeSize": 1007.62,
+        "priceLiftTubePower": 4836
       }
     },
     {
       "id": "200kg",
       "capacityKg": 200,
+      "code": "HS30",
+      "pump": "HS-7.5KW",
+      "diameterMm": 305,
+      "model": null,
+      "motorKw": 7.5,
+      "tubePriceKey": "300",
+      "allowedHandles": [
+        "CF2",
+        "ETHV3",
+        "ETHV2"
+      ],
+      "allowedCraneJibs": [
+        "FM 2.5 AJC",
+        "FM3",
+        "FM4",
+        "WMC3"
+      ],
+      "mappingSource": "1. BANG CHON APP 21 OCT.xlsx; request 2026-10-23",
       "m": {
         "maxLiftingCapacity": "200 kg",
         "minLiftingCapacity": "20",
         "liftTube17": "1.7 m",
         "liftTube29": "2.9 m",
-        "liftTubeSize": "250 mm",
-        "liftTubePower": "7.5/8.0 kw",
-        "priceLiftTubeSize": 420,
-        "priceLiftTubePower": 5.250
-      }
-    },
-    {
-      "id": "250kg",
-      "capacityKg": 250,
-      "m": {
-        "maxLiftingCapacity": "250 kg",
-        "minLiftingCapacity": "25",
-        "liftTube17": "1.7 m",
-        "liftTube29": "2.9 m",
-        "liftTubeSize": "270 mm",
-        "liftTubePower": "8.5/9.2 kw",
-        "priceLiftTubeSize": 480,
-        "priceLiftTubePower": 5.800
-      }
-    },
-    {
-      "id": "300kg",
-      "capacityKg": 300,
-      "m": {
-        "maxLiftingCapacity": "300 kg",
-        "minLiftingCapacity": "30",
-        "liftTube17": "1.7 m",
-        "liftTube29": "2.9 m",
-        "liftTubeSize": "300 mm",
-        "liftTubePower": "11.0/12.5 kw",
-        "priceLiftTubeSize": 550,
-        "priceLiftTubePower": 6.500
+        "liftTubeSize": "305 mm",
+        "liftTubePower": "HS-7.5KW (7.5 kW motor)",
+        "priceLiftTubeSize": 1256,
+        "priceLiftTubePower": 4836
       }
     }
   ],
   "environments": [
-    { "id": "clean", "name": "Standard / Clean environment", "en": "Clean / Non-dusty environment" },
-    { "id": "dusty", "name": "Dusty / Heavy industrial environment", "en": "Dusty / Heavy industrial environment", "requireFilter": "zfp300" }
+    {
+      "id": "nonporous",
+      "name": "Non-porous load"
+    },
+    {
+      "id": "porous",
+      "name": "Porous load"
+    }
   ],
   "surfaceTypes": [
-    { "id": "carton_smooth", "name": "Carton boxes / Paper packaging", "recommendedHead": "round_single" },
-    { "id": "sheet_metal", "name": "Sheet metal / Glass / Smooth airtight", "recommendedHead": "multi_pad" },
-    { "id": "porous_rough", "name": "Porous / Wood / Textured breathing", "recommendedHead": "foam_pad" },
-    { "id": "bag_woven", "name": "Woven sacks / Cement bags / Bulk grains", "recommendedHead": "bag_suction" },
-    { "id": "high_stack", "name": "High stack loading / High palletization", "recommendedHead": "high_stack" },
-    { "id": "swivel_90", "name": "90° Swivel & Tilt rotation", "recommendedHead": "swivel_90" }
-  ],
-  "suctionHeads": [
     {
-      "id": "round_single",
-      "name": "Single Bellow Round Suction Head",
-      "type": "round",
-      "headKey": "single_control_head",
-      "padKey": "bellow_250",
-      "maxKg": 50,
-      "icon": "/assets/images/Icon (7).png",
-      "supportedSurfaces": ["carton_smooth"]
+      "id": "carton_smooth",
+      "name": "Carton box",
+      "recommendedHead": "round_single",
+      "porous": false,
+      "airTightness": "requires confirmation",
+      "workpieceShape": "box"
     },
     {
-      "id": "rectangular_double",
-      "name": "Double Bellows Rectangular Suction Head",
-      "type": "rectangular",
-      "headKey": "single_control_head",
-      "padKey": "double_bellow_125",
-      "maxKg": 80,
-      "icon": "/assets/images/Icon (1).png",
-      "supportedSurfaces": ["carton_smooth"]
+      "id": "sheet_metal",
+      "name": "Sheet metal",
+      "recommendedHead": "multi_pad",
+      "porous": false,
+      "airTightness": "requires confirmation",
+      "workpieceShape": "box"
     },
     {
-      "id": "four_bellow",
-      "name": "Four Bellows Multi-Point Suction Head",
-      "type": "multi",
-      "headKey": "comfort_control_head",
-      "padKey": "four_bellow_125",
-      "maxKg": 150,
-      "icon": "/assets/images/Icon (2).png",
-      "supportedSurfaces": ["carton_smooth", "sheet_metal"]
+      "id": "slab",
+      "name": "Slab"
     },
     {
-      "id": "foam_pad",
-      "name": "Oval Foam Seal Suction Head",
-      "type": "foam",
-      "headKey": "comfort_control_head",
-      "padKey": "oval_foam_suction_380_220",
-      "maxKg": 120,
-      "icon": "/assets/images/Icon (3).png",
-      "supportedSurfaces": ["porous_rough"]
+      "id": "porous_rough",
+      "name": "Wood",
+      "recommendedHead": "foam_pad",
+      "porous": true,
+      "airTightness": "porous",
+      "workpieceShape": "box"
     },
     {
-      "id": "bag_suction",
-      "name": "Heavy-Duty Bag Gripper Suction Head",
-      "type": "bag",
-      "headKey": "comfort_control_head",
-      "padKey": "oval_foam_suction_380_220",
-      "maxKg": 80,
-      "icon": "/assets/images/Icon (4).png",
-      "supportedSurfaces": ["bag_woven"]
+      "id": "stone",
+      "name": "Stone"
     },
     {
-      "id": "multi_pad",
-      "name": "Multi-Pad Sheet Lifter Suction Head",
-      "type": "sheet",
-      "headKey": "extra_hand",
-      "padKey": "sheet_metal_pad",
-      "maxKg": 300,
-      "icon": "/assets/images/Icon (5).png",
-      "supportedSurfaces": ["sheet_metal"]
+      "id": "concrete",
+      "name": "Concrete"
+    },
+    {
+      "id": "bag_woven",
+      "name": "Woven sacks / Cement bags / Bulk grains",
+      "recommendedHead": "bag_suction",
+      "porous": true,
+      "airTightness": "porous",
+      "workpieceShape": "box"
     },
     {
       "id": "high_stack",
-      "name": "Extended Reach High Stack Arm",
-      "type": "arm",
-      "headKey": "hight_stack",
-      "padKey": "four_bellow_125",
-      "maxKg": 150,
-      "icon": "/assets/images/Icon (6).png",
-      "supportedSurfaces": ["high_stack", "carton_smooth"]
+      "name": "High stack loading / High palletization",
+      "recommendedHead": "high_stack",
+      "porous": false,
+      "airTightness": "requires confirmation",
+      "workpieceShape": "box"
     },
     {
       "id": "swivel_90",
-      "name": "90° Swivel & Tilt Manipulator Head",
-      "type": "swivel",
-      "headKey": "comfort_control_head",
-      "padKey": "four_bellow_125",
-      "maxKg": 150,
-      "icon": "/assets/images/Icon (7).png",
-      "supportedSurfaces": ["swivel_90", "sheet_metal"]
+      "name": "90° Swivel & Tilt rotation",
+      "recommendedHead": "swivel_90",
+      "porous": false,
+      "airTightness": "requires confirmation",
+      "workpieceShape": "box"
+    },
+    {
+      "id": "tyre",
+      "name": "Tyre — consultation required",
+      "porous": null,
+      "airTightness": "unverified",
+      "workpieceShape": "cylinder",
+      "consultationOnly": true
+    },
+    {
+      "id": "plastic_crate",
+      "name": "Plastic crate — consultation required",
+      "porous": null,
+      "airTightness": "unverified",
+      "workpieceShape": "box",
+      "consultationOnly": true
+    },
+    {
+      "id": "wrapped_pallet",
+      "name": "Shrink-wrapped package — consultation required",
+      "porous": null,
+      "airTightness": "unverified",
+      "workpieceShape": "box",
+      "consultationOnly": true
+    },
+    {
+      "id": "drum",
+      "name": "Drum / bucket — consultation required",
+      "porous": null,
+      "airTightness": "unverified",
+      "workpieceShape": "cylinder",
+      "consultationOnly": true
+    },
+    {
+      "id": "other",
+      "name": "Other — describe your load",
+      "porous": null,
+      "airTightness": "unverified",
+      "workpieceShape": "box",
+      "consultationOnly": true
     }
-  ]
+  ],
+  "suctionHeads": [
+    {
+      "id": "bellow_cups_1x_200",
+      "name": "1x BELLOWS CUP Φ200",
+      "type": "round",
+      "headKey": "CF2",
+      "padKey": "bellow_cups_1x_200",
+      "maxKg": 35,
+      "porousKg": 17.5,
+      "minWidthMm": 215,
+      "minLengthMm": 215,
+      "modelAvailable": true,
+      "icon": "/assets/images/Icon (7).png",
+      "supportedSurfaces": [
+        "carton_smooth",
+        "sheet_metal",
+        "porous_rough",
+        "bag_woven"
+      ]
+    },
+    {
+      "id": "bellow_cups_1x_250",
+      "name": "1x BELLOWS CUP Φ250",
+      "type": "round",
+      "headKey": "CF2",
+      "padKey": "bellow_cups_1x_250",
+      "maxKg": 54,
+      "porousKg": 27,
+      "minWidthMm": 265,
+      "minLengthMm": 265,
+      "modelAvailable": true,
+      "icon": "/assets/images/Icon (7).png",
+      "supportedSurfaces": [
+        "carton_smooth",
+        "sheet_metal",
+        "porous_rough",
+        "bag_woven"
+      ]
+    },
+    {
+      "id": "bellow_cups_1x_300",
+      "name": "1x BELLOWS CUP Φ300",
+      "type": "round",
+      "headKey": "CF2",
+      "padKey": "bellow_cups_1x_300",
+      "maxKg": 78,
+      "porousKg": 39,
+      "minWidthMm": 315,
+      "minLengthMm": 315,
+      "modelAvailable": true,
+      "icon": "/assets/images/Icon (7).png",
+      "supportedSurfaces": [
+        "carton_smooth",
+        "sheet_metal",
+        "porous_rough",
+        "bag_woven"
+      ]
+    },
+    {
+      "id": "bellow_cups_2x_100",
+      "name": "2x BELLOWS CUPS Φ100",
+      "type": "round",
+      "headKey": "CF2",
+      "padKey": "bellow_cups_2x_100",
+      "maxKg": 17,
+      "porousKg": 8.5,
+      "minWidthMm": 115,
+      "minLengthMm": 250,
+      "modelAvailable": true,
+      "icon": "/assets/images/Icon (7).png",
+      "supportedSurfaces": [
+        "carton_smooth",
+        "sheet_metal",
+        "porous_rough",
+        "bag_woven"
+      ]
+    },
+    {
+      "id": "bellow_cups_2x_125",
+      "name": "2x BELLOWS CUPS Φ125",
+      "type": "round",
+      "headKey": "CF2",
+      "padKey": "bellow_cups_2x_125",
+      "maxKg": 27,
+      "porousKg": 13.5,
+      "minWidthMm": 140,
+      "minLengthMm": 280,
+      "modelAvailable": true,
+      "icon": "/assets/images/Icon (7).png",
+      "supportedSurfaces": [
+        "carton_smooth",
+        "sheet_metal",
+        "porous_rough",
+        "bag_woven"
+      ]
+    },
+    {
+      "id": "bellow_cups_2x_200",
+      "name": "2x BELLOWS CUPS Φ200",
+      "type": "round",
+      "headKey": "CF2",
+      "padKey": "bellow_cups_2x_200",
+      "maxKg": 70,
+      "porousKg": 35,
+      "minWidthMm": 220,
+      "minLengthMm": 440,
+      "modelAvailable": false,
+      "icon": "/assets/images/Icon (7).png",
+      "supportedSurfaces": [
+        "carton_smooth",
+        "sheet_metal",
+        "porous_rough",
+        "bag_woven"
+      ]
+    },
+    {
+      "id": "bellow_cups_2x_250",
+      "name": "2x BELLOWS CUPS Φ250",
+      "type": "round",
+      "headKey": "CF2",
+      "padKey": "bellow_cups_2x_250",
+      "maxKg": 80,
+      "porousKg": 54,
+      "minWidthMm": 270,
+      "minLengthMm": 540,
+      "modelAvailable": true,
+      "icon": "/assets/images/Icon (7).png",
+      "supportedSurfaces": [
+        "carton_smooth",
+        "sheet_metal",
+        "porous_rough",
+        "bag_woven"
+      ]
+    },
+    {
+      "id": "bellow_cups_2x_300",
+      "name": "2x BELLOWS CUPS Φ300",
+      "type": "round",
+      "headKey": "CF2",
+      "padKey": "bellow_cups_2x_300",
+      "maxKg": 80,
+      "porousKg": 78,
+      "minWidthMm": 320,
+      "minLengthMm": 640,
+      "modelAvailable": false,
+      "icon": "/assets/images/Icon (7).png",
+      "supportedSurfaces": [
+        "carton_smooth",
+        "sheet_metal",
+        "porous_rough",
+        "bag_woven"
+      ]
+    },
+    {
+      "id": "bellow_cups_4x_100",
+      "name": "4x BELLOWS CUPS Φ100",
+      "type": "multi",
+      "headKey": "CF2",
+      "padKey": "bellow_cups_4x_100",
+      "maxKg": 34.5,
+      "porousKg": 17.25,
+      "minWidthMm": 250,
+      "minLengthMm": 250,
+      "modelAvailable": true,
+      "icon": "/assets/images/Icon (7).png",
+      "supportedSurfaces": [
+        "carton_smooth",
+        "sheet_metal",
+        "porous_rough",
+        "bag_woven"
+      ]
+    },
+    {
+      "id": "bellow_cups_4x_125",
+      "name": "4x BELLOWS CUPS Φ125",
+      "type": "multi",
+      "headKey": "CF2",
+      "padKey": "bellow_cups_4x_125",
+      "maxKg": 54,
+      "porousKg": 27,
+      "minWidthMm": 280,
+      "minLengthMm": 280,
+      "modelAvailable": true,
+      "icon": "/assets/images/Icon (7).png",
+      "supportedSurfaces": [
+        "carton_smooth",
+        "sheet_metal",
+        "porous_rough",
+        "bag_woven"
+      ]
+    },
+    {
+      "id": "bellow_cups_6x_100",
+      "name": "6x BELLOWS CUPS Φ100",
+      "type": "multi",
+      "headKey": "CF2",
+      "padKey": "bellow_cups_6x_100",
+      "maxKg": 51.75,
+      "porousKg": 26,
+      "minWidthMm": 250,
+      "minLengthMm": 360,
+      "modelAvailable": true,
+      "icon": "/assets/images/Icon (7).png",
+      "supportedSurfaces": [
+        "carton_smooth",
+        "sheet_metal",
+        "porous_rough",
+        "bag_woven"
+      ]
+    },
+    {
+      "id": "bellow_cups_6x_125",
+      "name": "6x BELLOWS CUPS Φ125",
+      "type": "multi",
+      "headKey": "CF2",
+      "padKey": "bellow_cups_6x_125",
+      "maxKg": 80,
+      "porousKg": 40,
+      "minWidthMm": 280,
+      "minLengthMm": 415,
+      "modelAvailable": true,
+      "icon": "/assets/images/Icon (7).png",
+      "supportedSurfaces": [
+        "carton_smooth",
+        "sheet_metal",
+        "porous_rough",
+        "bag_woven"
+      ]
+    },
+    {
+      "id": "oval_foam_suction_380x220mm",
+      "name": "1x OVAL FOAM PAD 380x220mm",
+      "type": "foam",
+      "headKey": "CF2",
+      "padKey": "oval_foam_suction_380x220mm",
+      "maxKg": 59.6574,
+      "porousKg": 29.8287,
+      "minWidthMm": 390,
+      "minLengthMm": 230,
+      "modelAvailable": true,
+      "icon": "/assets/images/Icon (7).png",
+      "supportedSurfaces": [
+        "carton_smooth",
+        "sheet_metal",
+        "porous_rough",
+        "bag_woven"
+      ]
+    },
+    {
+      "id": "oval_foam_suction_300x200mm",
+      "name": "1x OVAL FOAM PAD 300x200mm",
+      "type": "foam",
+      "headKey": "CF2",
+      "padKey": "oval_foam_suction_300x200mm",
+      "maxKg": 39.705600000000004,
+      "porousKg": 19.852800000000002,
+      "minWidthMm": 210,
+      "minLengthMm": 210,
+      "modelAvailable": true,
+      "icon": "/assets/images/Icon (7).png",
+      "supportedSurfaces": [
+        "carton_smooth",
+        "sheet_metal",
+        "porous_rough",
+        "bag_woven"
+      ]
+    },
+    {
+      "id": "rectangular_pads_2_125x325mm",
+      "name": "2xRECTANGULAR PADS 125x325mm",
+      "type": "rectangular",
+      "headKey": "CF2",
+      "padKey": "rectangular_pads_2_125x325mm",
+      "maxKg": 80,
+      "porousKg": 50,
+      "minWidthMm": 300,
+      "minLengthMm": 340,
+      "modelAvailable": true,
+      "icon": "/assets/images/Icon (7).png",
+      "supportedSurfaces": [
+        "carton_smooth",
+        "sheet_metal",
+        "porous_rough",
+        "bag_woven"
+      ]
+    },
+    {
+      "id": "rectangular_pads_in_line_4_125x325mm",
+      "name": "4x RETANGULAR PADS IN-LINE 125x325mm",
+      "type": "rectangular",
+      "headKey": "CF2",
+      "padKey": "rectangular_pads_in_line_4_125x325mm",
+      "maxKg": 80,
+      "porousKg": 80,
+      "minWidthMm": 340,
+      "minLengthMm": 600,
+      "modelAvailable": true,
+      "icon": "/assets/images/Icon (7).png",
+      "supportedSurfaces": [
+        "carton_smooth",
+        "sheet_metal",
+        "porous_rough",
+        "bag_woven"
+      ]
+    },
+    {
+      "id": "rectangular_pads_frame_4_125x325mm",
+      "name": "4x RECTANGULAR PADS-FRAME 125x325mm",
+      "type": "rectangular",
+      "headKey": "CF2",
+      "padKey": "rectangular_pads_frame_4_125x325mm",
+      "maxKg": 150,
+      "porousKg": 80,
+      "minWidthMm": 400,
+      "minLengthMm": 700,
+      "modelAvailable": true,
+      "icon": "/assets/images/Icon (7).png",
+      "supportedSurfaces": [
+        "carton_smooth",
+        "sheet_metal",
+        "porous_rough",
+        "bag_woven"
+      ]
+    },
+    {
+      "id": "multi_cup_matrix",
+      "name": "MULTI-CUP MATRIX ",
+      "type": "multi",
+      "headKey": "CF2",
+      "padKey": "multi_cup_matrix",
+      "maxKg": 50,
+      "porousKg": 25,
+      "minWidthMm": 300,
+      "minLengthMm": 300,
+      "modelAvailable": true,
+      "icon": "/assets/images/Icon (7).png",
+      "supportedSurfaces": [
+        "carton_smooth",
+        "sheet_metal",
+        "porous_rough",
+        "bag_woven"
+      ]
+    },
+    {
+      "id": "flat_cup_25mm",
+      "name": "1x FLAT CUP · 25 mm",
+      "type": "sheet",
+      "padKey": "flat_cup_25mm",
+      "maxKg": 50,
+      "porousKg": 25,
+      "minWidthMm": 250,
+      "minLengthMm": 250,
+      "modelAvailable": false,
+      "supportedSurfaces": [
+        "stone",
+        "concrete",
+        "porous_rough"
+      ],
+      "source": "ref/SUCTION CUP TABLE latest 13-OCT 2.xlsx / suction pad .new!A29:H29"
+    },
+    {
+      "id": "rectangular_flat_25mm",
+      "name": "1x RECTANGULAR FLAT PAD · 25 mm",
+      "type": "sheet",
+      "padKey": "rectangular_flat_25mm",
+      "maxKg": 60,
+      "porousKg": 30,
+      "minWidthMm": 125,
+      "minLengthMm": 500,
+      "modelAvailable": false,
+      "supportedSurfaces": [
+        "stone",
+        "concrete",
+        "porous_rough"
+      ],
+      "source": "ref/SUCTION CUP TABLE latest 13-OCT 2.xlsx / suction pad .new!A35:H35"
+    }
+  ],
+  "wllPolicy": {
+    "source": "request-vacuum_tube_lifter_configurator-20261023.docx; 1. BANG CHON APP 21 OCT.xlsx",
+    "levels": "Eight levels selected by user 28 Oct 2026",
+    "notes": "SM-3KW priced as 3.3 kW motor; tube 254 priced as 250, 305 as 300x2500; tube 230 has no price yet."
+  }
 }

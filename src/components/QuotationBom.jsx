@@ -1,0 +1,4 @@
+import React from 'react';
+export default function QuotationBom({ bom, showPrices = true }) {
+    return <section className="card p-3 my-3"><strong>Bill of materials</strong><div style={{ overflowX: 'auto' }}><table className="table table-sm mt-2" style={{ fontSize: 12 }}><thead><tr><th>Code / item</th><th>Qty</th>{showPrices && <th>USD</th>}</tr></thead><tbody>{bom.lines.map(line => <tr key={line.code}><td title={line.source}>{line.code}<small className="d-block">{line.description}</small></td><td>{line.quantity}</td>{showPrices && <td>{line.subtotal === null ? 'Pending' : line.subtotal.toFixed(2)}</td>}</tr>)}</tbody></table></div><small>{bom.commercialStatus}</small>{showPrices && bom.missing.length > 0 && <p className="text-warning mb-0">Missing price: {bom.missing.join(', ')}</p>}</section>;
+}

@@ -1,0 +1,195 @@
+/* Materials Scroll Grid */
+.lumion-mats-scroll-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+    max-height: 140px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.lumion-mat-card {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(15, 23, 42, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    padding: 4px 6px;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.15s ease;
+}
+
+.lumion-mat-card:hover {
+    background: rgba(51, 65, 85, 0.85);
+    border-color: rgba(255, 255, 255, 0.25);
+}
+
+.lumion-mat-card.active {
+    background: rgba(2, 132, 199, 0.35);
+    border-color: #38bdf8;
+    box-shadow: 0 0 8px rgba(56, 189, 248, 0.35);
+}
+
+.lumion-mat-swatch {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    flex-shrink: 0;
+}
+
+.lumion-mat-info {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.mat-card-name {
+    color: #f1f5f9;
+    font-weight: 600;
+}
+
+.mat-card-badge {
+    font-size: 12px;
+    color: #94a3b8;
+}
+
+/* Physical Sliders */
+.lumion-sliders-section {
+    gap: 7px;
+}
+
+.lumion-slider-row {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.slider-header-line {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #cbd5e1;
+}
+
+.slider-header-line strong {
+    color: #38bdf8;
+    font-family: monospace;
+}
+
+.lumion-slider-row input[type="range"] {
+    accent-color: #38bdf8;
+    cursor: pointer;
+    width: 100%;
+    height: 4px;
+}
+
+.slider-hints {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #64748b;
+}
+
+/* Footer Actions */
+.lumion-actions-footer {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding-top: 6px;
+}
+
+.btn-lumion-action {
+    flex: 1;
+    background: rgba(30, 41, 59, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: #cbd5e1;
+    padding: 5px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    text-align: center;
+}
+
+.btn-lumion-action:hover {
+    background: #0284c7;
+    color: #ffffff;
+    border-color: #38bdf8;
+}
+
+.btn-lumion-action.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.btn-lumion-action.btn-reset:hover {
+    background: #e60000;
+    border-color: #ff3333;
+}
+
+/* Lumion Open button in Deck */
+.btn-lumion-open-bar {
+    background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+    border: 1px solid #38bdf8;
+    color: #ffffff;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.35);
+    transition: all 0.15s ease;
+    white-space: nowrap;
+}
+
+.btn-lumion-open-bar:hover {
+    background: #0284c7;
+    box-shadow: 0 0 14px rgba(56, 189, 248, 0.6);
+    transform: translateY(-1px);
+}
+
+/* Tab 3 Color Picker Row */
+.tab-color-picker-wrap {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.tab-native-color-picker {
+    -webkit-appearance: none;
+    appearance: none;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    cursor: pointer;
+    background: none;
+    padding: 0;
+}
+.tab-native-color-picker::-webkit-color-swatch-wrapper { padding: 0; }
+.tab-native-color-picker::-webkit-color-swatch { border-radius: 3px; border: none; }
+
+.tab-mini-palette {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.tab-color-dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    transition: all 0.12s ease;
+}
+.tab-color-dot:hover {
+    transform: scale(1.2);
+}

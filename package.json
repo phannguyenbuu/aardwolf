@@ -3,9 +3,13 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
+    "start": "node server/index.js",
+    "dev:server": "node --watch server/index.js",
+    "test:server": "node --test server/server.test.js server/settings.test.js server/rfq.test.js",
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "build:render-modal": "vite build --config modules/render-modal/vite.config.js"
   },
   "dependencies": {
     "@pdf-lib/fontkit": "^0.0.4",
@@ -14,9 +18,13 @@
     "pdf-lib": "^1.17.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "three": "^0.170.0"
+    "three": "^0.170.0",
+    "three-gpu-pathtracer": "0.0.23",
+    "three-mesh-bvh": "0.8.3",
+    "xatlas-web": "0.1.0"
   },
   "devDependencies": {
+    "@originjs/vite-plugin-federation": "^1.4.1",
     "@vitejs/plugin-react": "^4.3.4",
     "playwright": "^1.64.1",
     "vite": "^6.0.3"

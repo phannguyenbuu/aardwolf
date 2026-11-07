@@ -1,4 +1,6 @@
 import rulesData from './rules.json';
+import productCatalog from './productCatalog.json';
+export const PRODUCT_CATALOG = productCatalog;
 
 // Unit conversion helpers
 export const kgToLbs = (kg) => (kg * 2.20462).toFixed(0);
@@ -46,7 +48,7 @@ export function generateInchData(data) {
 
         const inchData = {
             maxLiftingCapacity: `${kgToLbs(parseFloat(metricData.maxLiftingCapacity.split(' ')[0]))} lbs`,
-            minLiftingCapacity: `${kgToLbs(parseFloat(metricData.minLiftingCapacity))} lbs`,
+            minLiftingCapacity: metricData.minLiftingCapacity === '' ? '' : `${kgToLbs(parseFloat(metricData.minLiftingCapacity))} lbs`,
             liftTube17: inchToFeetInch(mToInch(parseFloat(metricData.liftTube17.split(' ')[0]))),
             liftTube29: inchToFeetInch(mToInch(parseFloat(metricData.liftTube29.split(' ')[0]))),
             liftTubeSize: `${inchToFeetInch(mmToInch(parseFloat(metricData.liftTubeSize.split(' ')[0])))}`,
@@ -149,6 +151,7 @@ export const small_sm_tube = { name: "TUBE LIFT SM 120" };
 export const big_sm_tube = { name: "TUBE LIFT SM 250" };
 
 export const ALL_PRELOAD_ITEMS = [
+    ...productCatalog.assets,
     ...ALL_SCENES,
     ...HEAD_STACKS,
     ...SUCTION_PACKS,

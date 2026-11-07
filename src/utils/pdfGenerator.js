@@ -357,6 +357,7 @@ export async function generateQuotationPDF({
     surfaceType,
     environment,
     canvasSnapshot,
+    quotationBom,
     onProgress
 }) {
     if (onProgress) onProgress(10);
@@ -418,7 +419,7 @@ export async function generateQuotationPDF({
 
     bottom_y -= drw * 11.6;
     if (currentWorkload) {
-        drawTxt(`Lifting capacity: ${currentWorkload.maxLiftingCapacity}. Suited for loads between ${currentWorkload.minLiftingCapacity} - ${currentWorkload.maxLiftingCapacity}.`, margin_left, bottom_y, font_sz);
+        drawTxt(`Lifting capacity: ${currentWorkload.maxLiftingCapacity}.` + (currentWorkload.minLiftingCapacity ? ` Suited for loads between ${currentWorkload.minLiftingCapacity} - ${currentWorkload.maxLiftingCapacity}.` : ''), margin_left, bottom_y, font_sz);
         if (actualLoad) {
             const actualText = `Workpiece: ${actualLoad.weight}kg (${actualLoad.length}x${actualLoad.width}x${actualLoad.height}mm) | Env: ${environment || 'Clean'}`;
             drawTxt(actualText, margin_left, bottom_y - drw * 4, font_sz, true, 1);
@@ -576,6 +577,19 @@ export async function generateQuotationPDF({
 
     if (onProgress) onProgress(90);
 
+    if (quotationBom) {
+        const bomPage = pdfDoc.addPage([drw * 210, drw * 297]);
+        let y = drw * 275;
+        bomPage.drawText('Bill of materials - indicative estimate', { x: 40, y, size: 14, font: font_open_sans_bold });
+        for (const line of quotationBom.lines) {
+            y -= 35;
+            const text = `${line.description.slice(0, 65)} | Qty ${line.quantity} | ${line.subtotal === null ? 'Pending' : line.subtotal.toFixed(2) + ' USD'}`;
+            bomPage.drawText(text, { x: 40, y, size: 9, font: font_open_sans });
+            y -= 14;
+            bomPage.drawText(line.code.slice(0, 90), { x: 40, y, size: 8, font: font_open_sans });
+        }
+        bomPage.drawText('Accessory inclusion and price basis require commercial confirmation.', { x: 40, y: y - 40, size: 9, font: font_open_sans });
+    }
     const pdfBytes = await pdfDoc.save();
 
     const blob = new Blob([pdfBytes], { type: 'application/pdf' });

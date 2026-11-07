@@ -1,0 +1,78 @@
+/* =========================================================================
+   COLUMN 1 - TOP TABS (User Setting / Material cấu kiện / Environment / Studio HD / Material Lib)
+   ========================================================================= */
+.column-tabs-nav {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    overflow-x: auto;
+    padding-bottom: 6px;
+    border-bottom: 2px solid #e2e8f0;
+    scrollbar-width: none;
+}
+.column-tabs-nav::-webkit-scrollbar {
+    display: none;
+}
+
+.col-tab-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    color: #475569;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 12.5px;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.col-tab-btn:hover {
+    background: #f1f5f9;
+    color: #0f172a;
+    border-color: #94a3b8;
+}
+
+.col-tab-btn.active {
+    background: #CC2200;
+    color: #ffffff;
+    border-color: #CC2200;
+    box-shadow: 0 3px 10px rgba(204, 34, 0, 0.3);
+}
+
+.col-tab-btn.active .col-tab-icon {
+    transform: scale(1.1);
+}
+
+.column-tab-body {
+    padding-top: 10px;
+}
+
+/* Relative Bootstrap text sizes must also respect the UI minimum. */
+small, .small { font-size: max(12px, 0.875em); }
+.badge { font-size: max(12px, 0.75em); }
+sub, sup { font-size: max(12px, 0.75em); }
+.material-editor-columns { display: grid; grid-template-columns: minmax(0, 1fr) minmax(160px, 0.85fr); gap: 18px; align-items: start; }
+.material-editor-settings { min-width: 0; }
+.material-editor-settings .material-swatches-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; }
+.material-editor-settings .swatch-btn { width: 100%; min-width: 0; height: 28px; }
+.material-icon-button { width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; padding: 0; }
+.material-color-picker { min-width: 0; border-left: 1px solid #e2e8f0; padding-left: 18px; }
+.material-color-heading { display: flex; align-items: center; justify-content: space-between; margin-bottom: 9px; font-size: 12px; font-weight: 600; }
+.material-color-chip { width: 26px; height: 20px; border-radius: 4px; border: 1px solid #cbd5e1; }
+.material-sv { height: 148px; position: relative; border-radius: 6px; touch-action: none; cursor: crosshair; background-image: linear-gradient(to top, #000, transparent), linear-gradient(to right, #fff, transparent); }
+.material-sv-cursor { position: absolute; width: 12px; height: 12px; border: 2px solid white; border-radius: 50%; box-shadow: 0 0 0 1px #475569; transform: translate(-50%, -50%); pointer-events: none; }
+.material-hue { appearance: none; width: 100%; height: 12px; margin: 15px 0; border-radius: 9px; background: linear-gradient(to right, red, #ff0, #0f0, #0ff, #00f, #f0f, red); cursor: pointer; }
+.material-hue::-webkit-slider-thumb { appearance: none; width: 16px; height: 16px; border: 2px solid white; border-radius: 50%; background: transparent; box-shadow: 0 0 0 1px #64748b; }
+.material-hex, .material-rgb label { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #64748b; }
+.material-hex input, .material-rgb input { min-width: 0; width: 100%; height: 28px; border: 1px solid #cbd5e1; border-radius: 4px; padding: 4px 6px; font: 12px monospace; color: #334155; background: white; }
+.material-rgb { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 5px; margin-top: 8px; }
+.material-rgb label { flex-direction: column; align-items: stretch; gap: 3px; }
+@media (max-width: 480px) { .material-editor-columns { grid-template-columns: minmax(0, 1fr) minmax(130px, 0.85fr); gap: 10px; } .material-color-picker { padding-left: 10px; } }
+.original-camera-controller { position: absolute; right: 14px; top: 68px; z-index: 12; display: flex; flex-direction: column; gap: 8px; }
+.original-camera-controller button { width: 40px; height: 40px; padding: 0; border: 1px solid transparent; border-radius: 6px; overflow: hidden; background: white; cursor: pointer; }
+.original-camera-controller button:hover, .original-camera-controller button[aria-pressed="true"] { border-color: #e32508; }
+.original-camera-controller img { display: block; width: 40px; height: 40px; object-fit: contain; }
